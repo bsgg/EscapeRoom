@@ -153,7 +153,6 @@ public:
 
 	FActionData()
 	{
-		DescriptionIndex = 0;
 		InteractionType = EInteractionType::VE_NONE;
 		Active = true;
 	}
@@ -195,101 +194,49 @@ public:
 			return DescriptionList[index];
 		}
 
-		return "EMPTY";
+		return "NONE";
 	}
 
-	FName GetSuccessDescription() const
+	FName GetRandomDescription(bool success) const
 	{
-		if (DescriptionList.Num() > 0)
+		int Rand = FMath::RandRange(0, 2);
+
+		FName Desc = "NONE";
+		switch (Rand)
 		{
-			return DescriptionList[0];
+			case 0:
+				if (success)
+				{
+					Desc = "Let's do this";
+				}
+				else
+				{
+					Desc = "That doesn't make any sense";
+				}
+			break;
+			case 1:
+				if (success)
+				{
+					Desc = "That's it!";
+				}
+				else
+				{
+					Desc = "I don't understand what you want";
+				}
+				break;
+			case 2:
+				if (success)
+				{
+					Desc = "Now we are talking";
+				}
+				else
+				{
+					Desc = "Let's think this through, sall we?";
+				}
+			break;
 		}
 
-		int rand = FMath::RandRange(0, 2);
-
-		if (rand == 0)
-		{
-			return "Let's do this";
-
-		}
-
-		if (rand == 1)
-		{
-			return "That's it!";
-		}
-
-
-		if (rand == 2)
-		{
-			return "Now we are talking";
-		}
-
-		return "";
-	}
-
-	FName GetWrongDescription() const
-	{
-		if (DescriptionList.Num() > 1)
-		{
-			return DescriptionList[1];
-		}
-
-		int rand = FMath::RandRange(0, 2);
-
-		if (rand == 0)
-		{
-			return "That doesn't make any sense";
-
-		}
-
-		if (rand == 1)
-		{
-			return "I don't understand what you want";
-		}
-
-
-		if (rand == 2)
-		{
-			return "Let's think this through, sall we?";
-		}
-
-		return "";
-	}
-
-	FName GetDescription() const
-	{
-		if ((DescriptionList.Num() > 0) && (DescriptionIndex < DescriptionList.Num()))
-		{
-			return DescriptionList[DescriptionIndex];
-		}
-
-		return "";
-	}
-
-	int GetDescriptionIndex() const
-	{
-		return DescriptionIndex;
-	}
-
-	void SetDescriptionIndex(int newIndex)
-	{
-		
-		DescriptionIndex = newIndex;
-	}
-
-	void UpdateIndex(int newIndex)
-	{
-		Index = newIndex;
-
-		if (Index < 0)
-		{
-			Index = 0;
-		}
-
-		if (Index >= DescriptionList.Num())
-		{
-			Index = DescriptionList.Num() - 1;
-		}
+		return Desc;
 	}
 
 	// Override equal operator for this structure
