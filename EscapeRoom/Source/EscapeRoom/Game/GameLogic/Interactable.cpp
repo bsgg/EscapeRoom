@@ -21,6 +21,9 @@ AInteractable::AInteractable()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 
+	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
+	ObjectMesh->SetupAttachment(RootComponent);
+
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	Collision->SetupAttachment(RootComponent);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AInteractable::BeginOverlap);
@@ -80,8 +83,6 @@ void AInteractable::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (Role == ROLE_Authority)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AInteractable::BeginOverlap] Execute char on  overlapInteractable"));
-
 		if (CharacterOverlapping == nullptr)
 		{
 			CharacterOverlapping = Cast<AMainCharacter>(OtherActor);
@@ -102,7 +103,6 @@ void AInteractable::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 void AInteractable::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
 	if (OtherActor == nullptr) return;
 	
 	if (Role == ROLE_Authority)
@@ -129,28 +129,24 @@ void AInteractable::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 
 
 void AInteractable::OnRep_DataChanged()
-{
-	switch (Data.Status)
+{	switch (Data.Status)
 	{
 		case EInteractionStatus::VE_LOCKED:
-			UE_LOG(LogTemp, Warning, TEXT("[ AInteractable::OnRep_DataChanged] VE_LOCKED"));
 			UI->GetUI()->GetAControl()->Show();
 			UI->GetUI()->GetXControl()->Show();
 		break;
 
 		case EInteractionStatus::VE_UNLOCKED:
-			UE_LOG(LogTemp, Warning, TEXT("[ AInteractable::OnRep_DataChanged] VE_UNLOCKED"));
 			UI->GetUI()->GetAControl()->Hide();
 			UI->GetUI()->GetXControl()->Hide();
 		break;
 	}	
 }
 
-
+// REGION VIEW DESCRIPTION
 FString AInteractable::GetViewDescription() const
-{
-	
-	return (Data.PrimaryAction.DescriptionList[Data.PrimaryAction.Index]).ToString();
+{	
+	return (Data.PrimaryAction.GetDescriptionById(Data.PrimaryAction.Index).ToString());
 }
 
 void AInteractable::AdvanceViewDescription()
@@ -166,6 +162,35 @@ void AInteractable::ResetViewDescription()
 {
 	Data.PrimaryAction.Index = 0;
 }
+// ENDREGION VIEW DESCRIPTION
+
+// REGION VIEW DESCRIPTION
+void AInteractable::EnableSecondaryAction()
+{
+	Data.SecondaryAction.Active = false;
+	OnRep_DataChanged();
+}
+void AInteractable::DisableSecondaryAction()
+{
+	Data.SecondaryAction.Active = true;
+	OnRep_DataChanged();
+}
+bool AInteractable::HasSecondaryActionObject()
+{
+	return (Data.SecondaryAction.ObjectID != "NONE");
+}
+FName AInteractable::GetSecondaryActionObjectID()
+{
+	return (Data.SecondaryAction.ObjectID);
+}
+
+void AInteractable::RemoveSecondaryActionObject()
+{
+	Data.SecondaryAction.ObjectID = "NONE";
+	OnRep_DataChanged();
+}
+
+// ENDREGION VIEW DESCRIPTION
 
 
 

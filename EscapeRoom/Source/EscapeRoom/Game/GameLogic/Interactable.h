@@ -25,6 +25,9 @@ protected:
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* ObjectMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* Collision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
@@ -50,7 +53,6 @@ protected:
 	UPROPERTY(Replicated)
 	class AMainCharacter* CharacterOverlapping;
 
-
 	UFUNCTION()
 	void OnRep_DataChanged();
 
@@ -58,10 +60,19 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// View action (primary action)
 	FString GetViewDescription() const;
 
 	void AdvanceViewDescription();
 
 	void ResetViewDescription();
+
+
+	// Interaciton Action (secondary action)
+	void EnableSecondaryAction();
+	void DisableSecondaryAction();
+	bool HasSecondaryActionObject();
+	FName GetSecondaryActionObjectID();
+	void RemoveSecondaryActionObject();
 
 };
