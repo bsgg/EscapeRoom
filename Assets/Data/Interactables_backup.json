@@ -1,0 +1,25 @@
+[
+	{
+		"Name": "Room1_PC",
+		"Name": "NSLOCTEXT(\"[685E05844A668AF9C493708AEE377B91]\", \"600FC12C4D52CF894481DFB66A0A8294\", \"Old PC\")",
+		"PrimaryAction":
+		{
+			"ObjectID": "None",
+			"InteractionType": "VE_VIEW",
+			"InteractionName": "View",
+			"Active": true,
+			"DescriptionList": [
+				"None",
+				"None"
+			]
+		},
+		"SecondaryAction":
+		{
+			"ObjectID": "None",
+			"InteractionType": "VE_NONE",
+			"InteractionName": "None",
+			"Active": true,
+			"DescriptionList": []
+		}
+	}
+]
