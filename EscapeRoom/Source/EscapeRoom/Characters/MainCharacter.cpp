@@ -168,28 +168,31 @@ void AMainCharacter::OnInteract()
 void AMainCharacter::DoInteractAction()
 {
 	//  Check type action
-	if ((OverlappedInteractable == nullptr) && (!OverlappedInteractable->GetData().SecondaryAction.Active)) return;
+	if (OverlappedInteractable == nullptr) return;
 
-	bool PickupAction = (OverlappedInteractable->GetData().SecondaryAction.InteractionType == EInteractionType::VE_PICKUP);
-
-	if (PickupAction)
+	if (OverlappedInteractable->GetData().SecondaryAction.Active)
 	{
-		//  Add object to inventory
-		if (OverlappedInteractable->HasSecondaryActionObject())
-		{
-			FName objectID = OverlappedInteractable->GetSecondaryActionObjectID();
-			InventoryComponent->AddObject(objectID);
-			StartGesture(EGestureType::VE_INTERACT);
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Secondary Action Active"));
 
-			OverlappedInteractable->RemoveSecondaryActionObject();
-		}
-		else
+		bool PickupAction = (OverlappedInteractable->GetData().SecondaryAction.InteractionType == EInteractionType::VE_PICKUP);
+
+		if (PickupAction)
 		{
-			FString desc = OverlappedInteractable->GetData().SecondaryAction.GetRandomDescription(false).ToString();
+			//  Add object to inventory
+			if (OverlappedInteractable->HasSecondaryActionObject())
+			{
+				FName objectID = OverlappedInteractable->GetSecondaryActionObjectID();
+				InventoryComponent->AddObject(objectID);
+				StartGesture(EGestureType::VE_INTERACT);				
+
+				OverlappedInteractable->RemoveSecondaryActionObject();
+			}
+			
+
+			FString desc = OverlappedInteractable->GetData().SecondaryAction.DefaultDescription.ToString();
 			OnUIMessageUpdated.Broadcast(this, desc);
-		}		
-	}   
-
+		}
+	}
 }
 
 void AMainCharacter::ServerRPCInteractAction_Implementation()
@@ -236,11 +239,6 @@ void AMainCharacter::SetGestureToDefault()
 	CurrentGesture = EGestureType::VE_NONE;
 	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
-
-
-
-
-
 
 
 
