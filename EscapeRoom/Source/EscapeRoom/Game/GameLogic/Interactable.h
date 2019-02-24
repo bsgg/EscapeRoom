@@ -47,6 +47,9 @@ protected:
 	UPROPERTY(Replicated)
 	class UInteractableUI* Widget;
 
+	UPROPERTY(Replicated)
+	FInteractionData OldData;
+
 	UPROPERTY(ReplicatedUsing = OnRep_DataChanged, EditAnywhere, BlueprintReadWrite, Category = "Interactable Data")
 	FInteractionData Data;	
 
@@ -54,7 +57,7 @@ protected:
 	class AMainCharacter* CharacterOverlapping;
 
 	UFUNCTION()
-	void OnRep_DataChanged();
+	void OnRep_DataChanged(FInteractionData PreviousData);
 
 public:	
 	// Called every frame

@@ -2,6 +2,7 @@
 
 #include "Interactable.h"
 #include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "WidgetComponent.h"
 #include "Characters/MainCharacter.h"
 #include "Game/UI/InteractableUI.h"
@@ -55,13 +56,36 @@ void AInteractable::BeginPlay()
 
 	if (Data.SecondaryAction.InteractionType == EInteractionType::VE_NONE)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AInteractable::InitializeWidget] Secondary Option is NONE"));
+		//UE_LOG(LogTemp, Warning, TEXT("[AInteractable::InitializeWidget] Secondary Option is NONE"));
 
 		UI->GetUI()->GetAControl()->Disable();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AInteractable::InitializeWidget] Secondary Option is OTHER"));
+		// According with the type of action, hide or not the mesh for the object
+		if (ObjectMesh != nullptr)
+		{
+			if (HasSecondaryActionObject())
+			{
+				switch (Data.SecondaryAction.InteractionType)
+				{
+				case EInteractionType::VE_PICKUP:
+					ObjectMesh->SetVisibility(true, true);
+					break;
+
+				case EInteractionType::VE_USE:
+					ObjectMesh->SetVisibility(false, true);
+					break;
+				}
+			}
+			else
+			{
+				// Hide the mesh by default
+				ObjectMesh->SetVisibility(true, true);
+			}
+		}
+
+		//UE_LOG(LogTemp, Warning, TEXT("[AInteractable::InitializeWidget] Secondary Option is OTHER"));
 
 		//UI->GetUI()->GetAControl()->Enable();
 	}
@@ -90,11 +114,13 @@ void AInteractable::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 			ResetViewDescription();
 
-			CharacterOverlapping->OnOverlapInteractable(this);
+			CharacterOverlapping->OnOverlapInteractable(this);			
 
-			Data.Status = EInteractionStatus::VE_LOCKED;
+			OldData.Status = EInteractionStatus::VE_UNLOCKED;
 
-			OnRep_DataChanged();
+			Data.Status = EInteractionStatus::VE_LOCKED;		
+
+			OnRep_DataChanged(OldData);
 		}
 		
 	}
@@ -117,19 +143,20 @@ void AInteractable::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 
 			ResetViewDescription();
 
-			CharacterOverlapping = nullptr;
+			CharacterOverlapping = nullptr;				
 
-			Data.Status = EInteractionStatus::VE_UNLOCKED;
 
-			OnRep_DataChanged();
+			Data.Status = EInteractionStatus::VE_UNLOCKED;			
+
+			OnRep_DataChanged(Data);
 
 		}
 	}
 }
 
-
-void AInteractable::OnRep_DataChanged()
-{	switch (Data.Status)
+void AInteractable::OnRep_DataChanged(FInteractionData PreviousData)
+{	
+	switch (Data.Status)
 	{
 		case EInteractionStatus::VE_LOCKED:
 			UI->GetUI()->GetAControl()->Show();
@@ -141,11 +168,38 @@ void AInteractable::OnRep_DataChanged()
 			UI->GetUI()->GetXControl()->Hide();
 		break;
 	}	
+
+	// Update Object Mesh
+	if (ObjectMesh != nullptr)
+	{
+		switch (PreviousData.SecondaryAction.InteractionType)
+		{
+			case EInteractionType::VE_PICKUP:
+
+				// Previous was active and current is not active
+				UE_LOG(LogTemp, Warning, TEXT("[AInteractable::OnRep_DataChanged] PreviousData.SecondaryAction.Active? %i - Data.SecondaryAction.Active? %i"), PreviousData.SecondaryAction.Active, Data.SecondaryAction.Active);
+				if ((PreviousData.SecondaryAction.Active) && (!Data.SecondaryAction.Active))
+				{
+					ObjectMesh->SetVisibility(false);
+
+					UI->GetUI()->GetAControl()->Disable();
+					UI->GetUI()->GetAControl()->Hide();
+				}
+
+			break;				   
+		}		
+	}
+
 }
 
 // REGION VIEW DESCRIPTION
 FString AInteractable::GetViewDescription() const
-{	
+{
+	if (Data.PrimaryAction.DefaultDescriptionActive)
+	{
+		return Data.PrimaryAction.DefaultDescription.ToString();
+	}	
+
 	return (Data.PrimaryAction.GetDescriptionById(Data.PrimaryAction.Index).ToString());
 }
 
@@ -168,16 +222,16 @@ void AInteractable::ResetViewDescription()
 void AInteractable::EnableSecondaryAction()
 {
 	Data.SecondaryAction.Active = false;
-	OnRep_DataChanged();
+	OnRep_DataChanged(Data);
 }
 void AInteractable::DisableSecondaryAction()
 {
 	Data.SecondaryAction.Active = true;
-	OnRep_DataChanged();
+	OnRep_DataChanged(Data);
 }
 bool AInteractable::HasSecondaryActionObject()
 {
-	return (Data.SecondaryAction.ObjectID != "NONE");
+	return (Data.SecondaryAction.ObjectID != NONE_TAG);
 }
 FName AInteractable::GetSecondaryActionObjectID()
 {
@@ -186,8 +240,28 @@ FName AInteractable::GetSecondaryActionObjectID()
 
 void AInteractable::RemoveSecondaryActionObject()
 {
-	Data.SecondaryAction.ObjectID = "NONE";
-	OnRep_DataChanged();
+
+	//ObjectMesh->SetVisibility(false, true);
+	//UI->GetUI()->GetAControl()->Disable();
+	//UI->GetUI()->GetAControl()->Hide();	
+
+	// Update Object
+	OldData.SecondaryAction.Active = true;
+	OldData.SecondaryAction.ObjectID = Data.SecondaryAction.ObjectID;
+
+	Data.SecondaryAction.Active = false;
+	Data.SecondaryAction.ObjectID = NONE_TAG;
+	ObjectMesh->SetVisibility(false);
+
+	UI->GetUI()->GetAControl()->Disable();
+	UI->GetUI()->GetAControl()->Hide();
+
+	Data.PrimaryAction.DefaultDescriptionActive = true;
+	Data.SecondaryAction.DefaultDescriptionActive = true;
+
+	OnRep_DataChanged(OldData);
+	//
+	
 }
 
 // ENDREGION VIEW DESCRIPTION
@@ -199,6 +273,8 @@ void AInteractable::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AInteractable, Data);
+
+	DOREPLIFETIME(AInteractable, OldData);
 
 	DOREPLIFETIME(AInteractable, CharacterOverlapping);
 }
