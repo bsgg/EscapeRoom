@@ -63,7 +63,11 @@ AMainCharacter::AMainCharacter()
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void AMainCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -75,9 +79,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
-
-
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::Interact);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
 }
 
 void AMainCharacter::MoveForward(float Value)
@@ -111,30 +113,23 @@ void AMainCharacter::MoveRight(float Value)
 	}
 }
 
-void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
-{
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInventoryChanged] ObjectID: %s"),*ObjectID.ToString());
-}
 
+// REGION INSPECT ACTION
 void AMainCharacter::OnInspect()
 {
 	if (OverlappedInteractable == nullptr) return;
 
 	if (Role < ROLE_Authority)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::Inspect] Client calling ServerRPCInspectAction "));
 		ServerRPCInspectAction();
 	}else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::Inspect] Server, calling  DoInspectAction"));
 		DoInspectAction();
 	}
-
 }
 
 void AMainCharacter::ServerRPCInspectAction_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::ServerRPCInspectAction]"));
 	DoInspectAction();
 }
 
@@ -145,20 +140,101 @@ bool AMainCharacter::ServerRPCInspectAction_Validate()
 
 void AMainCharacter::DoInspectAction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInspectAction]"));
-
 	if (OverlappedInteractable == nullptr) return;
 
-	// Get text
-	//int indexDesc = 0;
-
-	int index = OverlappedInteractable->GetData().PrimaryAction.Index;
 	FString desc = OverlappedInteractable->GetViewDescription();
+
 	OverlappedInteractable->AdvanceViewDescription();
 
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInspectAction] OnUIMessageUpdated %s"), *desc);
-
 	OnUIMessageUpdated.Broadcast(this, desc);
+}
+// ENDREGION INSPECT ACTION
+
+
+
+// REGION INTERACT ACTION
+void AMainCharacter::OnInteract()
+{
+	if (Role < ROLE_Authority)
+	{
+		ServerRPCInteractAction();
+	}
+	else
+	{
+		DoInteractAction();
+	}
+}
+
+void AMainCharacter::DoInteractAction()
+{
+	//  Check type action
+	if ((OverlappedInteractable == nullptr) && (!OverlappedInteractable->GetData().SecondaryAction.Active)) return;
+
+	bool PickupAction = (OverlappedInteractable->GetData().SecondaryAction.InteractionType == EInteractionType::VE_PICKUP);
+
+	if (PickupAction)
+	{
+		//  Add object to inventory
+		if (OverlappedInteractable->HasSecondaryActionObject())
+		{
+			FName objectID = OverlappedInteractable->GetSecondaryActionObjectID();
+			InventoryComponent->AddObject(objectID);
+			StartGesture(EGestureType::VE_INTERACT);
+
+			OverlappedInteractable->RemoveSecondaryActionObject();
+		}
+		else
+		{
+			FString desc = OverlappedInteractable->GetData().SecondaryAction.GetRandomDescription(false).ToString();
+			OnUIMessageUpdated.Broadcast(this, desc);
+		}		
+	}   
+
+}
+
+void AMainCharacter::ServerRPCInteractAction_Implementation()
+{
+	DoInteractAction();
+}
+
+bool AMainCharacter::ServerRPCInteractAction_Validate()
+{
+	return true;
+}
+// ENDREGION INTERACT ACTION
+
+
+
+void AMainCharacter::OnOverlapInteractable(class AInteractable* Interactable)
+{
+	if (Role == ROLE_Authority)
+	{
+		OverlappedInteractable = Interactable;		
+
+		if (OverlappedInteractable == nullptr)
+		{
+			OnUIMessageUpdated.Broadcast(this, "");
+		}
+	}
+	
+}
+
+void AMainCharacter::StartGesture(EGestureType NewGesture)
+{
+	CurrentGesture = NewGesture;
+
+	if (NewGesture != EGestureType::VE_NONE)
+	{
+		GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, InteractAnimationTime, false);
+	}
+}
+
+
+void AMainCharacter::SetGestureToDefault()
+{
+
+	CurrentGesture = EGestureType::VE_NONE;
+	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
 
 
@@ -167,13 +243,17 @@ void AMainCharacter::DoInspectAction()
 
 
 
+
+// OLD
+
+
 void AMainCharacter::Interact()
 {
 	if ((OverlappedInteractable == nullptr) || (InventoryComponent == nullptr)) return;
 	if (Role < ROLE_Authority)
 	{
 		ServerInteract();
-	}	
+	}
 
 
 
@@ -188,7 +268,7 @@ void AMainCharacter::Interact()
 		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::Interact] GameMode Null"));
 		//return;
 	//}
-		
+
 
 	//if ((OnOverlappedPickup == nullptr) || (InventoryComponent == nullptr)) return;
 
@@ -222,53 +302,12 @@ bool AMainCharacter::ServerInteract_Validate()
 
 
 
-
-
-void AMainCharacter::OnOverlapInteractable(class AInteractable* Interactable)
+void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
 {
-	if (Role == ROLE_Authority)
-	{
-		OverlappedInteractable = Interactable;		
-
-		if (OverlappedInteractable == nullptr)
-		{
-			OnUIMessageUpdated.Broadcast(this, "");
-		}
-	}
-	
-}
-
-void AMainCharacter::StartGesture(EGestureType NewGesture)
-{
-	CurrentGesture = NewGesture;
-
-	if (NewGesture != EGestureType::VE_NONE)
-	{
-		GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, 1.06f, false);
-	}
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInventoryChanged] ObjectID: %s"), *ObjectID.ToString());
 }
 
 
-void AMainCharacter::SetGestureToDefault()
-{
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::SetGestureToDefault] SetGestureToDefault"));
-
-	CurrentGesture = EGestureType::VE_NONE;
-	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
-}
-
-
-void AMainCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-
-
-
-
-// OLD
 void AMainCharacter::OnOverlapPickup(class APickup* Pickup, FName ObjectID)
 {
 	if (Role == ROLE_Authority)

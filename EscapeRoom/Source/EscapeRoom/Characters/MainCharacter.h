@@ -65,6 +65,16 @@ protected:
 	void ServerRPCInspectAction();
 	// Inspect Action
 
+	// Interact Action
+	void OnInteract();
+
+	void DoInteractAction();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerRPCInteractAction();
+	// Interact Action
+
+
 
 	void Interact();
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -93,9 +103,13 @@ protected:
 	class AInteractable* OverlappedInteractable;
 
 
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Gestures")
 	EGestureType CurrentGesture = EGestureType::VE_NONE;
 
-	FTimerHandle InteractionTimerHandle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gestures")
+	float InteractAnimationTime = 1.0f;
 	
+	FTimerHandle InteractionTimerHandle;	
 };
