@@ -6,6 +6,8 @@
 #include "Engine/DataTable.h"
 #include "Definitions.generated.h"
 
+const static FName NONE_TAG = TEXT("None");
+
 UENUM(BlueprintType) // Player Type
 enum class ECharacterType : uint8
 {
@@ -155,6 +157,7 @@ public:
 	{
 		InteractionType = EInteractionType::VE_NONE;
 		Active = true;
+		DefaultDescriptionActive = false;
 	}
 
 
@@ -183,9 +186,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName> DescriptionList;
 
-	// Index for other uses. For example in some cases we want to show 
-	// the description (VIEW Action) until this index and after that enabled the rest of the actions
-	int SpecialDescriptionIndex;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DefaultDescription;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool DefaultDescriptionActive;
 
 	FName GetDescriptionById(int index) const
 	{
@@ -194,14 +199,14 @@ public:
 			return DescriptionList[index];
 		}
 
-		return "NONE";
+		return NONE_TAG;
 	}
 
 	FName GetRandomDescription(bool success) const
 	{
 		int Rand = FMath::RandRange(0, 2);
 
-		FName Desc = "NONE";
+		FName Desc = NONE_TAG;
 		switch (Rand)
 		{
 			case 0:
@@ -244,11 +249,6 @@ public:
 	{
 		return (InteractionType == Action.InteractionType);
 	}
-
-private:
-
-	// Descriptions
-	int DescriptionIndex;
 };
 
 
