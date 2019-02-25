@@ -10,6 +10,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Game/Components/InventoryComponent.h"
 #include "Game/GameLogic/Interactable.h"
+
+#include "Game/GameLogic/Interactive.h"
+
 #include "Game/Pickup.h"
 #include "Game/RoomGameMode.h"
 #include "Utils/Definitions.h"
@@ -117,7 +120,8 @@ void AMainCharacter::MoveRight(float Value)
 // REGION INSPECT ACTION
 void AMainCharacter::OnInspect()
 {
-	if (OverlappedInteractable == nullptr) return;
+	//if (OverlappedInteractable == nullptr) return;
+	if (OverlappedInteractive == nullptr) return;
 
 	if (Role < ROLE_Authority)
 	{
@@ -140,13 +144,22 @@ bool AMainCharacter::ServerRPCInspectAction_Validate()
 
 void AMainCharacter::DoInspectAction()
 {
-	if (OverlappedInteractable == nullptr) return;
+	if (OverlappedInteractive == nullptr) return;
 
-	FString desc = OverlappedInteractable->GetViewDescription();
+	FString desc = OverlappedInteractive->GetInspectDetail();
 
-	OverlappedInteractable->AdvanceViewDescription();
+	OverlappedInteractive->ForwardInspectDetail();
 
 	OnUIMessageUpdated.Broadcast(this, desc);
+
+
+	//if (OverlappedInteractable == nullptr) return;
+
+	//FString desc = OverlappedInteractable->GetViewDescription();
+
+	//OverlappedInteractable->AdvanceViewDescription();
+
+	//OnUIMessageUpdated.Broadcast(this, desc);
 }
 // ENDREGION INSPECT ACTION
 
@@ -206,6 +219,19 @@ bool AMainCharacter::ServerRPCInteractAction_Validate()
 }
 // ENDREGION INTERACT ACTION
 
+
+void AMainCharacter::OnOverlapInteractive(class AInteractive* Interactive)
+{
+	if (Role == ROLE_Authority)
+	{
+		OverlappedInteractive = Interactive;
+
+		if (OverlappedInteractable == nullptr)
+		{
+			OnUIMessageUpdated.Broadcast(this, "");
+		}
+	}
+}
 
 
 void AMainCharacter::OnOverlapInteractable(class AInteractable* Interactable)
@@ -327,6 +353,8 @@ void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	DOREPLIFETIME(AMainCharacter, OnOverlappedPickup);
 
 	DOREPLIFETIME(AMainCharacter, OverlappedInteractable);
+
+	DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
 	
 }
 

@@ -94,6 +94,8 @@ public:
 
 	void OnOverlapInteractable(class AInteractable* Interactable);
 
+	void OnOverlapInteractive(class AInteractive* Interactive);
+
 protected:
 
 	UPROPERTY(Replicated)
@@ -102,6 +104,8 @@ protected:
 	UPROPERTY(Replicated)
 	class AInteractable* OverlappedInteractable;
 
+	UPROPERTY(Replicated)
+	class AInteractive* OverlappedInteractive;
 
 	
 
