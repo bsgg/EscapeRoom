@@ -12,6 +12,7 @@
 #include "Game/GameLogic/Interactable.h"
 
 #include "Game/GameLogic/Interactive.h"
+#include "Game/GameLogic/PickupInteractive.h"
 
 #include "Game/Pickup.h"
 #include "Game/RoomGameMode.h"
@@ -181,7 +182,24 @@ void AMainCharacter::OnInteract()
 void AMainCharacter::DoInteractAction()
 {
 	//  Check type action
-	if (OverlappedInteractable == nullptr) return;
+	if (OverlappedInteractive == nullptr) return;
+
+	APickupInteractive* Pickup = Cast<APickupInteractive>(OverlappedInteractive);
+
+	if (Pickup != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  pickup %s"), *Pickup->GetName());
+		Pickup->PickupObject();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Not an interactive pickup "));
+	}
+
+
+
+
+	/*if (OverlappedInteractable == nullptr) return;
 
 	if (OverlappedInteractable->GetData().SecondaryAction.Active)
 	{
@@ -205,7 +223,7 @@ void AMainCharacter::DoInteractAction()
 			FString desc = OverlappedInteractable->GetData().SecondaryAction.DefaultDescription.ToString();
 			OnUIMessageUpdated.Broadcast(this, desc);
 		}
-	}
+	}*/
 }
 
 void AMainCharacter::ServerRPCInteractAction_Implementation()
