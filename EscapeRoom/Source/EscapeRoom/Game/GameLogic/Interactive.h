@@ -58,10 +58,14 @@ protected:
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* Collision;
+	class UStaticMeshComponent* AInputIconMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UInteractiveUIComponent* UI;
+	class UStaticMeshComponent* XInputIconMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* Collision;
+
 	
 public:	
 	AInteractive();
@@ -81,9 +85,6 @@ protected:
 
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UPROPERTY(Replicated)
-	class UInteractableUI* Widget;
 
 	UPROPERTY(Replicated)
 	FInteractiveDefinition OldDefinition;

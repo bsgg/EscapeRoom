@@ -6,11 +6,6 @@
 
 #include "Characters/MainCharacter.h"
 
-//#include "WidgetComponent.h"
-#include "Game/UI/InteractableUI.h"
-#include "Game/UI/ControlWidget.h"
-#include "Game/UI/InteractiveUIComponent.h"
-
 #include "UnrealNetwork.h"
 
 
@@ -25,17 +20,19 @@ AInteractive::AInteractive()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MainMesh"));
 	Mesh->SetupAttachment(RootComponent);
 
+	// Icons
+	AInputIconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AInputIconMesh"));
+	AInputIconMesh->SetupAttachment(RootComponent);
+
+	XInputIconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("XInputIconMesh"));
+	XInputIconMesh->SetupAttachment(RootComponent);
+
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	Collision->SetupAttachment(RootComponent);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AInteractive::BeginOverlap);
 	Collision->OnComponentEndOverlap.AddDynamic(this, &AInteractive::EndOverlap);
 
-	// Create widget
-	UI = CreateDefaultSubobject<UInteractiveUIComponent>(TEXT("UI"));
-	UI->SetWidgetSpace(EWidgetSpace::Screen);
-	UI->SetDrawAtDesiredSize(true);
-	UI->SetupAttachment(RootComponent);
-
+	
 	SetReplicates(true);
 }
 
@@ -44,12 +41,9 @@ void AInteractive::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UI->Initialize();
+	XInputIconMesh->SetVisibility(false);
+	AInputIconMesh->SetVisibility(false);
 
-	UI->GetUI()->GetAControl()->Enable();
-	UI->GetUI()->GetXControl()->Disable();
-
-	
 }
 
 void AInteractive::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
@@ -106,13 +100,11 @@ void AInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
 {
 	if (Definition.IsLocked)
 	{
-		UI->GetUI()->GetAControl()->Show();
-		UI->GetUI()->GetXControl()->Show();
+		XInputIconMesh->SetVisibility(true);
 	}
 	else
 	{
-		UI->GetUI()->GetAControl()->Hide();
-		UI->GetUI()->GetXControl()->Hide();
+		XInputIconMesh->SetVisibility(false);
 	}
 }
 
