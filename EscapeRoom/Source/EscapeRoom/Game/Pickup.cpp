@@ -94,10 +94,10 @@ void APickup::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	if (Role == ROLE_Authority)
 	{
 		AMainCharacter* Char = Cast<AMainCharacter>(OtherActor);
-		if (Char == nullptr) return;
-		Char->bIsCarryingObjective = true;
+		//if (Char == nullptr) return;
+		//Char->bIsCarryingObjective = true;
 
-		Char->OnOverlapPickup(this, ObjectID);
+		//Char->OnOverlapPickup(this, ObjectID);
 
 		// Because this is replicated, and changed, this will be called on the server and all the clients will be notify
 		bIsActive = false;
@@ -120,11 +120,11 @@ void APickup::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
 
 	if (Role == ROLE_Authority)
 	{
-		AMainCharacter* Char = Cast<AMainCharacter>(OtherActor);
-		if (Char == nullptr) return;
+		//AMainCharacter* Char = Cast<AMainCharacter>(OtherActor);
+		//if (Char == nullptr) return;
 
 		// Empty pickup
-		Char->OnOverlapPickup(nullptr, FName(TEXT("NONE")));
+		//Char->OnOverlapPickup(nullptr, FName(TEXT("NONE")));
 
 		bIsActive = true;
 

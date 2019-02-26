@@ -7,20 +7,18 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
+
 #include "Game/Components/InventoryComponent.h"
-#include "Game/GameLogic/Interactable.h"
 
 #include "Game/GameLogic/Interactive.h"
 #include "Game/GameLogic/PickupInteractive.h"
 
-#include "Game/Pickup.h"
+//#include "Game/Pickup.h"
 #include "Game/RoomGameMode.h"
 #include "Utils/Definitions.h"
 
 #include "Materials/Material.h"
 #include "Engine/World.h"
-
 
 #include "UnrealNetwork.h"
 
@@ -152,18 +150,8 @@ void AMainCharacter::DoInspectAction()
 	OverlappedInteractive->ForwardInspectDetail();
 
 	OnUIMessageUpdated.Broadcast(this, desc);
-
-
-	//if (OverlappedInteractable == nullptr) return;
-
-	//FString desc = OverlappedInteractable->GetViewDescription();
-
-	//OverlappedInteractable->AdvanceViewDescription();
-
-	//OnUIMessageUpdated.Broadcast(this, desc);
 }
 // ENDREGION INSPECT ACTION
-
 
 
 // REGION INTERACT ACTION
@@ -189,41 +177,29 @@ void AMainCharacter::DoInteractAction()
 	if (Pickup != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  pickup %s"), *Pickup->GetName());
-		Pickup->PickupObject();
+
+		if (Pickup->GetIsActive())
+		{
+			FName ObjectID = Pickup->GetObjectID();
+			Pickup->PickupObject();
+
+			InventoryComponent->AddObject(ObjectID);
+
+			StartGesture(EGestureType::VE_INTERACT);
+
+			FString desc = Pickup->GetDetailPickup();
+
+			OnUIMessageUpdated.Broadcast(this, desc);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Pickup is inactive "));
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Not an interactive pickup "));
 	}
-
-
-
-
-	/*if (OverlappedInteractable == nullptr) return;
-
-	if (OverlappedInteractable->GetData().SecondaryAction.Active)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Secondary Action Active"));
-
-		bool PickupAction = (OverlappedInteractable->GetData().SecondaryAction.InteractionType == EInteractionType::VE_PICKUP);
-
-		if (PickupAction)
-		{
-			//  Add object to inventory
-			if (OverlappedInteractable->HasSecondaryActionObject())
-			{
-				FName objectID = OverlappedInteractable->GetSecondaryActionObjectID();
-				InventoryComponent->AddObject(objectID);
-				StartGesture(EGestureType::VE_INTERACT);				
-
-				OverlappedInteractable->RemoveSecondaryActionObject();
-			}
-			
-
-			FString desc = OverlappedInteractable->GetData().SecondaryAction.DefaultDescription.ToString();
-			OnUIMessageUpdated.Broadcast(this, desc);
-		}
-	}*/
 }
 
 void AMainCharacter::ServerRPCInteractAction_Implementation()
@@ -244,26 +220,11 @@ void AMainCharacter::OnOverlapInteractive(class AInteractive* Interactive)
 	{
 		OverlappedInteractive = Interactive;
 
-		if (OverlappedInteractable == nullptr)
+		if (OverlappedInteractive == nullptr)
 		{
 			OnUIMessageUpdated.Broadcast(this, "");
 		}
 	}
-}
-
-
-void AMainCharacter::OnOverlapInteractable(class AInteractable* Interactable)
-{
-	if (Role == ROLE_Authority)
-	{
-		OverlappedInteractable = Interactable;		
-
-		if (OverlappedInteractable == nullptr)
-		{
-			OnUIMessageUpdated.Broadcast(this, "");
-		}
-	}
-	
 }
 
 void AMainCharacter::StartGesture(EGestureType NewGesture)
@@ -278,70 +239,10 @@ void AMainCharacter::StartGesture(EGestureType NewGesture)
 
 
 void AMainCharacter::SetGestureToDefault()
-{
-
+{	
 	CurrentGesture = EGestureType::VE_NONE;
 	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
-
-
-
-// OLD
-
-
-void AMainCharacter::Interact()
-{
-	if ((OverlappedInteractable == nullptr) || (InventoryComponent == nullptr)) return;
-	if (Role < ROLE_Authority)
-	{
-		ServerInteract();
-	}
-
-
-
-
-
-	//UWorld* World = GetWorld();
-	//if (World == nullptr) return;
-	//ARoomGameMode* GameMode = Cast<ARoomGameMode>(World->GetAuthGameMode());
-
-	//if (GameMode == nullptr) 
-	//{
-		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::Interact] GameMode Null"));
-		//return;
-	//}
-
-
-	//if ((OnOverlappedPickup == nullptr) || (InventoryComponent == nullptr)) return;
-
-	// If not server, make call ServerFunction, so it will make a request to the server, and the server will
-	// Run the function (THE CLIENT ONLY MAKES THE REQUEST)
-	//if (Role < ROLE_Authority)
-	//{
-		//ServerInteract();
-	//}	
-
-
-	// Check the overlapped pickup
-
-	// Add Object to inventory
-	//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::Interact] Trying to add.. %s"), *OnOverlappedPickup->GetObjectID().ToString());
-	//InventoryComponent->AddObject(OnOverlappedPickup->GetObjectID());
-
-	// Set animation to interaction
-	//StartGesture(EGestureType::VE_INTERACT);
-}
-
-void AMainCharacter::ServerInteract_Implementation()
-{
-	Interact();
-}
-
-bool AMainCharacter::ServerInteract_Validate()
-{
-	return true;
-}
-
 
 
 void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
@@ -350,27 +251,13 @@ void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp
 }
 
 
-void AMainCharacter::OnOverlapPickup(class APickup* Pickup, FName ObjectID)
-{
-	if (Role == ROLE_Authority)
-	{
-		OnOverlappedPickup = Pickup;
-	}
-}
-
 
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AMainCharacter, bIsCarryingObjective);
-
 	DOREPLIFETIME(AMainCharacter, CurrentGesture);
-
-	DOREPLIFETIME(AMainCharacter, OnOverlappedPickup);
-
-	DOREPLIFETIME(AMainCharacter, OverlappedInteractable);
 
 	DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
 	

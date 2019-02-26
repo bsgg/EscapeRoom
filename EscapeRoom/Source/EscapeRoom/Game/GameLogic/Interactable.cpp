@@ -114,7 +114,7 @@ void AInteractable::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 			ResetViewDescription();
 
-			CharacterOverlapping->OnOverlapInteractable(this);			
+			//CharacterOverlapping->OnOverlapInteractable(this);			
 
 			OldData.Status = EInteractionStatus::VE_UNLOCKED;
 
@@ -139,7 +139,7 @@ void AInteractable::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		// There is a character already overlapping and it's the same as the leaving character
 		if ((CharacterOverlapping != nullptr) && (CharacterOverlapping == OtherCharacter))		
 		{
-			CharacterOverlapping->OnOverlapInteractable(nullptr);
+			//CharacterOverlapping->OnOverlapInteractable(nullptr);
 
 			ResetViewDescription();
 

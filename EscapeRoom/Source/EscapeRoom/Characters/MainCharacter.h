@@ -40,8 +40,8 @@ public:
 	/** Returns Gesture **/
 	FORCEINLINE EGestureType GetCurrentGesture() const { return CurrentGesture; };
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "GamePlay")
-	bool bIsCarryingObjective = false;
+	//UPROPERTY(Replicated, BlueprintReadOnly, Category = "GamePlay")
+	//bool bIsCarryingObjective = false;
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;
@@ -74,12 +74,7 @@ protected:
 	void ServerRPCInteractAction();
 	// Interact Action
 
-
-
-	void Interact();
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerInteract();
-
+	
 	UFUNCTION()
 	void OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects);	
 
@@ -90,24 +85,14 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	void OnOverlapPickup(class APickup* Pickup, FName ObjectID);	
-
-	void OnOverlapInteractable(class AInteractable* Interactable);
 
 	void OnOverlapInteractive(class AInteractive* Interactive);
 
 protected:
 
 	UPROPERTY(Replicated)
-	class APickup* OnOverlappedPickup;
-
-	UPROPERTY(Replicated)
-	class AInteractable* OverlappedInteractable;
-
-	UPROPERTY(Replicated)
 	class AInteractive* OverlappedInteractive;
 
-	
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Gestures")
 	EGestureType CurrentGesture = EGestureType::VE_NONE;
