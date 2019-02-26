@@ -19,21 +19,31 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* PickupMesh;
 
-
+protected:
+	virtual void BeginPlay() override;
 
 public:
 	APickupInteractive();
 
 	void PickupObject();
 
+	FString GetDetailPickup() const;
+
+	FORCEINLINE bool GetIsActive() const { return IsActive;  }
+
+	FORCEINLINE FName GetObjectID() const { return ObjectID; }
+
 protected:
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
+	UPROPERTY(ReplicatedUsing = OnRep_PickupChanged, EditDefaultsOnly, Category = "Interactive Settings")
 	FName ObjectID;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Settings")
-	FName DetailPickup;
+	FString DetailPickup;
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
 	bool IsActive = true;	
+
+	UFUNCTION()
+	void OnRep_PickupChanged();
 };

@@ -8,6 +8,15 @@ APickupInteractive::APickupInteractive()
 {
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pickup Mesh"));
 	PickupMesh->SetupAttachment(RootComponent);
+
+	AInputIconMesh->SetVisibility(true);
+}
+
+void APickupInteractive::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AInputIconMesh->SetVisibility(true);
 }
 
 
@@ -15,14 +24,36 @@ void APickupInteractive::PickupObject()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[ APickupInteractive::PickupObject] Called "));
 
-	PickupMesh->SetVisibility(false);
-
 	ObjectID = "None";
 
 	IsActive = false;
+	
+	OnRep_PickupChanged();
 
-	AInputIconMesh->SetVisibility(true);
+	Definition.IsDefaultDetailInspectActive = true;
 }
+
+FString APickupInteractive::GetDetailPickup() const
+{
+	return DetailPickup;
+}
+
+void APickupInteractive::OnRep_PickupChanged()
+{
+	if (!IsActive)
+	{
+		AInputIconMesh->SetVisibility(false);
+
+		PickupMesh->SetVisibility(false);
+	}
+	else
+	{
+		AInputIconMesh->SetVisibility(true);
+
+		PickupMesh->SetVisibility(true);
+	}
+}
+
 
 
 void APickupInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
