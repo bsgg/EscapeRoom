@@ -4,6 +4,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
+#include "UObject/ConstructorHelpers.h"
+
 #include "Characters/MainCharacter.h"
 
 #include "UnrealNetwork.h"
@@ -21,17 +23,45 @@ AInteractive::AInteractive()
 	Mesh->SetupAttachment(RootComponent);
 
 	// Icons
+	ConstructorHelpers::FObjectFinder<UStaticMesh> iconAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cylinder"));
+
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> AInputIconMaterial(TEXT("/Game/Game/GameLogic/Interactives/Materials/M_AInputControl"));
+
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> XInputIconMaterial(TEXT("/Game/Game/GameLogic/Interactives/Materials/M_XInputControl"));
+	
 	AInputIconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AInputIconMesh"));
 	AInputIconMesh->SetupAttachment(RootComponent);
 
 	XInputIconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("XInputIconMesh"));
 	XInputIconMesh->SetupAttachment(RootComponent);
 
+	if (iconAsset.Succeeded())
+	{
+		AInputIconMesh->SetStaticMesh(iconAsset.Object);
+		AInputIconMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		AInputIconMesh->SetRelativeRotation(FRotator(90.0f, 90.0f, 0.0f));
+		AInputIconMesh->SetWorldScale3D(FVector(0.3f, 0.3f, 0.02f));
+
+		if (AInputIconMaterial.Succeeded())
+		{
+			AInputIconMesh->SetMaterial(0,AInputIconMaterial.Object);
+		}
+
+		XInputIconMesh->SetStaticMesh(iconAsset.Object);
+		XInputIconMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		XInputIconMesh->SetRelativeRotation(FRotator(90.0f, 90.0f, 0.0f));
+		XInputIconMesh->SetWorldScale3D(FVector(0.3f, 0.3f, 0.02f));
+
+		if (XInputIconMaterial.Succeeded())
+		{
+			XInputIconMesh->SetMaterial(0, XInputIconMaterial.Object);
+		}
+	}
+	
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	Collision->SetupAttachment(RootComponent);
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AInteractive::BeginOverlap);
 	Collision->OnComponentEndOverlap.AddDynamic(this, &AInteractive::EndOverlap);
-
 	
 	SetReplicates(true);
 }

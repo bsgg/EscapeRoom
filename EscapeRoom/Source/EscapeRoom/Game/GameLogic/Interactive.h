@@ -98,5 +98,4 @@ protected:
 	UFUNCTION()
 	void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData);
 
-
 };
