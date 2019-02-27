@@ -116,7 +116,7 @@ void AInteractable::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 			//CharacterOverlapping->OnOverlapInteractable(this);			
 
-			OldData.Status = EInteractionStatus::VE_UNLOCKED;
+			OldData.Status = EInteractionStatus::VE_UNLOCKED; 
 
 			Data.Status = EInteractionStatus::VE_LOCKED;		
 

@@ -46,4 +46,6 @@ protected:
 
 	UFUNCTION()
 	void OnRep_PickupChanged();
+
+	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
 };

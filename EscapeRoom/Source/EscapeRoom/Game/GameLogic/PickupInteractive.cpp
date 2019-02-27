@@ -8,15 +8,13 @@ APickupInteractive::APickupInteractive()
 {
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pickup Mesh"));
 	PickupMesh->SetupAttachment(RootComponent);
-
-	AInputIconMesh->SetVisibility(true);
 }
 
 void APickupInteractive::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AInputIconMesh->SetVisibility(true);
+	AInputIconMesh->SetVisibility(false);
 }
 
 
@@ -51,6 +49,31 @@ void APickupInteractive::OnRep_PickupChanged()
 		AInputIconMesh->SetVisibility(true);
 
 		PickupMesh->SetVisibility(true);
+	}
+}
+
+
+
+void APickupInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
+{
+
+	Super::OnRep_DefinitionChanged(PreviousData);
+
+	if (Definition.IsLocked)
+	{
+		if (IsActive)
+		{
+			AInputIconMesh->SetVisibility(true);
+		}
+		else
+		{
+			AInputIconMesh->SetVisibility(false);
+		}
+		
+	}
+	else
+	{
+		AInputIconMesh->SetVisibility(false);
 	}
 }
 

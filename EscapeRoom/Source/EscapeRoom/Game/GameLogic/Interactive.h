@@ -76,7 +76,6 @@ public:
 
 	virtual void ResetInspectDetail();
 
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -96,6 +95,6 @@ protected:
 	class AMainCharacter* CharacterOverlapping;
 
 	UFUNCTION()
-	void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData);
+	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData);
 
 };
