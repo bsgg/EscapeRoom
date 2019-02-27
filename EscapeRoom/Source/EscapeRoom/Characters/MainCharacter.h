@@ -85,13 +85,12 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-
-	void OnOverlapInteractive(class AInteractive* Interactive);
+	void OnOverlapInteractive(class AInteractiveBase* Interactive);
 
 protected:
 
 	UPROPERTY(Replicated)
-	class AInteractive* OverlappedInteractive;
+	class AInteractiveBase* OverlappedInteractive;
 
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Gestures")

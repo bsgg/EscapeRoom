@@ -3,98 +3,39 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Game/GameLogic/InteractiveBase.h"
 #include "Interactive.generated.h"
-
-USTRUCT(BlueprintType)
-struct FInteractiveDefinition
-{
-	GENERATED_BODY()
-
-public:
-
-	FInteractiveDefinition()
-	{	
-		IsActive = true;
-		IsDefaultDetailInspectActive = false;
-		ID = "Interactive_";
-		
-	}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName ID;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsActive;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsLocked;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FName> DetailInspect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int IndexDetailInspect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName DefaultDetailInspect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsDefaultDetailInspectActive;	
-
-};
 
 
 UCLASS()
-class ESCAPEROOM_API AInteractive : public AActor
+class ESCAPEROOM_API AInteractive : public AInteractiveBase
 {
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class USceneComponent* RootScene;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* AInputIconMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* XInputIconMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* Collision;
-
 	
 public:	
 	AInteractive();
 
-	virtual FString GetInspectDetail() const;
+	FORCEINLINE bool GetIsActive() const { return IsActive; }
 
-	virtual void ForwardInspectDetail();
-
-	virtual void ResetInspectDetail();
+	FORCEINLINE FName GetObjectID() const { return ObjectID; }
 
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
+
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
+	bool IsActive = true;
+
+	UPROPERTY(ReplicatedUsing = OnRep_ObjectChanged, EditDefaultsOnly, Category = "Interactive Settings")
+	FName ObjectID;
 
 	UFUNCTION()
-	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UPROPERTY(Replicated)
-	FInteractiveDefinition OldDefinition;
-
-	UPROPERTY(ReplicatedUsing = OnRep_DefinitionChanged, EditAnywhere, BlueprintReadWrite, Category = "Interactable Data")
-	FInteractiveDefinition Definition;
-
-	UPROPERTY(Replicated)
-	class AMainCharacter* CharacterOverlapping;
-
-	UFUNCTION()
-	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData);
+	virtual void OnRep_ObjectChanged();
 
 };

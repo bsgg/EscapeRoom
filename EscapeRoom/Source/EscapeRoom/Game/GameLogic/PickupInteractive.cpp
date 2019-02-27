@@ -14,7 +14,7 @@ void APickupInteractive::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AInputIconMesh->SetVisibility(false);
+	
 }
 
 
@@ -26,7 +26,7 @@ void APickupInteractive::PickupObject()
 
 	IsActive = false;
 	
-	OnRep_PickupChanged();
+	OnRep_ObjectChanged();
 
 	Definition.IsDefaultDetailInspectActive = true;
 }
@@ -36,7 +36,7 @@ FString APickupInteractive::GetDetailPickup() const
 	return DetailPickup;
 }
 
-void APickupInteractive::OnRep_PickupChanged()
+void APickupInteractive::OnRep_ObjectChanged()
 {
 	if (!IsActive)
 	{
@@ -54,36 +54,11 @@ void APickupInteractive::OnRep_PickupChanged()
 
 
 
-void APickupInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
-{
-
-	Super::OnRep_DefinitionChanged(PreviousData);
-
-	if (Definition.IsLocked)
-	{
-		if (IsActive)
-		{
-			AInputIconMesh->SetVisibility(true);
-		}
-		else
-		{
-			AInputIconMesh->SetVisibility(false);
-		}
-		
-	}
-	else
-	{
-		AInputIconMesh->SetVisibility(false);
-	}
-}
-
-
-
-void APickupInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+/*void APickupInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(APickupInteractive, ObjectID);
 
-	DOREPLIFETIME(APickupInteractive, IsActive);
-}
+	
+}*/

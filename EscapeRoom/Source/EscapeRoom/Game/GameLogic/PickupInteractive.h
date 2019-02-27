@@ -29,23 +29,16 @@ public:
 
 	FString GetDetailPickup() const;
 
-	FORCEINLINE bool GetIsActive() const { return IsActive;  }
-
-	FORCEINLINE FName GetObjectID() const { return ObjectID; }
+	
 
 protected:
 
-	UPROPERTY(ReplicatedUsing = OnRep_PickupChanged, EditDefaultsOnly, Category = "Interactive Settings")
-	FName ObjectID;
+	//UPROPERTY(ReplicatedUsing = OnRep_PickupChanged, EditDefaultsOnly, Category = "Interactive Settings")
+	//FName ObjectID;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Settings")
-	FString DetailPickup;
+	FString DetailPickup;	
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
-	bool IsActive = true;	
-
-	UFUNCTION()
-	void OnRep_PickupChanged();
-
-	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
+	virtual void OnRep_ObjectChanged() override;
+	
 };

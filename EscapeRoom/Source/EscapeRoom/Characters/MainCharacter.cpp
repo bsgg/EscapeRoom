@@ -10,7 +10,7 @@
 
 #include "Game/Components/InventoryComponent.h"
 
-#include "Game/GameLogic/Interactive.h"
+#include "Game/GameLogic/InteractiveBase.h"
 #include "Game/GameLogic/PickupInteractive.h"
 
 //#include "Game/Pickup.h"
@@ -214,7 +214,7 @@ bool AMainCharacter::ServerRPCInteractAction_Validate()
 // ENDREGION INTERACT ACTION
 
 
-void AMainCharacter::OnOverlapInteractive(class AInteractive* Interactive)
+void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
 {
 	if (Role == ROLE_Authority)
 	{
