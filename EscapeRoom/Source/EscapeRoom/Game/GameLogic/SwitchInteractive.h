@@ -13,5 +13,14 @@ UCLASS()
 class ESCAPEROOM_API ASwitchInteractive : public AInteractive
 {
 	GENERATED_BODY()
+
+protected:
+
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
+	FName ConnectedInteractiveID;
+
+public:
+
+	void Toggle();
 	
 };
