@@ -12,6 +12,7 @@
 
 #include "Game/GameLogic/InteractiveBase.h"
 #include "Game/GameLogic/PickupInteractive.h"
+#include "Game/GameLogic/SwitchInteractive.h"
 
 //#include "Game/Pickup.h"
 #include "Game/RoomGameMode.h"
@@ -200,6 +201,20 @@ void AMainCharacter::DoInteractAction()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Not an interactive pickup "));
 	}
+
+	ASwitchInteractive* Switch = Cast<ASwitchInteractive>(OverlappedInteractive);
+
+	if (Switch != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  Switch %s"), *Switch->GetName());
+
+		if (Switch->GetIsActive())
+		{
+			Switch->Toggle();
+
+			StartGesture(EGestureType::VE_INTERACT);
+		}
+	}
 }
 
 void AMainCharacter::ServerRPCInteractAction_Implementation()
@@ -260,7 +275,6 @@ void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	DOREPLIFETIME(AMainCharacter, CurrentGesture);
 
 	DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
-	
 }
 
 

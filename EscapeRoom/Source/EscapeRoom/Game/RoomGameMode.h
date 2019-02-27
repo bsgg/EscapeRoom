@@ -30,12 +30,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "GamePlay Mode", meta = (DisplayName = "Room Completed"))
 	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
 
-
 	FObjectInteraction* GetObjectByID(FName ID) const;
 
-	FInteractionData* GetInteractableByID(FName ID) const;
+	bool FindInteractiveById(FName ID) const;
 
-	FActionData GetInteractableSecondaryAction(FName ID) const;
+
+	//FInteractionData* GetInteractableByID(FName ID) const;
+
+	//FActionData GetInteractableSecondaryAction(FName ID) const;
 	
 
 protected:
@@ -49,7 +51,9 @@ private:
 
 	void GetRespawnPoints();
 
-	void GetInteractablesInRoom();
+	void GetInteractivesInRoom();
+
+
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Characters")
@@ -62,7 +66,7 @@ private:
 	UPROPERTY(Replicated)
 	TArray<class ARoomPlayerStart*> SpawnPoints;
 
-	TArray<class AInteractable*> InteractableList;
+	TArray<class AInteractiveBase*> InteractiveList;
 
 
 	UPROPERTY(EditDefaultsOnly)

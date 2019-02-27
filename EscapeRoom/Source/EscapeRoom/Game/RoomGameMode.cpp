@@ -6,7 +6,7 @@
 #include "Utils/Definitions.h"
 #include "Game/GameLogic/RoomPlayerStart.h"
 #include "Game/EscapeRoomGameState.h"
-#include "Game/GameLogic/Interactable.h"
+#include "Game/GameLogic/InteractiveBase.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
@@ -19,7 +19,7 @@ void ARoomGameMode::BeginPlay()
 
 	GetRespawnPoints();
 
-	GetInteractablesInRoom();
+	GetInteractivesInRoom();
 }
 
 
@@ -140,23 +140,36 @@ void ARoomGameMode::GetRespawnPoints()
 }
 
 
-void ARoomGameMode::GetInteractablesInRoom()
+void ARoomGameMode::GetInteractivesInRoom()
 {
 	TArray<AActor*> Objects;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AInteractable::StaticClass(), Objects);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AInteractiveBase::StaticClass(), Objects);
 	for (int32 i = 0; i < Objects.Num(); i++)
 	{
-		AInteractable* Interactable = Cast<AInteractable>(Objects[i]);
-		if (Interactable != nullptr)
+		AInteractiveBase* Interactive = Cast<AInteractiveBase>(Objects[i]);
+		if (Interactive != nullptr)
 		{ 
 
-			UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractablesInRoom] Interactable: %s "), *Interactable->GetName());
+			UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractivesInRoom] Interactive: %s "), *Interactive->GetName());
 
-			InteractableList.Add(Interactable);
+			InteractiveList.Add(Interactive);
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractablesInRoom] InteractableList Num: %i "), InteractableList.Num());
+	UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractablesInRoom] InteractableList Num: %i "), InteractiveList.Num());
+}
+
+bool ARoomGameMode::FindInteractiveById(FName ID) const
+{
+	for (int32 i = 0; i < InteractiveList.Num(); i++)
+	{
+		if (InteractiveList[i]->GetInteractiveID() == ID)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
@@ -167,7 +180,7 @@ FObjectInteraction* ARoomGameMode::GetObjectByID(FName ID) const
 	return (ObjectDB->FindRow<FObjectInteraction>(ID, TEXT("Object"), true));
 }
 
-FInteractionData* ARoomGameMode::GetInteractableByID(FName ID) const
+/*FInteractionData* ARoomGameMode::GetInteractableByID(FName ID) const
 {
 	if (InteractableDB == nullptr) return nullptr;
 
@@ -191,7 +204,7 @@ FActionData ARoomGameMode::GetInteractableSecondaryAction(FName ID) const
 	}
 
 	return Data;
-}
+}*/
 
 
 void ARoomGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess)
