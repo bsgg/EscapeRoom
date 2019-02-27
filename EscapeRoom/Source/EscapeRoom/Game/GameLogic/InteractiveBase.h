@@ -53,6 +53,8 @@ public:
 	// Sets default values for this actor's properties
 	AInteractiveBase();
 
+	FORCEINLINE FName GetInteractiveID() const { return Definition.ID; } 
+
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
