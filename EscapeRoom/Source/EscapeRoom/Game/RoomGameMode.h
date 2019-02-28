@@ -32,13 +32,9 @@ public:
 
 	FObjectInteraction* GetObjectByID(FName ID) const;
 
-	bool FindInteractiveById(FName ID) const;
+	class AInteractiveBase* FindInteractiveById(FName ID) const;
 
 
-	//FInteractionData* GetInteractableByID(FName ID) const;
-
-	//FActionData GetInteractableSecondaryAction(FName ID) const;
-	
 
 protected:
 

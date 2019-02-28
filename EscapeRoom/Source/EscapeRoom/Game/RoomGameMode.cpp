@@ -159,17 +159,17 @@ void ARoomGameMode::GetInteractivesInRoom()
 	UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractablesInRoom] InteractableList Num: %i "), InteractiveList.Num());
 }
 
-bool ARoomGameMode::FindInteractiveById(FName ID) const
+AInteractiveBase* ARoomGameMode::FindInteractiveById(FName ID) const
 {
 	for (int32 i = 0; i < InteractiveList.Num(); i++)
 	{
 		if (InteractiveList[i]->GetInteractiveID() == ID)
 		{
-			return true;
+			return InteractiveList[i];
 		}
 	}
 
-	return false;
+	return nullptr;
 }
 
 
