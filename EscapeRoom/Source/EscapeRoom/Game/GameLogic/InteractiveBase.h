@@ -55,6 +55,7 @@ public:
 
 	FORCEINLINE FName GetInteractiveID() const { return Definition.ID; } 
 
+	FORCEINLINE FInteractiveDefinition GetData() const { return Definition; }
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))

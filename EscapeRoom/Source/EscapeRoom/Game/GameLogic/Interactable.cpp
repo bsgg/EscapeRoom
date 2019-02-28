@@ -44,7 +44,6 @@ AInteractable::AInteractable()
 
 }
 
-// Called when the game starts or when spawned
 void AInteractable::BeginPlay()
 {
 	Super::BeginPlay();
