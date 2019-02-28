@@ -40,9 +40,6 @@ public:
 	/** Returns Gesture **/
 	FORCEINLINE EGestureType GetCurrentGesture() const { return CurrentGesture; };
 
-	//UPROPERTY(Replicated, BlueprintReadOnly, Category = "GamePlay")
-	//bool bIsCarryingObjective = false;
-
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;
 
