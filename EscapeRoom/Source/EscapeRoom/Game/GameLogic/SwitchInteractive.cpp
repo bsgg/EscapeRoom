@@ -2,6 +2,7 @@
 
 #include "SwitchInteractive.h"
 #include "Game/RoomGameMode.h"
+#include "Game/GameLogic/ToggleInteractive.h"
 #include "UnrealNetwork.h"
 
 
@@ -12,9 +13,18 @@ void ASwitchInteractive::Toggle()
 	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 	if (GM == nullptr) return;
 
-	if (GM->FindInteractiveById(ConnectedInteractiveID))
+	AInteractiveBase* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
+
+	if (interactive != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ASwitchInteractive::Toggle] Connected Interactive found "));
+		AToggleInteractive* ToggleInteractive = Cast<AToggleInteractive>(interactive);
+
+		if (ToggleInteractive)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[ASwitchInteractive::Toggle] Connected Interactive found %s "), *ToggleInteractive->GetData().ID.ToString());
+
+			ToggleInteractive->Toggle();
+		}
 	}
 	else
 	{
