@@ -12,9 +12,7 @@ APickupInteractive::APickupInteractive()
 
 void APickupInteractive::BeginPlay()
 {
-	Super::BeginPlay();
-
-	
+	Super::BeginPlay();	
 }
 
 

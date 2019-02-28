@@ -27,14 +27,10 @@ public:
 
 	void PickupObject();
 
-	FString GetDetailPickup() const;
-
-	
+	FString GetDetailPickup() const;	
 
 protected:
 
-	//UPROPERTY(ReplicatedUsing = OnRep_PickupChanged, EditDefaultsOnly, Category = "Interactive Settings")
-	//FName ObjectID;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Settings")
 	FString DetailPickup;	
