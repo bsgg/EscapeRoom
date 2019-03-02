@@ -28,11 +28,32 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* InGameMessages;
 
+
+	// Inventory Slot
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot0;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot1;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot2;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot3;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot4;
+
+	TArray<UInventorySlot*> InventorySlots;
+
 	class ALobbyPlayerController* PlayerController;
 
 public:
 	void SetPortrait(ECharacterType Character);
 
 	void SetInGameMessage(FText Message);
+
+	void AddObjectToInventory(const FObjectInteraction& Object);
 
 };

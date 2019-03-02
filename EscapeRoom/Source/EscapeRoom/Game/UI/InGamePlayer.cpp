@@ -4,6 +4,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ScaleBox.h"
 #include "Lobby/LobbyPlayerController.h"
+#include "InventorySlot.h"
 
 
 bool UInGamePlayer::Initialize()
@@ -29,8 +30,14 @@ bool UInGamePlayer::Initialize()
 		SetInGameMessage(FText::FromString("Client"));
 	}
 
-	return true;
 
+	InventorySlots.Add(Slot0);
+	InventorySlots.Add(Slot1);
+	InventorySlots.Add(Slot2);
+	InventorySlots.Add(Slot3);
+	InventorySlots.Add(Slot4);
+
+	return true;
 }
 
 void UInGamePlayer::SetPortrait(ECharacterType Character)
@@ -57,4 +64,22 @@ void UInGamePlayer::SetInGameMessage(FText Message)
 {
 	if (InGameMessages == nullptr) return;
 	InGameMessages->SetText(Message);
+}
+
+
+void UInGamePlayer::AddObjectToInventory(const FObjectInteraction& Object)
+{
+	// Look for an inactive slot
+	for (int i = 0; i < InventorySlots.Num(); i++)
+	{
+		if (InventorySlots[i]->IsEmpty())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::AddObjectToInventory] Free Slot at: %i"), i);
+
+			InventorySlots[i]->SetImageSlot(Object.Thumbnail);
+			return;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::AddObjectToInventory] Not free slot found"));
 }
