@@ -184,6 +184,27 @@ void AMainCharacter::DoInteractAction()
 			FName ObjectID = Pickup->GetObjectID();
 			Pickup->PickupObject();
 
+			// Find object in BD
+			ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+			if (GM != nullptr)
+			{
+				FObjectInteraction* Obj = GM->GetObjectByID(ObjectID);
+				if (Obj != nullptr)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] FObjectInteraction found %s"), *Obj->Name.ToString());
+
+					OnInventoryUpdated.Broadcast(this, *Obj);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] FObjectInteraction not found"));
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] GM null"));
+			}			
+
 			InventoryComponent->AddObject(ObjectID);
 
 			StartGesture(EGestureType::VE_INTERACT);

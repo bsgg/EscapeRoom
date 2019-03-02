@@ -10,6 +10,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInventoryUpdated, AMainCharacter*, Char, FObjectInteraction, Object);
 
 UCLASS()
 class ESCAPEROOM_API AMainCharacter : public ACharacter
@@ -42,6 +43,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnInventoryUpdated OnInventoryUpdated;
 
 protected:
 	virtual void BeginPlay() override;
