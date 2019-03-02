@@ -34,8 +34,6 @@ public:
 
 	class AInteractiveBase* FindInteractiveById(FName ID) const;
 
-
-
 protected:
 
 	// NOT SEAMLESS TRAVEL: Should only be called if played from the editor
@@ -50,7 +48,6 @@ private:
 	void GetInteractivesInRoom();
 
 
-
 private:
 	UPROPERTY(EditAnywhere, Category = "Characters")
 	TArray<FCharacterType> AvalaibleCharacters;
@@ -63,10 +60,6 @@ private:
 	TArray<class ARoomPlayerStart*> SpawnPoints;
 
 	TArray<class AInteractiveBase*> InteractiveList;
-
-
-	UPROPERTY(EditDefaultsOnly)
-	class UDataTable* InteractableDB; // Interactables database database
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ObjectDB; // Objects database database

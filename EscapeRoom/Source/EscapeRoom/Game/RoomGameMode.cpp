@@ -180,31 +180,6 @@ FObjectInteraction* ARoomGameMode::GetObjectByID(FName ID) const
 	return (ObjectDB->FindRow<FObjectInteraction>(ID, TEXT("Object"), true));
 }
 
-/*FInteractionData* ARoomGameMode::GetInteractableByID(FName ID) const
-{
-	if (InteractableDB == nullptr) return nullptr;
-
-	return (InteractableDB->FindRow<FInteractionData>(ID, TEXT("Interactable"), true));	
-}
-
-FActionData ARoomGameMode::GetInteractableSecondaryAction(FName ID) const
-{
-	FActionData Data;
-	Data.InteractionType = EInteractionType::VE_NONE;
-
-	if (InteractableDB == nullptr) return Data;
-
-	FInteractionData* Interaction = GetInteractableByID(ID);
-
-	if (Interaction == nullptr) return Data;
-
-	if (Interaction->SecondaryAction.InteractionType != EInteractionType::VE_NONE)
-	{
-		return Interaction->SecondaryAction;
-	}
-
-	return Data;
-}*/
 
 
 void ARoomGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess)
