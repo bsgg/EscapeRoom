@@ -52,6 +52,10 @@ public:
 	UFUNCTION(BLueprintCallable, Category = "UI")
 	void UpdateInGameUI(const FString& Text);
 
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_UpdateInGameSlotUI(const FObjectInteraction& Object);
+
 	// GAMEPLAY ROOM IMPLEMENTATION
 
 	FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }

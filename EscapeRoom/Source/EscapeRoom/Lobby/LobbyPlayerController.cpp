@@ -209,6 +209,16 @@ void ALobbyPlayerController::UpdateInGameUI(const FString& Text)
 }
 
 
+void ALobbyPlayerController::Client_UpdateInGameSlotUI_Implementation(const FObjectInteraction& Object)
+{
+	// Create UI
+	if (InGameUI == nullptr) return;
+
+	InGameUI->AddObjectToInventory(Object);
+}
+
+
+
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
