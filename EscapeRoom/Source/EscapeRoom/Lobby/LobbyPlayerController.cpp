@@ -189,23 +189,20 @@ void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 	InGameUI->AddToViewport();
 }
 
-void ALobbyPlayerController::Client_UpdateInGameUI_Implementation(const FString& Text)
+void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const FString& Text, bool hideMessages)
 {
 	// Create UI
 	if (InGameUI == nullptr) return;	
-	InGameUI->SetInGameMessage(FText::FromString(Text));
-}
 
-
-void ALobbyPlayerController::UpdateInGameUI(const FString& Text)
-{
-	if (InGameUI == nullptr) 
+	if (hideMessages)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::UpdateInGameUI] InGameUI nullptr"));
-		return;
+		InGameUI->HideMessages();
 	}
-
-	InGameUI->SetInGameMessage(FText::FromString(Text));
+	else
+	{
+		InGameUI->ShowMessages();
+		InGameUI->SetInGameMessage(FText::FromString(Text));
+	}
 }
 
 

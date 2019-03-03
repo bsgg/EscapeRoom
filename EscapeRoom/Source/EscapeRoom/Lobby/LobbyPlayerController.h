@@ -47,10 +47,7 @@ public:
 	void Client_CreateInGameUI();
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_UpdateInGameUI(const FString& Text);
-
-	UFUNCTION(BLueprintCallable, Category = "UI")
-	void UpdateInGameUI(const FString& Text);
+	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
 
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
