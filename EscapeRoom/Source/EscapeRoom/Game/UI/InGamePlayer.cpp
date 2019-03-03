@@ -30,7 +30,7 @@ bool UInGamePlayer::Initialize()
 		SetInGameMessage(FText::FromString("Client"));
 	}
 
-
+	MessagesBox->SetVisibility(ESlateVisibility::Hidden);
 	InventorySlots.Add(Slot0);
 	InventorySlots.Add(Slot1);
 	InventorySlots.Add(Slot2);
@@ -63,7 +63,23 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 void UInGamePlayer::SetInGameMessage(FText Message)
 {
 	if (InGameMessages == nullptr) return;
+	
 	InGameMessages->SetText(Message);
+	
+}
+
+void UInGamePlayer::HideMessages()
+{
+	if (MessagesBox == nullptr) return;
+
+	MessagesBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInGamePlayer::ShowMessages()
+{
+	if (MessagesBox == nullptr) return;
+
+	MessagesBox->SetVisibility(ESlateVisibility::Visible);
 }
 
 

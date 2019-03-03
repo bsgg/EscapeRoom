@@ -26,6 +26,9 @@ protected:
 	class UScaleBox* CatPortrait;
 
 	UPROPERTY(meta = (BindWidget))
+	UWidget* MessagesBox;
+
+	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* InGameMessages;
 
 
@@ -53,6 +56,10 @@ public:
 	void SetPortrait(ECharacterType Character);
 
 	void SetInGameMessage(FText Message);
+
+	void ShowMessages();
+
+	void HideMessages();
 
 	void AddObjectToInventory(const FObjectInteraction& Object);
 

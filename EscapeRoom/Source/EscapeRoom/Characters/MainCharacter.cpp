@@ -150,7 +150,7 @@ void AMainCharacter::DoInspectAction()
 
 	OverlappedInteractive->ForwardInspectDetail();
 
-	OnUIMessageUpdated.Broadcast(this, desc);
+	OnUIMessageUpdated.Broadcast(this, desc, false);
 }
 // ENDREGION INSPECT ACTION
 
@@ -211,7 +211,7 @@ void AMainCharacter::DoInteractAction()
 
 			FString desc = Pickup->GetDetailPickup();
 
-			OnUIMessageUpdated.Broadcast(this, desc);
+			OnUIMessageUpdated.Broadcast(this, desc, false);
 		}
 		else
 		{
@@ -258,7 +258,7 @@ void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
 
 		if (OverlappedInteractive == nullptr)
 		{
-			OnUIMessageUpdated.Broadcast(this, "");
+			OnUIMessageUpdated.Broadcast(this, "", true);
 		}
 	}
 }

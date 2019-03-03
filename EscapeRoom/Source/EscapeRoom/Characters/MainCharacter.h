@@ -8,7 +8,7 @@
 #include "MainCharacter.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text, bool, HideMessages);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInventoryUpdated, AMainCharacter*, Char, FObjectInteraction, Object);
 
