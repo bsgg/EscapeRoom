@@ -16,7 +16,7 @@ class ESCAPEROOM_API APickupInteractive : public AInteractive
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup Interactive Settings", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* PickupMesh;
 
 protected:
@@ -25,14 +25,18 @@ protected:
 public:
 	APickupInteractive();
 
+	FORCEINLINE bool HasObjectToPickup() const { return bHasObjectToPickup; }
+
 	void PickupObject();
 
 	FString GetDetailPickup() const;	
 
 protected:
 
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Pickup Interactive Settings")
+	bool bHasObjectToPickup;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Interactive Settings")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup Interactive Settings")
 	FString DetailPickup;	
 
 	virtual void OnRep_ObjectChanged() override;

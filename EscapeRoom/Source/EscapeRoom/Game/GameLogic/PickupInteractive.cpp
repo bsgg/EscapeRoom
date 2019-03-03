@@ -13,16 +13,23 @@ APickupInteractive::APickupInteractive()
 void APickupInteractive::BeginPlay()
 {
 	Super::BeginPlay();	
+
+	if (bHasObjectToPickup)
+	{
+		AInputIconMesh->SetVisibility(true);
+
+		PickupMesh->SetVisibility(true);
+	}
 }
 
 
 void APickupInteractive::PickupObject()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[ APickupInteractive::PickupObject] Called "));
-
 	ObjectID = "None";
 
 	IsActive = false;
+
+	bHasObjectToPickup = false;
 	
 	OnRep_ObjectChanged();
 
@@ -36,7 +43,7 @@ FString APickupInteractive::GetDetailPickup() const
 
 void APickupInteractive::OnRep_ObjectChanged()
 {
-	if (!IsActive)
+	if (!bHasObjectToPickup)
 	{
 		AInputIconMesh->SetVisibility(false);
 
@@ -50,13 +57,9 @@ void APickupInteractive::OnRep_ObjectChanged()
 	}
 }
 
-
-
-/*void APickupInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+void APickupInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(APickupInteractive, ObjectID);
-
-	
-}*/
+	DOREPLIFETIME(APickupInteractive, bHasObjectToPickup);
+}

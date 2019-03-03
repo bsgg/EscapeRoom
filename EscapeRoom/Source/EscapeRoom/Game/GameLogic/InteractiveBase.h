@@ -73,7 +73,7 @@ protected:
 	UPROPERTY(Replicated)
 	FInteractiveDefinition OldDefinition;
 
-	UPROPERTY(ReplicatedUsing = OnRep_DefinitionChanged, EditAnywhere, BlueprintReadWrite, Category = "Interactive Settings")
+	UPROPERTY(ReplicatedUsing = OnRep_DefinitionChanged, EditAnywhere, BlueprintReadWrite, Category = "Interactive Basic")
 	FInteractiveDefinition Definition;
 
 	UPROPERTY(Replicated)
