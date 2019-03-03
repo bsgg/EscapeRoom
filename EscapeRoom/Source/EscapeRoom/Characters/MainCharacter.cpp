@@ -188,30 +188,37 @@ void AMainCharacter::DoInteractAction()
 			ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 			if (GM != nullptr)
 			{
+				FString desc = "";
+
 				FObjectInteraction* Obj = GM->GetObjectByID(ObjectID);
 				if (Obj != nullptr)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] FObjectInteraction found %s"), *Obj->Name.ToString());
 
-					OnInventoryUpdated.Broadcast(this, *Obj);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] FObjectInteraction not found"));
-				}
+					// Check object type
+					switch (Obj->ObjectType)
+					{
+						case EObjectType::VE_COMPLETE:
+							UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s:  completed object"), *Obj->Name.ToString());
+
+							// Pickup Object
+							InventoryComponent->AddObject(ObjectID);
+							OnInventoryUpdated.Broadcast(this, *Obj);
+
+							desc = Pickup->GetDetailPickup();
+							OnUIMessageUpdated.Broadcast(this, desc, false);
+
+							StartGesture(EGestureType::VE_INTERACT);
+
+						break;
+
+						case EObjectType::VE_PART:
+							UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s:  Part Object"), *Obj->Name.ToString());
+
+						break;
+					}	
+				}				
 			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] GM null"));
-			}			
-
-			InventoryComponent->AddObject(ObjectID);
-
-			StartGesture(EGestureType::VE_INTERACT);
-
-			FString desc = Pickup->GetDetailPickup();
-
-			OnUIMessageUpdated.Broadcast(this, desc, false);
+			
 		}
 		else
 		{

@@ -90,12 +90,8 @@ void UInGamePlayer::AddObjectToInventory(const FObjectInteraction& Object)
 	{
 		if (InventorySlots[i]->IsEmpty())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::AddObjectToInventory] Free Slot at: %i"), i);
-
 			InventorySlots[i]->SetImageSlot(Object.Thumbnail);
 			return;
 		}
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::AddObjectToInventory] Not free slot found"));
 }

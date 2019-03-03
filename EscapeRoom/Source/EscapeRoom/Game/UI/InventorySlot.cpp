@@ -19,19 +19,13 @@ void UInventorySlot::SetImageSlot(UTexture2D* Image)
 {
 	if (Thumbnail == nullptr) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("[InventorySlot::SetImageSlot] Thumbnail not null "));
-
 	if (Image == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[InventorySlot::SetImageSlot] Empty slot "));
-
 		bIsEmpty = true;
 		Thumbnail->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[InventorySlot::SetImageSlot] Set image "));
-
 		bIsEmpty = false;
 
 		Thumbnail->SetVisibility(ESlateVisibility::Visible);
