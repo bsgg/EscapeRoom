@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Game/GameLogic/PickupInteractive.h"
+#include "Game/GameLogic/Interactive.h"
 #include "UseInteractive.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ESCAPEROOM_API AUseInteractive : public APickupInteractive
+class ESCAPEROOM_API AUseInteractive : public AInteractive
 {
 	GENERATED_BODY()
 
