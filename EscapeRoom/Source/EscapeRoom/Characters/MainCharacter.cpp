@@ -178,11 +178,11 @@ void AMainCharacter::DoInteractAction()
 
 	if (Pickup != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  pickup %s"), *Pickup->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  pickup %s"), *Pickup->GetName());
 
 		if (Pickup->GetIsActive())
 		{
-			FName ObjectID = Pickup->GetObjectID();
+			FName ObjectID = Pickup->GetPickupObjectID();
 			Pickup->PickupObject();
 
 			// Find object in BD
@@ -221,15 +221,9 @@ void AMainCharacter::DoInteractAction()
 			}
 			
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Pickup is inactive "));
-		}
+		
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] Not an interactive pickup "));
-	}
+	
 
 	ASwitchInteractive* Switch = Cast<ASwitchInteractive>(OverlappedInteractive);
 
