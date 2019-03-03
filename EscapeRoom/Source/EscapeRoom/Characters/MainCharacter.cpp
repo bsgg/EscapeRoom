@@ -13,6 +13,7 @@
 #include "Game/GameLogic/InteractiveBase.h"
 #include "Game/GameLogic/PickupInteractive.h"
 #include "Game/GameLogic/SwitchInteractive.h"
+#include "Game/GameLogic/UseInteractive.h"
 
 //#include "Game/Pickup.h"
 #include "Game/RoomGameMode.h"
@@ -242,6 +243,19 @@ void AMainCharacter::DoInteractAction()
 
 			StartGesture(EGestureType::VE_INTERACT);
 		}
+	}
+
+
+	AUseInteractive* UseInteractive = Cast<AUseInteractive>(OverlappedInteractive);
+	if (UseInteractive != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an AUseInteractive %s"), *UseInteractive->GetName());
+
+		UseInteractive->Use();
+
+		StartGesture(EGestureType::VE_INTERACT);
+
+		OnUIMessageUpdated.Broadcast(this, "Testing use", false);
 	}
 }
 
