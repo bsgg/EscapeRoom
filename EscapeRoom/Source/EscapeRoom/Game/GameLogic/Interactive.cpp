@@ -18,7 +18,7 @@ AInteractive::AInteractive()
 	ConstructorHelpers::FObjectFinder<UStaticMesh> iconAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cylinder"));
 
 	ConstructorHelpers::FObjectFinder<UMaterialInterface> AInputIconMaterial(TEXT("/Game/Game/GameLogic/Interactives/Materials/M_AInputControl"));
-	
+
 	AInputIconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AInputIconMesh"));
 	AInputIconMesh->SetupAttachment(RootComponent);
 
@@ -31,11 +31,11 @@ AInteractive::AInteractive()
 
 		if (AInputIconMaterial.Succeeded())
 		{
-			AInputIconMesh->SetMaterial(0,AInputIconMaterial.Object);
+			AInputIconMesh->SetMaterial(0, AInputIconMaterial.Object);
 		}
 
 	}
-	
+
 	SetReplicates(true);
 }
 
@@ -43,14 +43,14 @@ AInteractive::AInteractive()
 void AInteractive::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	AInputIconMesh->SetVisibility(false);
 
 }
 void AInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
 {
 	Super::OnRep_DefinitionChanged(PreviousData);
-	
+
 	if (Definition.IsLocked)
 	{
 		if (IsActive)
@@ -61,6 +61,7 @@ void AInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
 		{
 			AInputIconMesh->SetVisibility(false);
 		}
+		
 	}
 	else
 	{
@@ -70,13 +71,10 @@ void AInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
 
 void AInteractive::OnRep_ObjectChanged(){}
 
-
 void AInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AInteractive, IsActive);
-
-	DOREPLIFETIME(AInteractive, ObjectID);
 
 }

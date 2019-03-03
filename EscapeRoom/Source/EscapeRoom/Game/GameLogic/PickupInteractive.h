@@ -25,7 +25,7 @@ protected:
 public:
 	APickupInteractive();
 
-	FORCEINLINE bool HasObjectToPickup() const { return bHasObjectToPickup; }
+	FORCEINLINE FName GetPickupObjectID() const { return PickupObjectID; }
 
 	void PickupObject();
 
@@ -34,7 +34,7 @@ public:
 protected:
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Pickup Interactive Settings")
-	bool bHasObjectToPickup;
+	FName PickupObjectID;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup Interactive Settings")
 	FString DetailPickup;	

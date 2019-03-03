@@ -20,20 +20,15 @@ protected:
 public:	
 	AInteractive();
 
-	FORCEINLINE bool GetIsActive() const { return IsActive; }
-
-	FORCEINLINE FName GetObjectID() const { return ObjectID; }
+	FORCEINLINE bool GetIsActive() const { return IsActive; }	
 
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Basic Settings")
 	bool IsActive = true;
-
-	UPROPERTY(ReplicatedUsing = OnRep_ObjectChanged, EditDefaultsOnly, Category = "Interactive Settings")
-	FName ObjectID;
 
 	UFUNCTION()
 	virtual void OnRep_ObjectChanged();

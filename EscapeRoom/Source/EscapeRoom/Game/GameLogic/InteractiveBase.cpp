@@ -70,6 +70,7 @@ void AInteractiveBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			CharacterOverlapping = Cast<AMainCharacter>(OtherActor);
 			if (CharacterOverlapping == nullptr) return;
+
 			CharacterOverlapping->OnOverlapInteractive(this);
 
 			OldDefinition.IsLocked = false;
@@ -137,12 +138,15 @@ FString AInteractiveBase::GetInspectDetail() const
 
 void AInteractiveBase::ForwardInspectDetail()
 {
-	Definition.IndexDetailInspect += 1;
+	Definition.IndexDetailInspect += 1;	
+
 	if (Definition.IndexDetailInspect >= Definition.DetailInspect.Num())
 	{
+		
 		Definition.IndexDetailInspect = Definition.DetailInspect.Num() - 1;
 	}
 }
+
 
 void AInteractiveBase::ResetInspectDetail()
 {

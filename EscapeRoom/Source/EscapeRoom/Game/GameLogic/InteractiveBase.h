@@ -73,7 +73,7 @@ protected:
 	UPROPERTY(Replicated)
 	FInteractiveDefinition OldDefinition;
 
-	UPROPERTY(ReplicatedUsing = OnRep_DefinitionChanged, EditAnywhere, BlueprintReadWrite, Category = "Interactive Basic")
+	UPROPERTY(ReplicatedUsing = OnRep_DefinitionChanged, EditAnywhere, BlueprintReadWrite, Category = "Interactive Basic Settings")
 	FInteractiveDefinition Definition;
 
 	UPROPERTY(Replicated)
@@ -100,5 +100,4 @@ public:
 	virtual void ForwardInspectDetail();
 
 	virtual void ResetInspectDetail();
-
 };
