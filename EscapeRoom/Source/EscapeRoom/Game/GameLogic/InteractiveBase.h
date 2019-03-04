@@ -22,25 +22,25 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName ID;
+	FName ID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool IsActive;
+	bool IsActive;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool IsLocked;
+	bool IsLocked;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<FName> DetailInspect;
+	TArray<FName> DetailInspect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int IndexDetailInspect;
+	int IndexDetailInspect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName DefaultDetailInspect;
+	FName DefaultDetailInspect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool IsDefaultDetailInspectActive;
+	bool IsDefaultDetailInspectActive;
 
 };
 

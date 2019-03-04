@@ -243,13 +243,60 @@ void AMainCharacter::DoInteractAction()
 	AUseInteractive* UseInteractive = Cast<AUseInteractive>(OverlappedInteractive);
 	if (UseInteractive != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an AUseInteractive %s"), *UseInteractive->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s is UseInteractive"), *UseInteractive->GetName());
+		if (UseInteractive->GetUseAction().IsActive)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive UseAction Active"));
 
-		UseInteractive->Use();
+			if (UseInteractive->GetUseAction().HasObject())
+			{
+				// Check if the player has the object on the inventory
 
-		StartGesture(EGestureType::VE_INTERACT);
+				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Doesn't need an object"));
 
-		OnUIMessageUpdated.Broadcast(this, "Testing use", false);
+				UseInteractive->Use();
+
+				StartGesture(EGestureType::VE_INTERACT);
+
+				FString desc = UseInteractive->GetUseAction().DetailDefaultAction.ToString();
+
+				OnUIMessageUpdated.Broadcast(this, desc, false);
+			}
+
+		}
+		else if ((UseInteractive->GetPickupAction().IsActive) && (UseInteractive->GetPickupAction().HasObject()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, PickupAction Is Active And Has Object"));
+
+			FName ObjectID = UseInteractive->GetPickupAction().ObjectID;
+			// TODO::  MAKE A GENERIC FUNCTION WHEN PICKUP AN OBJECT
+			ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+			if (GM != nullptr)
+			{
+				FString desc = "";
+
+				FObjectInteraction* Obj = GM->GetObjectByID(ObjectID);
+				if (Obj != nullptr)
+				{
+					OnInventoryUpdated.Broadcast(this, *Obj);
+				}
+			}
+
+			InventoryComponent->AddObject(ObjectID);		
+
+			UseInteractive->Pickup();
+
+			StartGesture(EGestureType::VE_INTERACT);
+
+			FString desc = UseInteractive->GetPickupAction().DetailDefaultAction.ToString();
+
+			OnUIMessageUpdated.Broadcast(this, desc, false);	
+
+		}	
 	}
 }
 

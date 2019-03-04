@@ -53,14 +53,11 @@ void APickupInteractive::OnRep_ObjectChanged()
 	
 	if (IsActive)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::OnRep_ObjectChanged] IS ACTIVE"));
-
 		AInputIconMesh->SetVisibility(true);
 		PickupMesh->SetVisibility(true, true);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::OnRep_ObjectChanged] IS NO ACTIVE"));
 		AInputIconMesh->SetVisibility(false);
 		PickupMesh->SetVisibility(false, true);
 	}

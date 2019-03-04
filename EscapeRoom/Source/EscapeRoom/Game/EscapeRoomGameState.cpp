@@ -16,7 +16,7 @@ void AEscapeRoomGameState::MulticastOnRoomCompleted_Implementation(APawn* Instig
 
 			PC->OnRoomCompleted(InstigatorPawn, bSuccess);
 
-			// Disable input
+			// Disable input 
 			APawn* Pawn = PC->GetPawn();
 			if (Pawn)
 			{
