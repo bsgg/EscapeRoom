@@ -32,26 +32,6 @@ enum class EGestureType : uint8
 	VE_NONE 		    UMETA(DisplayName = "None"),
 };
 
-UENUM(BlueprintType) // Type interaction
-enum class EInteractionType : uint8
-{
-	VE_NONE 		UMETA(DisplayName = "None"),
-	VE_VIEW		    UMETA(DisplayName = "View"),
-	VE_USE		    UMETA(DisplayName = "Use"),
-	VE_PICKUP		UMETA(DisplayName = "Pick up"),
-};
-
-UENUM(BlueprintType) // Type interaction
-enum class EInteractionStatus : uint8
-{
-	VE_NONE 		UMETA(DisplayName = "None"),
-	VE_LOCKED		    UMETA(DisplayName = "Locked"),
-	VE_UNLOCKED		    UMETA(DisplayName = "Unlocked"),
-	VE_ACTIVE		UMETA(DisplayName = "Active"),
-	VE_INACTIVE		UMETA(DisplayName = "Inactive"),
-};
-
-
 
 template<typename TEnum>
 static FORCEINLINE FString GetEnumValueAsString(const FString& Name, TEnum Value)
@@ -146,147 +126,6 @@ public:
 	}
 };
 
-USTRUCT(BlueprintType)
-struct FActionData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-
-	FActionData()
-	{
-		InteractionType = EInteractionType::VE_NONE;
-		Active = true;
-		DefaultDescriptionActive = false;
-	}
-
-
-	// Object required or object to take
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName ObjectID;
-
-	// Interaction type
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EInteractionType InteractionType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName InteractionName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Index;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool Active;
-
-	// Depending on Action type:
-	// View: Description goes in loop from 0 to num actions
-	// Pickup:
-	// Use: ID 0 = Use correct (you have the required object)
-	//	    ID 1 = Use incorrect
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FName> DescriptionList;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName DefaultDescription;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool DefaultDescriptionActive;
-
-	FName GetDescriptionById(int index) const
-	{
-		if ((DescriptionList.Num() > 0) && (index < DescriptionList.Num()))
-		{
-			return DescriptionList[index];
-		}
-
-		return NONE_TAG;
-	}
-
-	FName GetRandomDescription(bool success) const
-	{
-		int Rand = FMath::RandRange(0, 2);
-
-		FName Desc = NONE_TAG;
-		switch (Rand)
-		{
-			case 0:
-				if (success)
-				{
-					Desc = "Let's do this";
-				}
-				else
-				{
-					Desc = "That doesn't make any sense";
-				}
-			break;
-			case 1:
-				if (success)
-				{
-					Desc = "That's it!";
-				}
-				else
-				{
-					Desc = "I don't understand what you want";
-				}
-				break;
-			case 2:
-				if (success)
-				{
-					Desc = "Now we are talking";
-				}
-				else
-				{
-					Desc = "Let's think this through, sall we?";
-				}
-			break;
-		}
-
-		return Desc;
-	}
-
-	// Override equal operator for this structure
-	bool operator==(const FActionData& Action) const
-	{
-		return (InteractionType == Action.InteractionType);
-	}
-};
-
-
-USTRUCT(BlueprintType)
-struct FInteractionData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-
-	FInteractionData()
-	{
-		Name = FText::FromString("Interactable");
-	}
-
-	// Name interactable
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EInteractionStatus Status;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FActionData PrimaryAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FActionData SecondaryAction;
-
-	// Override equal operator for this structure
-	bool operator==(const FInteractionData& object) const
-	{
-		return (Name.ToString() == object.Name.ToString());
-	}
-
-};
-
-
-
 
 USTRUCT(BlueprintType)
 struct FGestureAnimation
@@ -309,6 +148,48 @@ public:
 		AnimationTime = 0.0f;
 	}
 };
+
+
+
+USTRUCT(BlueprintType)
+struct FActionDefinition
+{
+	GENERATED_BODY()
+
+public:
+
+	FActionDefinition()
+	{
+		ObjectID = "NONE";
+		AnimationLength = 0.0f;
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DetailDefaultAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName DetailWrongAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AnimationLength;
+
+	bool HasObject()
+	{
+		return (ObjectID.ToString().ToLower() != "none");
+	}
+
+	bool HasAnimation()
+	{
+		return (AnimationLength > 0.0f);
+	}
+};
+
 
 
 /**
