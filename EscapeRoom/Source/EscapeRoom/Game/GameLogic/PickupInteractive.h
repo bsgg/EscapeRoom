@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Game/GameLogic/Interactive.h"
+#include "Utils/Definitions.h"
 #include "PickupInteractive.generated.h"
 
 /**
@@ -25,20 +26,17 @@ protected:
 public:
 	APickupInteractive();
 
-	FORCEINLINE FName GetPickupObjectID() const { return PickupObjectID; }
+	FORCEINLINE FActionDefinition GetPickupAction() const { return PickupAction; }
 
 	void PickupObject();
 
-	FString GetDetailPickup() const;	
-
 protected:
-
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Pickup Interactive Settings")
-	FName PickupObjectID;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Pickup Interactive Settings")
-	FString DetailPickup;	
-
-	virtual void OnRep_ObjectChanged() override;
 	
+	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
+
+	UPROPERTY(ReplicatedUsing = OnRep_PickupActionChanged, EditDefaultsOnly, Category = "Use Interactive Settings")
+	FActionDefinition PickupAction;
+
+	UFUNCTION()
+	void OnRep_PickupActionChanged();	
 };

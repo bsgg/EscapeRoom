@@ -20,17 +20,17 @@ protected:
 public:	
 	AInteractive();
 
-	FORCEINLINE bool GetIsActive() const { return IsActive; }	
+	//FORCEINLINE bool GetIsActive() const { return IsActive; }	
 
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
+	//virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData) override;
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Basic Settings")
-	bool IsActive = true;
+	//UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Basic Settings")
+	//bool IsActive = true;
 
-	UFUNCTION()
-	virtual void OnRep_ObjectChanged();
+	//UFUNCTION()
+	//virtual void OnRep_ObjectChanged();
 
 };

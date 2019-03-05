@@ -6,7 +6,7 @@
 
 #include "UObject/ConstructorHelpers.h"
 
-#include "Characters/MainCharacter.h"
+
 
 #include "UnrealNetwork.h"
 
@@ -45,36 +45,6 @@ void AInteractive::BeginPlay()
 	Super::BeginPlay();
 
 	AInputIconMesh->SetVisibility(false);
-
-}
-void AInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
-{
-	Super::OnRep_DefinitionChanged(PreviousData);
-
-	if (Definition.IsLocked)
-	{
-		if (IsActive)
-		{
-			AInputIconMesh->SetVisibility(true);
-		}
-		else
-		{
-			AInputIconMesh->SetVisibility(false);
-		}
-		
-	}
-	else
-	{
-		AInputIconMesh->SetVisibility(false);
-	}
 }
 
-void AInteractive::OnRep_ObjectChanged(){}
 
-void AInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AInteractive, IsActive);
-
-}

@@ -19,6 +19,7 @@ protected:
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Interactive Settings")
 	FName ConnectedInteractiveID;
 
+
 public:
 
 	void Toggle();

@@ -18,7 +18,7 @@ void APickupInteractive::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::BeginPlay]"));
 
-	if (IsActive)
+	if (PickupAction.IsActive)
 	{		
 		PickupMesh->SetVisibility(true, true);
 	}
@@ -31,27 +31,44 @@ void APickupInteractive::BeginPlay()
 
 void APickupInteractive::PickupObject()
 {
-	PickupObjectID = "None";
+	UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::PickupObject]"));
 
-	IsActive = false;
+	PickupAction.ObjectID = "None";
+
+	PickupAction.IsActive = false;
 	
-	OnRep_ObjectChanged();
+	OnRep_PickupActionChanged();
 
 	Definition.IsDefaultDetailInspectActive = true;
 
-	UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::PickupObject]"));
-}
-
-FString APickupInteractive::GetDetailPickup() const
-{
-	return DetailPickup;
-}
-
-void APickupInteractive::OnRep_ObjectChanged()
-{
-	Super::OnRep_ObjectChanged();
 	
-	if (IsActive)
+}
+void APickupInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
+{
+	Super::OnRep_DefinitionChanged(PreviousData);
+
+	if (PickupAction.IsActive)
+	{
+		if (Definition.IsLocked)
+		{
+			AInputIconMesh->SetVisibility(true);
+		}
+		else
+		{
+			AInputIconMesh->SetVisibility(false);
+		}		
+	}
+	else
+	{
+		AInputIconMesh->SetVisibility(false);
+	}
+
+}
+
+
+void APickupInteractive::OnRep_PickupActionChanged()
+{	
+	if (PickupAction.IsActive)
 	{
 		AInputIconMesh->SetVisibility(true);
 		PickupMesh->SetVisibility(true, true);
@@ -67,5 +84,5 @@ void APickupInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(APickupInteractive, PickupObjectID);
+	DOREPLIFETIME(APickupInteractive, PickupAction);
 }

@@ -180,9 +180,10 @@ void AMainCharacter::DoInteractAction()
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  pickup %s"), *Pickup->GetName());
 
-		if (Pickup->GetIsActive())
+		if ((Pickup->GetPickupAction().IsActive) && (Pickup->GetPickupAction().HasObject()))
 		{
-			FName ObjectID = Pickup->GetPickupObjectID();
+			FName ObjectID = Pickup->GetPickupAction().ObjectID;
+
 			Pickup->PickupObject();
 
 			// Find object in BD
@@ -205,7 +206,7 @@ void AMainCharacter::DoInteractAction()
 							InventoryComponent->AddObject(ObjectID);
 							OnInventoryUpdated.Broadcast(this, *Obj);
 
-							desc = Pickup->GetDetailPickup();
+							desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
 							OnUIMessageUpdated.Broadcast(this, desc, false);
 
 							StartGesture(EGestureType::VE_INTERACT);
@@ -231,12 +232,9 @@ void AMainCharacter::DoInteractAction()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  Switch %s"), *Switch->GetName());
 
-		if (Switch->GetIsActive())
-		{
-			Switch->Toggle();
+		Switch->Toggle();
 
-			StartGesture(EGestureType::VE_INTERACT);
-		}
+		StartGesture(EGestureType::VE_INTERACT);
 	}
 
 

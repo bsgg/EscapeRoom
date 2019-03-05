@@ -15,17 +15,12 @@ public:
 
 	FInteractiveDefinition()
 	{
-		IsActive = true;
 		IsDefaultDetailInspectActive = false;
 		ID = "Interactive_";
-
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName ID;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsActive;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsLocked;
