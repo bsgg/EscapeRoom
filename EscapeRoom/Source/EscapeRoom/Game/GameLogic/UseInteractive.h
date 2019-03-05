@@ -7,45 +7,6 @@
 #include "Utils/Definitions.h"
 #include "UseInteractive.generated.h"
 
-USTRUCT(BlueprintType)
-struct FActionDefinition
-{
-	GENERATED_BODY()
-
-public:
-
-	FActionDefinition()
-	{
-		ObjectID = "NONE";
-		AnimationLength = 0.0f;
-	}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsActive;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName ObjectID;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName DetailDefaultAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName DetailWrongAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AnimationLength;
-
-	bool HasObject()
-	{
-		return (ObjectID.ToString().ToLower() != "none");
-	}
-
-	bool HasAnimation()
-	{
-		return (AnimationLength > 0.0f);
-	}
-};
-
 
 /**
  * Use Interactive: An Interactive of this type, could need an object to be enabled. 
@@ -70,7 +31,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUseEvent();
 
-
 	void Pickup();
 
 protected:
@@ -94,8 +54,4 @@ protected:
 
 	UFUNCTION()
 	void OnRep_PickupActionChanged();
-
-
-
-
 };
