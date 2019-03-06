@@ -208,12 +208,17 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 
 void ALobbyPlayerController::Client_UpdateInGameSlotUI_Implementation(const FObjectInteraction& Object)
 {
-	// Create UI
 	if (InGameUI == nullptr) return;
 
 	InGameUI->AddObjectToInventory(Object);
 }
 
+void ALobbyPlayerController::Client_UpdateInGameInventoryUI_Implementation(const TArray<FObjectInteraction>& Objects)
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->UpdateInventory(Objects);
+}
 
 
 
