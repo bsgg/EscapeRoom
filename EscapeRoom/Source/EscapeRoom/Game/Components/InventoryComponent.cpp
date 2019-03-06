@@ -47,7 +47,26 @@ void UInventoryComponent::AddObject(FName ObjectID)
 	}	
 
 	// Broadcast this change 
-	OnInventoryChanged.Broadcast(this, ObjectID, Objects.Num());
+	//OnInventoryChanged.Broadcast(this, ObjectID, Objects.Num());
+}
+
+void UInventoryComponent::RemoveObject(FName ObjectID)
+{
+	if (ObjectID == "NONE")
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UInventoryComponent::RemoveObject] The Object is NONE"));
+		return;
+	}
+
+	if (GetOwnerRole() == ROLE_Authority)
+	{
+		if (CheckIfObjectExists(ObjectID))
+		{
+			Objects.Remove(ObjectID);
+			ObjectNum = Objects.Num();
+
+		}
+	}
 }
 
 

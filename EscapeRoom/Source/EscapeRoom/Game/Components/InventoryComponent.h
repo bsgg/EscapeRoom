@@ -25,6 +25,8 @@ public:
 	void AddObject(FName ObjectID);
 
 	bool CheckIfObjectExists(FName ObjectID);
+
+	void RemoveObject(FName ObjectID);
 	
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Inventory")
 	int ObjectNum;
