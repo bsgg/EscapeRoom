@@ -95,3 +95,20 @@ void UInGamePlayer::AddObjectToInventory(const FObjectInteraction& Object)
 		}
 	}
 }
+
+void UInGamePlayer::UpdateInventory(const TArray<FObjectInteraction>& Objects)
+{
+	// Remove all slots
+	for (int i = 0; i < InventorySlots.Num(); i++)
+	{
+		InventorySlots[i]->SetImageSlot(nullptr);
+	}
+
+	for (int i = 0; i < Objects.Num(); i++)
+	{
+		if (i < InventorySlots.Num())
+		{
+			InventorySlots[i]->SetImageSlot(Objects[i].Thumbnail);
+		}
+	}
+}

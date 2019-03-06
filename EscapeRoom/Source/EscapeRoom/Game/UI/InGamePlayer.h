@@ -63,4 +63,6 @@ public:
 
 	void AddObjectToInventory(const FObjectInteraction& Object);
 
+	void UpdateInventory(const TArray<FObjectInteraction>& Objects);
+
 };
