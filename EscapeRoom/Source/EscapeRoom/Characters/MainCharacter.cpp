@@ -169,65 +169,115 @@ void AMainCharacter::OnInteract()
 	}
 }
 
+bool AMainCharacter::TryToAddNewObject(FName ObjID)
+{
+	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+
+	FObjectInteraction* Obj = GM->GetObjectByID(ObjID);
+
+	if (Obj == nullptr) return false;
+
+	if (Obj->ObjectType == EObjectType::VE_COMPLETE)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] %s: VE_COMPLETE"), *Obj->Name.ToString());
+
+		// Add Object to invetory and broadcast event
+		InventoryComponent->AddObject(ObjID);
+
+		TArray<FObjectInteraction> Objects;
+		Objects.Add(*Obj);
+		OnUIInventoryUpdated.Broadcast(this, Objects);
+
+		//OnInventoryUpdated.Broadcast(this, *Obj);
+
+		return true;
+	}
+
+	else if (Obj->ObjectType == EObjectType::VE_PART)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] %s: VE_PART"), *Obj->Name.ToString());
+
+		// Get object parent
+		FObjectInteraction* ObjParent = GM->GetObjectByID(Obj->ParentID);
+
+		if (ObjParent == nullptr) return false;
+
+		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] PARENT OBJECT %s, N Childs: %i"), *ObjParent->Name.ToString(), ObjParent->IDObjectParts.Num());
+
+		int NumberChildsInInvetory = 1; // The current object will be added
+		for (int i = 0; i < ObjParent->IDObjectParts.Num(); i++)
+		{
+			// Check if all object are in inventory except the current ObjID
+			FName IDChild = ObjParent->IDObjectParts[i];
+			if (IDChild != ObjID)
+			{
+				if (InventoryComponent->CheckIfObjectExists(IDChild))
+				{
+					NumberChildsInInvetory += 1;
+				}
+			}
+		}
+
+		// All objects in inventory, add the inventory and remove the rest of them
+		if (NumberChildsInInvetory == ObjParent->IDObjectParts.Num())
+		{
+			for (int i = 0; i < ObjParent->IDObjectParts.Num(); i++)
+			{
+				FName IDChild = ObjParent->IDObjectParts[i];
+				if (IDChild != ObjID)
+				{
+					InventoryComponent->RemoveObject(IDChild);
+				}
+			}
+
+			// Add the parent
+			InventoryComponent->AddObject(Obj->ParentID);
+			OnInventoryUpdated.Broadcast(this, *ObjParent);
+
+			// TODO: Remove the others objects visual
+
+		}
+		else
+		{
+			// Add the child
+			InventoryComponent->AddObject(ObjID);
+			OnInventoryUpdated.Broadcast(this, *Obj);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void AMainCharacter::DoInteractAction()
 {
 	//  Check type action
 	if (OverlappedInteractive == nullptr) return;
 
 	APickupInteractive* Pickup = Cast<APickupInteractive>(OverlappedInteractive);
-
 	if (Pickup != nullptr)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  pickup %s"), *Pickup->GetName());
-
 		if ((Pickup->GetPickupAction().IsActive) && (Pickup->GetPickupAction().HasObject()))
 		{
 			FName ObjectID = Pickup->GetPickupAction().ObjectID;
 
 			Pickup->PickupObject();
 
-			// Find object in BD
-			ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-			if (GM != nullptr)
+			if (TryToAddNewObject(ObjectID))
 			{
-				FString desc = "";
+				FString desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
 
-				FObjectInteraction* Obj = GM->GetObjectByID(ObjectID);
-				if (Obj != nullptr)
-				{
+				OnUIMessageUpdated.Broadcast(this, desc, false);
 
-					// Check object type
-					switch (Obj->ObjectType)
-					{
-						case EObjectType::VE_COMPLETE:
-							UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s:  completed object"), *Obj->Name.ToString());
+				StartGesture(EGestureType::VE_INTERACT);
+			}			
+		}	
+		return;
+	}	
 
-							// Pickup Object
-							InventoryComponent->AddObject(ObjectID);
-							OnInventoryUpdated.Broadcast(this, *Obj);
-
-							desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
-							OnUIMessageUpdated.Broadcast(this, desc, false);
-
-							StartGesture(EGestureType::VE_INTERACT);
-
-						break;
-
-						case EObjectType::VE_PART:
-							UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s:  Part Object"), *Obj->Name.ToString());
-
-						break;
-					}	
-				}				
-			}
-			
-		}
-		
-	}
-	
 
 	ASwitchInteractive* Switch = Cast<ASwitchInteractive>(OverlappedInteractive);
-
 	if (Switch != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  Switch %s"), *Switch->GetName());
@@ -235,6 +285,8 @@ void AMainCharacter::DoInteractAction()
 		Switch->Toggle();
 
 		StartGesture(EGestureType::VE_INTERACT);
+
+		return;
 	}
 
 
@@ -251,6 +303,32 @@ void AMainCharacter::DoInteractAction()
 				// Check if the player has the object on the inventory
 
 				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
+				if (InventoryComponent->CheckIfObjectExists(UseInteractive->GetUseAction().ObjectID))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Object exists in inventory"));
+
+					// Remove object from inventory
+					InventoryComponent->RemoveObject(UseInteractive->GetUseAction().ObjectID);
+
+					//TODO: REMOVE THE OBJECT VISUALLY
+
+					UseInteractive->Use();
+
+					StartGesture(EGestureType::VE_INTERACT);
+
+					FString desc = UseInteractive->GetUseAction().DetailDefaultAction.ToString();
+
+					OnUIMessageUpdated.Broadcast(this, desc, false);
+
+				}
+				else
+				{
+					FString desc = UseInteractive->GetUseAction().DetailWrongAction.ToString();
+
+					OnUIMessageUpdated.Broadcast(this, desc, false);
+
+					StartGesture(EGestureType::VE_DISMISS);
+				}				
 			}
 			else
 			{
@@ -271,30 +349,20 @@ void AMainCharacter::DoInteractAction()
 			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, PickupAction Is Active And Has Object"));
 
 			FName ObjectID = UseInteractive->GetPickupAction().ObjectID;
-			// TODO::  MAKE A GENERIC FUNCTION WHEN PICKUP AN OBJECT
-			ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-			if (GM != nullptr)
-			{
-				FString desc = "";
-
-				FObjectInteraction* Obj = GM->GetObjectByID(ObjectID);
-				if (Obj != nullptr)
-				{
-					OnInventoryUpdated.Broadcast(this, *Obj);
-				}
-			}
-
-			InventoryComponent->AddObject(ObjectID);		
 
 			UseInteractive->Pickup();
 
-			StartGesture(EGestureType::VE_INTERACT);
+			if (TryToAddNewObject(ObjectID))
+			{
+				StartGesture(EGestureType::VE_INTERACT);
 
-			FString desc = UseInteractive->GetPickupAction().DetailDefaultAction.ToString();
+				FString desc = UseInteractive->GetPickupAction().DetailDefaultAction.ToString();
 
-			OnUIMessageUpdated.Broadcast(this, desc, false);	
+				OnUIMessageUpdated.Broadcast(this, desc, false);
+			}
+		}
 
-		}	
+		return;
 	}
 }
 

@@ -12,6 +12,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharact
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInventoryUpdated, AMainCharacter*, Char, FObjectInteraction, Object);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUIInventoryUpdated, AMainCharacter*, Char, const TArray<FObjectInteraction>&, Objects);
+
 UCLASS()
 class ESCAPEROOM_API AMainCharacter : public ACharacter
 {
@@ -47,6 +49,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnInventoryUpdated OnInventoryUpdated;
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnUIInventoryUpdated OnUIInventoryUpdated;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -55,7 +60,6 @@ protected:
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
-
 	
 	// Inspect Action
 	void OnInspect();
@@ -69,6 +73,8 @@ protected:
 	// Interact Action
 	void OnInteract();
 
+	
+
 	void DoInteractAction();
 
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -78,6 +84,8 @@ protected:
 	
 	UFUNCTION()
 	void OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects);	
+
+	bool TryToAddNewObject(FName ObjID);
 
 	void StartGesture(EGestureType NewGesture);
 
