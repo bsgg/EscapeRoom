@@ -84,6 +84,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
+	PlayerInputComponent->BindAction("OpenInventory", IE_Pressed, this, &AMainCharacter::OpenInventoryInput);
 }
 
 void AMainCharacter::MoveForward(float Value)
@@ -116,6 +117,34 @@ void AMainCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+// REGION OPEN INVENTORY
+void AMainCharacter::OpenInventoryInput()
+{
+	if (CurrentGesture != EGestureType::VE_NONE) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnOpenInventory]"));
+
+	// Get all objects
+	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM == nullptr) return;
+
+	TArray<FObjectInteraction> Objects;
+
+	for (int i = 0; i < InventoryComponent->GetNumObjects(); i++)
+	{
+
+		FObjectInteraction * Obj = GM->GetObjectByID(InventoryComponent->GetObjectAt(i));
+
+		if (Obj != nullptr)
+		{
+			Objects.Add(*Obj);
+		}
+	}
+
+	OnOpenInventoryEvent(this, Objects);
+}
+// ENDREGION OPEN INVENTORY
 
 
 // REGION INSPECT ACTION

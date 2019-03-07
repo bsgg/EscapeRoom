@@ -49,7 +49,6 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
 
-
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameSlotUI(const FObjectInteraction& Object);
 
@@ -57,9 +56,10 @@ public:
 	void Client_UpdateInGameInventoryUI(const TArray<FObjectInteraction>& Objects);
 
 	// GAMEPLAY ROOM IMPLEMENTATION
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_OpenInventory(const TArray<FObjectInteraction>& Objects);
 
 	FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }
-
 	
 
 protected:

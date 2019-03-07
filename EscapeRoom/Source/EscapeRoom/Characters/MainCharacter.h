@@ -60,6 +60,13 @@ protected:
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "OnOpenInventory"))
+	void OpenInventoryInput();
+
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnOpenInventory"))
+	void OnOpenInventoryEvent(AMainCharacter* Character, const TArray<FObjectInteraction>& Objects);
+
 	
 	// Inspect Action
 	void OnInspect();

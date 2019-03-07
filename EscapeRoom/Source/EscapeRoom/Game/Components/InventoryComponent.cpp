@@ -3,7 +3,7 @@
 #include "InventoryComponent.h"
 #include "UnrealNetwork.h"
 
-// Sets default values for this component's properties
+
 UInventoryComponent::UInventoryComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -12,15 +12,9 @@ UInventoryComponent::UInventoryComponent()
 	SetIsReplicated(true);
 }
 
-// Called when the game starts
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
-
-	// ...
-	
 }
 
 void UInventoryComponent::AddObject(FName ObjectID)
@@ -46,8 +40,6 @@ void UInventoryComponent::AddObject(FName ObjectID)
 		ObjectNum = Objects.Num();	
 	}	
 
-	// Broadcast this change 
-	//OnInventoryChanged.Broadcast(this, ObjectID, Objects.Num());
 }
 
 void UInventoryComponent::RemoveObject(FName ObjectID)
@@ -85,6 +77,16 @@ bool UInventoryComponent::CheckIfObjectExists(FName ObjectID)
 	}
 
 	return false;
+}
+
+FName UInventoryComponent::GetObjectAt(int index) const
+{
+	if (index < Objects.Num())
+	{
+		return Objects[index];
+	}
+
+	return FName(TEXT("NONE"));
 }
 
 

@@ -31,11 +31,14 @@ public:
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Inventory")
 	int ObjectNum;
 
+	FORCEINLINE int GetNumObjects() const { return Objects.Num(); }
+
+	FName GetObjectAt(int index) const;	
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Inventory")
-	TArray<FName> Objects;
-		
+	TArray<FName> Objects;		
 };

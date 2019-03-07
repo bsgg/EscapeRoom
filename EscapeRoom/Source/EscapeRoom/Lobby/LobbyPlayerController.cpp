@@ -221,6 +221,13 @@ void ALobbyPlayerController::Client_UpdateInGameInventoryUI_Implementation(const
 }
 
 
+void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FObjectInteraction>& Objects)
+{
+	if (InGameUI == nullptr) return;
+
+	//InGameUI->UpdateInventory(Objects);
+}
+
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
