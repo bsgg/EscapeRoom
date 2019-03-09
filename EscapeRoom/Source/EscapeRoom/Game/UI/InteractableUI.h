@@ -30,5 +30,4 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UControlWidget* XControl;
 
-
 };

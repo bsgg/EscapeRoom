@@ -28,6 +28,36 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UUniformGridPanel* InventoryGrid;
 
+
+	// Slots
 	TArray<class UInventorySlot*> Slots;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_0;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_1;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_2;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_3;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_4;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_5;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_6;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_7;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* Slot_8;
+
 
 };

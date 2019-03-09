@@ -36,21 +36,7 @@ protected:
 
 	// Inventory Slot
 	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot0;
-
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot1;
-
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot2;
-
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot3;
-
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot4;
-
-	TArray<UInventorySlot*> InventorySlots;
+	class UInventorySlot* SelectedObject;
 
 	class ALobbyPlayerController* PlayerController;
 
@@ -66,6 +52,10 @@ public:
 	void ShowInventory(const TArray<FObjectInteraction>& Objects);	
 
 	void HideInventory();
+
+	void ShowSelectedObject(const FObjectInteraction& Object);
+
+	void HideSelectedObject();
 
 	void AddObjectToInventory(const FObjectInteraction& Object);
 

@@ -10,9 +10,6 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text, bool, HideMessages);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInventoryUpdated, AMainCharacter*, Char, FObjectInteraction, Object);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUIInventoryUpdated, AMainCharacter*, Char, const TArray<FObjectInteraction>&, Objects);
 
 UCLASS()
 class ESCAPEROOM_API AMainCharacter : public ACharacter
@@ -38,6 +35,7 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+
 	FORCEINLINE class UInventoryComponent* GetInventory() const { return InventoryComponent; }	
 
 	/** Returns Gesture **/
@@ -46,11 +44,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FOnInventoryUpdated OnInventoryUpdated;
-
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FOnUIInventoryUpdated OnUIInventoryUpdated;
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void ShowInventory();
@@ -73,11 +66,6 @@ protected:
 
 	void MoveRight(float Value);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "OnOpenInventory"))
-	void OpenInventoryInput();
-
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnOpenInventory"))
-	void OnOpenInventoryEvent(AMainCharacter* Character, const TArray<FObjectInteraction>& Objects);
 	
 	// Inspect Action
 	void OnInspect();

@@ -205,7 +205,7 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 	}
 }
 
-
+/*
 void ALobbyPlayerController::Client_UpdateInGameSlotUI_Implementation(const FObjectInteraction& Object)
 {
 	if (InGameUI == nullptr) return;
@@ -219,7 +219,7 @@ void ALobbyPlayerController::Client_UpdateInGameInventoryUI_Implementation(const
 
 	InGameUI->UpdateInventory(Objects);
 }
-
+*/
 
 void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FObjectInteraction>& Objects)
 {

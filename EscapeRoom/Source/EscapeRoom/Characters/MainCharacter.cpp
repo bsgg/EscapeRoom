@@ -84,7 +84,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
-	PlayerInputComponent->BindAction("OpenInventory", IE_Pressed, this, &AMainCharacter::OpenInventoryInput);
 }
 
 void AMainCharacter::MoveForward(float Value)
@@ -131,53 +130,12 @@ void AMainCharacter::HideInventory()
 
 TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
 {
-	TArray<FObjectInteraction> Objects;
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::GetObjectsInInventory()] NumObjects %i"), InventoryComponent->GetNumObjects());
 
-	// Get all objects
-	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-	if (GM == nullptr) return Objects;
-
-	for (int i = 0; i < InventoryComponent->GetNumObjects(); i++)
-	{
-
-		FObjectInteraction * Obj = GM->GetObjectByID(InventoryComponent->GetObjectAt(i));
-
-		if (Obj != nullptr)
-		{
-			Objects.Add(*Obj);
-		}
-	}
-
-	return Objects;
+	return InventoryComponent->GetObjects();
 }
 
-
-void AMainCharacter::OpenInventoryInput()
-{
-	if (CurrentGesture != EGestureType::VE_NONE) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnOpenInventory]"));
-
-	// Get all objects
-	/*ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-	if (GM == nullptr) return;
-
-	TArray<FObjectInteraction> Objects;
-
-	for (int i = 0; i < InventoryComponent->GetNumObjects(); i++)
-	{
-
-		FObjectInteraction * Obj = GM->GetObjectByID(InventoryComponent->GetObjectAt(i));
-
-		if (Obj != nullptr)
-		{
-			Objects.Add(*Obj);
-		}
-	}*/
-
-	//OnOpenInventoryEvent(this, Objects);
-}
-// ENDREGION OPEN INVENTORY
+// ENDREGION INVENTORY
 
 
 // REGION INSPECT ACTION
@@ -244,13 +202,10 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] %s: VE_COMPLETE"), *Obj->Name.ToString());
 
 		// Add Object to invetory and broadcast event
-		InventoryComponent->AddObject(ObjID);
+		InventoryComponent->AddObject(ObjID, *Obj);
 
 		TArray<FObjectInteraction> Objects;
 		Objects.Add(*Obj);
-		OnUIInventoryUpdated.Broadcast(this, Objects);
-
-		//OnInventoryUpdated.Broadcast(this, *Obj);
 
 		return true;
 	}
@@ -293,8 +248,7 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 			}
 
 			// Add the parent
-			InventoryComponent->AddObject(Obj->ParentID);
-			OnInventoryUpdated.Broadcast(this, *ObjParent);
+			InventoryComponent->AddObject(Obj->ParentID, *ObjParent);
 
 			// TODO: Remove the others objects visual
 
@@ -302,8 +256,7 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 		else
 		{
 			// Add the child
-			InventoryComponent->AddObject(ObjID);
-			OnInventoryUpdated.Broadcast(this, *Obj);
+			InventoryComponent->AddObject(ObjID, *Obj);
 
 			return true;
 		}

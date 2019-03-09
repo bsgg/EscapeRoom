@@ -22,7 +22,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnInventoryChangedSignature OnInventoryChanged;
 	
-	void AddObject(FName ObjectID);
+	void AddObject(FName ObjectID, const FObjectInteraction& Object);
 
 	bool CheckIfObjectExists(FName ObjectID);
 
@@ -33,6 +33,8 @@ public:
 
 	FORCEINLINE int GetNumObjects() const { return Objects.Num(); }
 
+	FORCEINLINE TArray<FObjectInteraction> GetObjects() const { return Objects; }
+
 	FName GetObjectAt(int index) const;	
 
 protected:
@@ -40,5 +42,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Inventory")
-	TArray<FName> Objects;		
+	TArray<FName> ObjectIDs;
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Inventory")
+	TArray<FObjectInteraction> Objects;
 };

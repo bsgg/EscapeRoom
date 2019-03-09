@@ -14,31 +14,10 @@ bool UInGamePlayer::Initialize()
 
 	if (!Success) return false;
 
+	HideMessages();
+	HideSelectedObject();
 
-	APlayerController* PC = GetOwningPlayer();
-	if (PC == nullptr) return false;
-
-	PlayerController = Cast<ALobbyPlayerController>(PC);
-	if (PlayerController == nullptr) return false;
-
-	// Set Debug Messages
-	if (PlayerController->HasAuthority())
-	{
-		SetInGameMessage(FText::FromString("Server"));
-	}
-	else
-	{
-		SetInGameMessage(FText::FromString("Client"));
-	}
-
-	Inventory->SetVisibility(ESlateVisibility::Hidden);
-
-	MessagesBox->SetVisibility(ESlateVisibility::Hidden);
-	InventorySlots.Add(Slot0);
-	InventorySlots.Add(Slot1);
-	InventorySlots.Add(Slot2);
-	InventorySlots.Add(Slot3);
-	InventorySlots.Add(Slot4);
+	
 
 	return true;
 }
@@ -65,10 +44,8 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 
 void UInGamePlayer::SetInGameMessage(FText Message)
 {
-	if (InGameMessages == nullptr) return;
-	
-	InGameMessages->SetText(Message);
-	
+	if (InGameMessages == nullptr) return;	
+	InGameMessages->SetText(Message);	
 }
 
 void UInGamePlayer::HideMessages()
@@ -88,12 +65,28 @@ void UInGamePlayer::ShowMessages()
 
 void UInGamePlayer::ShowInventory(const TArray<FObjectInteraction>& Objects)
 {
+	if (Inventory == nullptr) return;
 	Inventory->Show(Objects);
 }
 
 void UInGamePlayer::HideInventory()
 {
+	if (Inventory == nullptr) return;
 	Inventory->Hide();
+}
+
+
+void UInGamePlayer::ShowSelectedObject(const FObjectInteraction& Object)
+{
+	if (SelectedObject == nullptr) return;
+	SelectedObject->SetObjectSlot(Object);
+	SelectedObject->Show();
+}
+
+void UInGamePlayer::HideSelectedObject()
+{
+	if (SelectedObject == nullptr) return;
+	SelectedObject->Hide();
 }
 
 
@@ -101,20 +94,20 @@ void UInGamePlayer::HideInventory()
 void UInGamePlayer::AddObjectToInventory(const FObjectInteraction& Object)
 {
 	// Look for an inactive slot
-	for (int i = 0; i < InventorySlots.Num(); i++)
+	/*for (int i = 0; i < InventorySlots.Num(); i++)
 	{
 		if (InventorySlots[i]->IsEmpty())
 		{
 			InventorySlots[i]->SetImageSlot(Object.Thumbnail);
 			return;
 		}
-	}
+	}*/
 }
 
 void UInGamePlayer::UpdateInventory(const TArray<FObjectInteraction>& Objects)
 {
 	// Remove all slots
-	for (int i = 0; i < InventorySlots.Num(); i++)
+	/*for (int i = 0; i < InventorySlots.Num(); i++)
 	{
 		InventorySlots[i]->SetImageSlot(nullptr);
 	}
@@ -125,5 +118,5 @@ void UInGamePlayer::UpdateInventory(const TArray<FObjectInteraction>& Objects)
 		{
 			InventorySlots[i]->SetImageSlot(Objects[i].Thumbnail);
 		}
-	}
+	}*/
 }

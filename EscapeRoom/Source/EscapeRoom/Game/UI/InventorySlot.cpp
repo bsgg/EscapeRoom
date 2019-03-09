@@ -36,6 +36,7 @@ void UInventorySlot::SetObjectSlot(const FObjectInteraction& Object)
 	SetImageSlot(ObjectSlot.Thumbnail);
 
 	SetTitleSlot(ObjectSlot.Name);
+
 }
 
 

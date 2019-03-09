@@ -2,6 +2,7 @@
 
 #include "InventoryUI.h"
 #include "Components/UniformGridPanel.h"
+#include "Components/UniformGridSlot.h"
 #include "Components/TextBlock.h"
 #include "InventorySlot.h"
 
@@ -11,17 +12,16 @@ bool UInventoryUI::Initialize()
 
 	if (!Success) return false;
 
-	const TArray<UPanelSlot*> GridSlots = InventoryGrid->GetSlots();
+	Slots.Add(Slot_0);
+	Slots.Add(Slot_1);
+	Slots.Add(Slot_2);
+	Slots.Add(Slot_3);
+	Slots.Add(Slot_4);
+	Slots.Add(Slot_5);
+	Slots.Add(Slot_6);
+	Slots.Add(Slot_7);
+	Slots.Add(Slot_8);
 
-	for (int i = 0; i < GridSlots.Num(); i++)
-	{
-		UInventorySlot* Slot = Cast<UInventorySlot>(GridSlots[i]);
-		if (Slot != nullptr)
-		{
-			Slots.Add(Slot);
-		}
-	}
-	
 	for (int i = 0; i < Slots.Num(); i++)
 	{
 		Slots[i]->Hide();

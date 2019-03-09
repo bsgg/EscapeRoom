@@ -6,8 +6,6 @@
 
 UInventoryComponent::UInventoryComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	ObjectNum = 0;
 	SetIsReplicated(true);
 }
@@ -17,7 +15,7 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UInventoryComponent::AddObject(FName ObjectID)
+void UInventoryComponent::AddObject(FName ObjectID, const FObjectInteraction& Object)
 {
 	// Check if this object already exists
 	FName None = FName(TEXT("NONE"));
@@ -29,15 +27,21 @@ void UInventoryComponent::AddObject(FName ObjectID)
 
 	if (GetOwnerRole() == ROLE_Authority)
 	{
+		Objects.Add(Object);
+
+		UE_LOG(LogTemp, Warning, TEXT("[UInventoryComponent::AddObject] New Object (OBJECT) Added: %s"), *Object.ID.ToString());
+
 		if (CheckIfObjectExists(ObjectID)) return;
+
+
 	  
 		// Only the server is allow to change Objects
 		// GetOwnerRole is the only one who has Role, not a component
 	
 		UE_LOG(LogTemp, Warning, TEXT("[UInventoryComponent::AddObject] New Object Added: %s"), *ObjectID.ToString());
-		Objects.Add(ObjectID);
+		ObjectIDs.Add(ObjectID);
 
-		ObjectNum = Objects.Num();	
+		ObjectNum = ObjectIDs.Num();
 	}	
 
 }
@@ -54,8 +58,8 @@ void UInventoryComponent::RemoveObject(FName ObjectID)
 	{
 		if (CheckIfObjectExists(ObjectID))
 		{
-			Objects.Remove(ObjectID);
-			ObjectNum = Objects.Num();
+			ObjectIDs.Remove(ObjectID);
+			ObjectNum = ObjectIDs.Num();
 
 		}
 	}
@@ -68,7 +72,7 @@ bool UInventoryComponent::CheckIfObjectExists(FName ObjectID)
 	if (ObjectID == None) return false;
 	
 	bool objFound = false;
-	for (FName Obj : Objects)
+	for (FName Obj : ObjectIDs)
 	{
 		if (Obj == ObjectID)
 		{
@@ -83,7 +87,7 @@ FName UInventoryComponent::GetObjectAt(int index) const
 {
 	if (index < Objects.Num())
 	{
-		return Objects[index];
+		return ObjectIDs[index];
 	}
 
 	return FName(TEXT("NONE"));
@@ -94,8 +98,10 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UInventoryComponent, Objects);
+	DOREPLIFETIME(UInventoryComponent, ObjectIDs);
 
 	DOREPLIFETIME(UInventoryComponent, ObjectNum);
+
+	DOREPLIFETIME(UInventoryComponent, Objects);
 }
 
