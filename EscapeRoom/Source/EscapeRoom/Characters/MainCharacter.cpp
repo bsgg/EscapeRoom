@@ -89,7 +89,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::MoveForward(float Value)
 {
-	if (CurrentGesture != EGestureType::VE_NONE) return;
+	if ((CurrentGesture != EGestureType::VE_NONE) || (bInventoryShown)) return;
 
 	if (Value != 0.0f)
 	{
@@ -104,7 +104,7 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
-	if (CurrentGesture != EGestureType::VE_NONE) return;
+	if ((CurrentGesture != EGestureType::VE_NONE) || (bInventoryShown)) return;
 
 	if (Value != 0.0f)
 	{
@@ -118,7 +118,40 @@ void AMainCharacter::MoveRight(float Value)
 	}
 }
 
-// REGION OPEN INVENTORY
+// REGION INVENTORYW
+void AMainCharacter::ShowInventory()
+{ 
+	bInventoryShown = true;
+}
+
+void AMainCharacter::HideInventory()
+{
+	bInventoryShown = false;
+}
+
+TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
+{
+	TArray<FObjectInteraction> Objects;
+
+	// Get all objects
+	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM == nullptr) return Objects;
+
+	for (int i = 0; i < InventoryComponent->GetNumObjects(); i++)
+	{
+
+		FObjectInteraction * Obj = GM->GetObjectByID(InventoryComponent->GetObjectAt(i));
+
+		if (Obj != nullptr)
+		{
+			Objects.Add(*Obj);
+		}
+	}
+
+	return Objects;
+}
+
+
 void AMainCharacter::OpenInventoryInput()
 {
 	if (CurrentGesture != EGestureType::VE_NONE) return;
@@ -126,7 +159,7 @@ void AMainCharacter::OpenInventoryInput()
 	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnOpenInventory]"));
 
 	// Get all objects
-	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+	/*ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 	if (GM == nullptr) return;
 
 	TArray<FObjectInteraction> Objects;
@@ -140,9 +173,9 @@ void AMainCharacter::OpenInventoryInput()
 		{
 			Objects.Add(*Obj);
 		}
-	}
+	}*/
 
-	OnOpenInventoryEvent(this, Objects);
+	//OnOpenInventoryEvent(this, Objects);
 }
 // ENDREGION OPEN INVENTORY
 

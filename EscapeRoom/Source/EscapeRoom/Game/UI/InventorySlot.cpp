@@ -2,6 +2,9 @@
 
 #include "InventorySlot.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "Components/PanelWidget.h"
+#include "Utils/Definitions.h"
 
 bool UInventorySlot::Initialize()
 {
@@ -9,26 +12,43 @@ bool UInventorySlot::Initialize()
 
 	if (!Success) return false;
 
-	bIsEmpty = true;
-	Thumbnail->SetVisibility(ESlateVisibility::Hidden);
+	Hide();
 
 	return true;
 }
 
+void UInventorySlot::Show()
+{
+	bIsEmpty = false;
+	SlotBox->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UInventorySlot::Hide()
+{
+	bIsEmpty = true;
+	SlotBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInventorySlot::SetObjectSlot(const FObjectInteraction& Object)
+{
+	ObjectSlot = Object;
+
+	SetImageSlot(ObjectSlot.Thumbnail);
+
+	SetTitleSlot(ObjectSlot.Name);
+}
+
+
 void UInventorySlot::SetImageSlot(UTexture2D* Image)
 {
-	if (Thumbnail == nullptr) return;
+	if ((Thumbnail == nullptr) || (Image == nullptr)) return;
 
-	if (Image == nullptr)
-	{
-		bIsEmpty = true;
-		Thumbnail->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else
-	{
-		bIsEmpty = false;
+	Thumbnail->SetBrushFromTexture(Image);
+}
 
-		Thumbnail->SetVisibility(ESlateVisibility::Visible);
-		Thumbnail->SetBrushFromTexture(Image);		
-	}	
+void UInventorySlot::SetTitleSlot(FText Title)
+{
+	if (TitleText == nullptr) return;
+
+	TitleText->SetText(Title);
 }

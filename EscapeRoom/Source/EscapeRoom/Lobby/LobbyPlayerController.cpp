@@ -225,7 +225,14 @@ void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FO
 {
 	if (InGameUI == nullptr) return;
 
-	//InGameUI->UpdateInventory(Objects);
+	InGameUI->ShowInventory(Objects);
+}
+
+void ALobbyPlayerController::Client_CloseInventory_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->HideInventory();
 }
 
 

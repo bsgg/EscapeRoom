@@ -59,6 +59,9 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_OpenInventory(const TArray<FObjectInteraction>& Objects);
 
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_CloseInventory();
+
 	FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }
 	
 

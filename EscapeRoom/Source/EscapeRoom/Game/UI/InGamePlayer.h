@@ -31,6 +31,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* InGameMessages;
 
+	UPROPERTY(meta = (BindWidget))
+	class UInventoryUI* Inventory;
 
 	// Inventory Slot
 	UPROPERTY(meta = (BindWidget))
@@ -60,6 +62,10 @@ public:
 	void ShowMessages();
 
 	void HideMessages();
+
+	void ShowInventory(const TArray<FObjectInteraction>& Objects);	
+
+	void HideInventory();
 
 	void AddObjectToInventory(const FObjectInteraction& Object);
 

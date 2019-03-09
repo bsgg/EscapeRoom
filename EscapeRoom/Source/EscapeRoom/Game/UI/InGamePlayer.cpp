@@ -4,6 +4,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ScaleBox.h"
 #include "Lobby/LobbyPlayerController.h"
+#include "InventoryUI.h"
 #include "InventorySlot.h"
 
 
@@ -29,6 +30,8 @@ bool UInGamePlayer::Initialize()
 	{
 		SetInGameMessage(FText::FromString("Client"));
 	}
+
+	Inventory->SetVisibility(ESlateVisibility::Hidden);
 
 	MessagesBox->SetVisibility(ESlateVisibility::Hidden);
 	InventorySlots.Add(Slot0);
@@ -81,6 +84,18 @@ void UInGamePlayer::ShowMessages()
 
 	MessagesBox->SetVisibility(ESlateVisibility::Visible);
 }
+
+
+void UInGamePlayer::ShowInventory(const TArray<FObjectInteraction>& Objects)
+{
+	Inventory->Show(Objects);
+}
+
+void UInGamePlayer::HideInventory()
+{
+	Inventory->Hide();
+}
+
 
 
 void UInGamePlayer::AddObjectToInventory(const FObjectInteraction& Object)

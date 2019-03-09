@@ -52,6 +52,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIInventoryUpdated OnUIInventoryUpdated;
 
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void ShowInventory();
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void HideInventory();
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	FORCEINLINE bool IsInventoryActive() const { return bInventoryShown; }
+
+	UFUNCTION(BlueprintCallable, Category = "Events")
+	TArray<FObjectInteraction> GetObjectsInInventory() const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -66,7 +78,6 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnOpenInventory"))
 	void OnOpenInventoryEvent(AMainCharacter* Character, const TArray<FObjectInteraction>& Objects);
-
 	
 	// Inspect Action
 	void OnInspect();
@@ -79,8 +90,6 @@ protected:
 
 	// Interact Action
 	void OnInteract();
-
-	
 
 	void DoInteractAction();
 
@@ -116,4 +125,6 @@ protected:
 	float InteractAnimationTime = 1.0f;
 	
 	FTimerHandle InteractionTimerHandle;	
+
+	bool bInventoryShown = false;
 };

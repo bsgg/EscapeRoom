@@ -17,15 +17,31 @@ private:
 	virtual bool Initialize() override;
 
 protected:
+
+	UPROPERTY(meta = (BindWidget))
+	UPanelWidget* SlotBox;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TitleText;
+
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Thumbnail;
 
 	bool bIsEmpty = true;
 
+	UPROPERTY()
+	FObjectInteraction ObjectSlot;
+
 public:
+	void Show();
+
+	void Hide();
+
+	void SetObjectSlot(const FObjectInteraction& Object);
+
+	void SetTitleSlot(FText Message);
+
 	void SetImageSlot(UTexture2D* Image);
 
-	FORCEINLINE bool IsEmpty() const { return bIsEmpty;}
-
-	
+	FORCEINLINE bool IsEmpty() const { return bIsEmpty;}	
 };
