@@ -35,7 +35,6 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-
 	FORCEINLINE class UInventoryComponent* GetInventory() const { return InventoryComponent; }	
 
 	/** Returns Gesture **/
@@ -44,15 +43,17 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;
 
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void LockInput();
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void ShowInventory();
+	void UnLockInput();
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void HideInventory();
+	FORCEINLINE bool IsInventoryActive() const { return bInventoryActive; }
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	FORCEINLINE bool IsInventoryActive() const { return bInventoryShown; }
+	void SetInventoryActive(bool Active);
 
 	UFUNCTION(BlueprintCallable, Category = "Events")
 	TArray<FObjectInteraction> GetObjectsInInventory() const;
@@ -105,7 +106,6 @@ protected:
 	UPROPERTY(Replicated)
 	class AInteractiveBase* OverlappedInteractive;
 
-
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Gestures")
 	EGestureType CurrentGesture = EGestureType::VE_NONE;
 
@@ -114,5 +114,7 @@ protected:
 	
 	FTimerHandle InteractionTimerHandle;	
 
-	bool bInventoryShown = false;
+	bool bInventoryActive = false;
+
+	bool bInputLocked = false;
 };

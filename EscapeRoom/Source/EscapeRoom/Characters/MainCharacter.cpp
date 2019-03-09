@@ -86,9 +86,21 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
 }
 
+void AMainCharacter::LockInput()
+{
+	bInputLocked = true;
+}
+
+
+void AMainCharacter::UnLockInput()
+{
+	bInputLocked = false;
+}
+
+
 void AMainCharacter::MoveForward(float Value)
 {
-	if ((CurrentGesture != EGestureType::VE_NONE) || (bInventoryShown)) return;
+	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
 	if (Value != 0.0f)
 	{
@@ -103,7 +115,7 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
-	if ((CurrentGesture != EGestureType::VE_NONE) || (bInventoryShown)) return;
+	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
 	if (Value != 0.0f)
 	{
@@ -117,24 +129,16 @@ void AMainCharacter::MoveRight(float Value)
 	}
 }
 
-// REGION INVENTORYW
-void AMainCharacter::ShowInventory()
-{ 
-	bInventoryShown = true;
-}
-
-void AMainCharacter::HideInventory()
+// REGION INVENTORY
+void AMainCharacter::SetInventoryActive(bool Active)
 {
-	bInventoryShown = false;
+	bInventoryActive = Active;
 }
 
 TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::GetObjectsInInventory()] NumObjects %i"), InventoryComponent->GetNumObjects());
-
 	return InventoryComponent->GetObjects();
 }
-
 // ENDREGION INVENTORY
 
 
