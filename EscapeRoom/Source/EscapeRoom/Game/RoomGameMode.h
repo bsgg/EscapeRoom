@@ -32,6 +32,8 @@ public:
 
 	FObjectInteraction* GetObjectByID(FName ID) const;
 
+	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
+
 	class AInteractiveBase* FindInteractiveById(FName ID) const;
 
 protected:
@@ -63,5 +65,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ObjectDB; // Objects database database
+
+	UPROPERTY(EditDefaultsOnly)
+	class UDataTable* ObjectCombinationDB; // Objects database database
 	
 };

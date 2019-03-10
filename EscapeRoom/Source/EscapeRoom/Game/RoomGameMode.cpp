@@ -180,6 +180,38 @@ FObjectInteraction* ARoomGameMode::GetObjectByID(FName ID) const
 	return (ObjectDB->FindRow<FObjectInteraction>(ID, TEXT("Object"), true));
 }
 
+FObjectInteraction* ARoomGameMode::FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const
+{
+	if (ObjectCombinationDB == nullptr) return nullptr;
+
+	FName CombinedObjectID;
+
+	TArray<FName> RowNames;
+	RowNames = ObjectCombinationDB->GetRowNames();
+	bool CombinationFound = false;
+	for (auto& Name : RowNames) // Iterate throught combinations
+	{
+		FObjectCombination* Row = ObjectCombinationDB->FindRow<FObjectCombination>(Name, TEXT("Object"));
+		if (Row)
+		{
+			// Check if both ID are contained
+			if ((Row->ObjectID_A == ObjectID_A) && (Row->ObjectID_B == ObjectID_B))
+			{
+				CombinedObjectID = Row->ObjectID_Result;
+				CombinationFound = true;
+				break;
+			}
+		}
+	}
+
+	if (CombinationFound)
+	{
+		return nullptr;
+	}
+
+	return (ObjectDB->FindRow<FObjectInteraction>(CombinedObjectID, TEXT("Object"), true));
+}
+
 
 
 void ARoomGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess)

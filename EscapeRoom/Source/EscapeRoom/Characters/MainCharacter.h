@@ -58,11 +58,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Events")
 	TArray<FObjectInteraction> GetObjectsInInventory() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Movement")
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveForward(float Value);
 
-	UFUNCTION(BlueprintCallable, Category = "Movement")
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveRight(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void OnInteract();
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB);
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -82,7 +90,7 @@ protected:
 	// Inspect Action
 
 	// Interact Action
-	void OnInteract();
+
 
 	void DoInteractAction();
 

@@ -35,6 +35,7 @@ enum class EGestureType : uint8
 UENUM(BlueprintType) // Type interaction
 enum class EDirectionType : uint8
 {
+	VE_NONE 		UMETA(DisplayName = "None"),
 	VE_UP		    UMETA(DisplayName = "Up"),
 	VE_DOWN		    UMETA(DisplayName = "Down"),
 	VE_RIGHT		UMETA(DisplayName = "Right"),
@@ -89,8 +90,6 @@ public:
 };
 
 
-
-
 USTRUCT(BlueprintType)
 struct FObjectInteraction : public FTableRowBase
 {
@@ -134,6 +133,22 @@ public:
 	{
 		return (ID == object.ID);
 	}
+};
+
+USTRUCT(BlueprintType)
+struct FObjectCombination : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectID_A;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectID_B;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectID_Result;
 };
 
 

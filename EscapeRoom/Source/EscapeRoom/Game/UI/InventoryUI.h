@@ -35,6 +35,7 @@ protected:
 	// Slots
 	TArray<class UInventorySlot*> Slots;
 
+
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_0;
 
@@ -62,16 +63,15 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_8;
 
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* SelectedObject;
+
 	int ColumnNumber = 3;
 	int RowNumber = 3;
 
-
 	int SelectedSlotID = -1;
-
 	int SelectedColumnSlot = -1;
 	int SelectedRowSlot = -1;	
 
-	int ObjectNumberInInventory = -1;
-
-
+	int ObjectNumberInInventory = 0;
 };

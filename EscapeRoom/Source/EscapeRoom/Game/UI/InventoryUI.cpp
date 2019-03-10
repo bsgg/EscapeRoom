@@ -28,16 +28,13 @@ bool UInventoryUI::Initialize()
 	}
 
 	return true;
-
 }
 
 void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 {
 	ObjectNumberInInventory = Objects.Num();	
 
-	SetVisibility(ESlateVisibility::Visible);	
-
-	
+	SetVisibility(ESlateVisibility::Visible);		
 
 	for (int i = 0, iObject = 0; i < Slots.Num(); i++, iObject++)
 	{
@@ -59,9 +56,16 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 		SelectedColumnSlot = 0;
 		SelectedRowSlot = 0;
 		Slots[SelectedSlotID]->Select();
+
+		SelectedObject->Show();
+		SelectedObject->SetObjectSlot(Objects[SelectedSlotID]);
+		SelectedObject->UnSelect();
 	}
-
-
+	else
+	{
+		SelectedObject->Hide();
+	}
+	   
 	if (DescriptionSlot != nullptr)
 	{
 		DescriptionSlot->SetText(FText::FromString(""));
@@ -71,7 +75,6 @@ void UInventoryUI::Hide()
 {
 	SetVisibility(ESlateVisibility::Hidden);
 }
-
 
 void UInventoryUI::Navigate(EDirectionType Direction)
 {
@@ -97,16 +100,15 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 		break;	
 	}
 
-	// Clmp selected Row
+	// Clamp selected column Row
 	SelectedRowSlot = FMath::Clamp(SelectedRowSlot, 0, RowNumber - 1);
-	SelectedColumnSlot = FMath::Clamp(SelectedColumnSlot, 0, ColumnNumber - 1);
-
-	
+	SelectedColumnSlot = FMath::Clamp(SelectedColumnSlot, 0, ColumnNumber - 1);	
 
 	SelectedSlotID = SelectedColumnSlot + (SelectedRowSlot * ColumnNumber);
 	SelectedSlotID = FMath::Clamp(SelectedSlotID, 0, ObjectNumberInInventory - 1);
 
 	Slots[SelectedSlotID]->Select();
+	SelectedObject->SetObjectSlot(Slots[SelectedSlotID]->GetObjectSlot());
 
 	if (DescriptionSlot != nullptr)
 	{

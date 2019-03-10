@@ -180,6 +180,8 @@ void AMainCharacter::DoInspectAction()
 // REGION INTERACT ACTION
 void AMainCharacter::OnInteract()
 {
+	if (bInputLocked) return;
+
 	if (Role < ROLE_Authority)
 	{
 		ServerRPCInteractAction();
@@ -392,6 +394,11 @@ bool AMainCharacter::ServerRPCInteractAction_Validate()
 	return true;
 }
 // ENDREGION INTERACT ACTION
+
+void AMainCharacter::TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB)
+{
+
+}
 
 
 void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
