@@ -75,6 +75,13 @@ void UInGamePlayer::HideInventory()
 	Inventory->Hide();
 }
 
+void UInGamePlayer::NavigateInventory(EDirectionType Direction)
+{
+	if (Inventory == nullptr) return;
+
+	Inventory->Navigate(Direction);
+}
+
 
 void UInGamePlayer::ShowSelectedObject(const FObjectInteraction& Object)
 {

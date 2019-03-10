@@ -32,6 +32,16 @@ enum class EGestureType : uint8
 	VE_NONE 		    UMETA(DisplayName = "None"),
 };
 
+UENUM(BlueprintType) // Type interaction
+enum class EDirectionType : uint8
+{
+	VE_UP		    UMETA(DisplayName = "Up"),
+	VE_DOWN		    UMETA(DisplayName = "Down"),
+	VE_RIGHT		UMETA(DisplayName = "Right"),
+	VE_LEFT		    UMETA(DisplayName = "Left"),
+	
+};
+
 
 template<typename TEnum>
 static FORCEINLINE FString GetEnumValueAsString(const FString& Name, TEnum Value)

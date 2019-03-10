@@ -28,6 +28,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Thumbnail;
 
+	UPROPERTY(meta = (BindWidget))
+	class UImage* UnSelectedBackground;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* SelectedBackground;
+
 	bool bIsEmpty = true;
 
 	UPROPERTY()
@@ -38,6 +44,10 @@ public:
 
 	void Hide();
 
+	void Select();
+
+	void UnSelect();
+
 	void SetObjectSlot(const FObjectInteraction& Object);
 
 	void SetTitleSlot(FText Message);
@@ -45,4 +55,6 @@ public:
 	void SetImageSlot(UTexture2D* Image);
 
 	FORCEINLINE bool IsEmpty() const { return bIsEmpty;}	
+
+	FORCEINLINE FObjectInteraction GetObjectSlot() const { return ObjectSlot; }
 };

@@ -49,9 +49,13 @@ public:
 
 	void HideMessages();
 
+
 	void ShowInventory(const TArray<FObjectInteraction>& Objects);	
 
 	void HideInventory();
+
+	void NavigateInventory(EDirectionType Direction);
+
 
 	void ShowSelectedObject(const FObjectInteraction& Object);
 

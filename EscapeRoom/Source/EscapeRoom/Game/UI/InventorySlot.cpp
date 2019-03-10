@@ -12,7 +12,6 @@ bool UInventorySlot::Initialize()
 
 	if (!Success) return false;
 
-	Hide();
 
 	return true;
 }
@@ -21,6 +20,9 @@ void UInventorySlot::Show()
 {
 	bIsEmpty = false;
 	SlotBox->SetVisibility(ESlateVisibility::Visible);
+
+	UnSelectedBackground->SetVisibility(ESlateVisibility::Visible);
+	SelectedBackground->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UInventorySlot::Hide()
@@ -36,7 +38,6 @@ void UInventorySlot::SetObjectSlot(const FObjectInteraction& Object)
 	SetImageSlot(ObjectSlot.Thumbnail);
 
 	SetTitleSlot(ObjectSlot.Name);
-
 }
 
 
@@ -52,4 +53,18 @@ void UInventorySlot::SetTitleSlot(FText Title)
 	if (TitleText == nullptr) return;
 
 	TitleText->SetText(Title);
+}
+
+
+void UInventorySlot::Select()
+{
+	UnSelectedBackground->SetVisibility(ESlateVisibility::Hidden);
+	SelectedBackground->SetVisibility(ESlateVisibility::Visible);
+
+}
+
+void UInventorySlot::UnSelect()
+{
+	UnSelectedBackground->SetVisibility(ESlateVisibility::Visible);
+	SelectedBackground->SetVisibility(ESlateVisibility::Hidden);
 }

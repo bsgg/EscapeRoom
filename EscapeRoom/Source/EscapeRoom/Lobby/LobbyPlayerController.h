@@ -4,9 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-
 #include "Utils/Definitions.h"
-
 #include "LobbyPlayerController.generated.h"
 
 /**
@@ -48,16 +46,8 @@ public:
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
-
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_UpdateInGameSlotUI(const FObjectInteraction& Object);
-
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_UpdateInGameInventoryUI(const TArray<FObjectInteraction>& Objects);
-
+	
 	// GAMEPLAY ROOM IMPLEMENTATION
-
-
 
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
@@ -66,12 +56,17 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_CloseInventory();
 
-	FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }
-	
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_NavigateInventory(EDirectionType Direction);
+
+	//FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }
+
 
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
 	class UInGamePlayer* InGameUI;
+
+	// TODO CREATE PAUSE MENU
 
 private:
 	TSubclassOf<class UUserWidget> LobbyMenuClass;
@@ -80,6 +75,5 @@ private:
 	UPROPERTY(Replicated)
 	TArray<FCharacterType> AvalaibleCharacters;	
 
-	TSubclassOf<class UUserWidget> InGameUIClass;
-	
+	TSubclassOf<class UUserWidget> InGameUIClass;	
 };

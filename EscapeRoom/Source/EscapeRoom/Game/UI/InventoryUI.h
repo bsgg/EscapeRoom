@@ -21,6 +21,9 @@ private:
 public:
 	void Show(const TArray<FObjectInteraction>& Objects);
 	void Hide();
+
+	void Navigate(EDirectionType Direction);
+
 	
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -28,7 +31,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UUniformGridPanel* InventoryGrid;
-
 
 	// Slots
 	TArray<class UInventorySlot*> Slots;
@@ -59,6 +61,17 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_8;
+
+	int ColumnNumber = 3;
+	int RowNumber = 3;
+
+
+	int SelectedSlotID = -1;
+
+	int SelectedColumnSlot = -1;
+	int SelectedRowSlot = -1;	
+
+	int ObjectNumberInInventory = -1;
 
 
 };

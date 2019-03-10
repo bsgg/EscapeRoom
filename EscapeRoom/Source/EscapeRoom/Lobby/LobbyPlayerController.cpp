@@ -205,21 +205,8 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 	}
 }
 
-/*
-void ALobbyPlayerController::Client_UpdateInGameSlotUI_Implementation(const FObjectInteraction& Object)
-{
-	if (InGameUI == nullptr) return;
 
-	InGameUI->AddObjectToInventory(Object);
-}
 
-void ALobbyPlayerController::Client_UpdateInGameInventoryUI_Implementation(const TArray<FObjectInteraction>& Objects)
-{
-	if (InGameUI == nullptr) return;
-
-	InGameUI->UpdateInventory(Objects);
-}
-*/
 
 void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FObjectInteraction>& Objects)
 {
@@ -234,6 +221,19 @@ void ALobbyPlayerController::Client_CloseInventory_Implementation()
 
 	InGameUI->HideInventory();
 }
+
+
+void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionType Direction)
+{
+	// Create UI
+	if (InGameUI == nullptr) return;
+
+	InGameUI->NavigateInventory(Direction);
+}
+
+
+
+
 
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
