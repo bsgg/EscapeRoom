@@ -16,7 +16,7 @@
 #include "Game/GameLogic/UseInteractive.h"
 
 //#include "Game/Pickup.h"
-#include "Game/RoomGameMode.h"
+#include "Game/RoomGameMode.h" 
 #include "Utils/Definitions.h"
 
 #include "Materials/Material.h"
@@ -78,9 +78,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);

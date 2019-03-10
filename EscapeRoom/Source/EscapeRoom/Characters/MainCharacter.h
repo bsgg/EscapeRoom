@@ -58,14 +58,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Events")
 	TArray<FObjectInteraction> GetObjectsInInventory() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void MoveForward(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void MoveRight(float Value);
+
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
-	void MoveForward(float Value);
-
-	void MoveRight(float Value);
+	
 
 	
 	// Inspect Action
