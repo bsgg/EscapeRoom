@@ -4,7 +4,7 @@
 #include "UnrealNetwork.h"
 
 //This function is like PostInitAnimtree in UE3
-void UCharacterAnimator::NativeInitializeAnimation()
+void UCharacterAnimator::NativeInitializeAnimation() 
 {
 	//Very Important Line
 	Super::NativeInitializeAnimation();

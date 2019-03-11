@@ -7,6 +7,9 @@
 #include "Utils/Definitions.h"
 #include "InventoryUI.generated.h"
 
+
+const static int COLUMNS = 3;
+const static int ROWS = 3;
 /**
  * 
  */
@@ -24,8 +27,10 @@ public:
 
 	void Navigate(EDirectionType Direction);
 
+	void OnSelectItem();
 	
 protected:
+
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* DescriptionSlot;
 
@@ -34,7 +39,6 @@ protected:
 
 	// Slots
 	TArray<class UInventorySlot*> Slots;
-
 
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_0;
@@ -66,12 +70,15 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* SelectedObject;
 
-	int ColumnNumber = 3;
-	int RowNumber = 3;
-
-	int SelectedSlotID = -1;
-	int SelectedColumnSlot = -1;
-	int SelectedRowSlot = -1;	
+private:
 
 	int ObjectNumberInInventory = 0;
+	int SelectedColumnSlot = -1;
+	int SelectedRowSlot = -1;
+	int CurrentSlotIndex = -1;
+
+	int CombineSlotAIndex = -1;
+	int CombineSlotBIndex = -1;
+
+	int GetClampedIndex();
 };

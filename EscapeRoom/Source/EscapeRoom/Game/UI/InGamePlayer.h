@@ -56,6 +56,8 @@ public:
 
 	void NavigateInventory(EDirectionType Direction);
 
+	void OnSelectItemInventory();
+
 
 	void ShowSelectedObject(const FObjectInteraction& Object);
 

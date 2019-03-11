@@ -59,6 +59,9 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_NavigateInventory(EDirectionType Direction);
 
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_OnSelectItemInInventory();
+
 	//FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }
 
 

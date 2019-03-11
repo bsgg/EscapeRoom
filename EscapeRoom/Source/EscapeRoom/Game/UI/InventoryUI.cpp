@@ -34,7 +34,13 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 {
 	ObjectNumberInInventory = Objects.Num();	
 
+	// No objects selected
+	CombineSlotAIndex = -1;
+	CombineSlotBIndex = -1;
+
 	SetVisibility(ESlateVisibility::Visible);		
+
+	SelectedObject->Hide();
 
 	for (int i = 0, iObject = 0; i < Slots.Num(); i++, iObject++)
 	{
@@ -50,20 +56,14 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 		}
 	}
 
+	
+
 	if (ObjectNumberInInventory > 0)
 	{
-		SelectedSlotID = 0;
 		SelectedColumnSlot = 0;
 		SelectedRowSlot = 0;
-		Slots[SelectedSlotID]->Select();
-
-		SelectedObject->Show();
-		SelectedObject->SetObjectSlot(Objects[SelectedSlotID]);
-		SelectedObject->UnSelect();
-	}
-	else
-	{
-		SelectedObject->Hide();
+		CurrentSlotIndex = 0;
+		Slots[CurrentSlotIndex]->Select();
 	}
 	   
 	if (DescriptionSlot != nullptr)
@@ -79,9 +79,9 @@ void UInventoryUI::Hide()
 void UInventoryUI::Navigate(EDirectionType Direction)
 {
 	// Deselect current slot
-	if ((SelectedSlotID > -1) && (SelectedSlotID < ObjectNumberInInventory))
+	if ((CurrentSlotIndex > -1) && (CurrentSlotIndex < ObjectNumberInInventory))
 	{
-		Slots[SelectedSlotID]->UnSelect();
+		Slots[CurrentSlotIndex]->UnSelect();
 	}
 
 	switch (Direction)
@@ -100,19 +100,77 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 		break;	
 	}
 
-	// Clamp selected column Row
-	SelectedRowSlot = FMath::Clamp(SelectedRowSlot, 0, RowNumber - 1);
-	SelectedColumnSlot = FMath::Clamp(SelectedColumnSlot, 0, ColumnNumber - 1);	
+	// Clamp selected column and selected row
+	SelectedRowSlot = FMath::Clamp(SelectedRowSlot, 0, ROWS - 1);
+	SelectedColumnSlot = FMath::Clamp(SelectedColumnSlot, 0, COLUMNS - 1);
 
-	SelectedSlotID = SelectedColumnSlot + (SelectedRowSlot * ColumnNumber);
-	SelectedSlotID = FMath::Clamp(SelectedSlotID, 0, ObjectNumberInInventory - 1);
+	CurrentSlotIndex = GetClampedIndex();
+	Slots[CurrentSlotIndex]->Select();
 
-	Slots[SelectedSlotID]->Select();
-	SelectedObject->SetObjectSlot(Slots[SelectedSlotID]->GetObjectSlot());
+	// TODO: If not object A selected show description of CurrentSlotIndex
 
-	if (DescriptionSlot != nullptr)
+	// TODO: If object A selected set B description combine with...
+}
+
+int UInventoryUI::GetClampedIndex()
+{
+	int index = (SelectedColumnSlot + (SelectedRowSlot * COLUMNS));
+	index = FMath::Clamp(index, 0, ObjectNumberInInventory - 1);
+	return index;
+}
+
+void UInventoryUI::OnSelectItem()
+{
+	if (ObjectNumberInInventory == 0) return;
+
+	// Object A Not selected, select this object
+	if (CombineSlotAIndex == -1)
 	{
-		FText DescSlot = Slots[SelectedSlotID]->GetObjectSlot().Description;
+		CombineSlotAIndex = GetClampedIndex(); 
+
+		SelectedObject->SetObjectSlot(Slots[CombineSlotAIndex]->GetObjectSlot());		
+
+		FText DescSlot = Slots[CombineSlotAIndex]->GetObjectSlot().Description;
 		DescriptionSlot->SetText(DescSlot);
+
+		SelectedObject->Show();
 	}
+
+	// Object A Selected
+	if (CombineSlotAIndex != -1)
+	{
+		// Same ID, toggle selection
+		int index = GetClampedIndex();
+
+		if (index == CombineSlotAIndex)
+		{
+			Slots[CombineSlotAIndex]->UnSelect();
+			SelectedObject->Hide();
+			DescriptionSlot->SetText(FText::FromString(""));
+
+			CombineSlotAIndex = -1;
+		}
+	}
+
+
+	/*else
+	{
+		// First item is selected
+		// Check if current one is the same item
+		int index = GetClampedIndex();
+
+		if (index != CombineSlotAIndex)
+		{
+			CombineSlotBIndex = index;
+
+			FString ObjectBName = Slots[CombineSlotBIndex]->GetObjectSlot().Name.ToString();;
+
+			FString ObjectAName = Slots[CombineSlotAIndex]->GetObjectSlot().Name.ToString();
+
+			FString DesCombination = ObjectAName + " Combine with " + ObjectBName;
+
+			DescriptionSlot->SetText(FText::FromString(DesCombination));
+		}
+	}*/
+
 }

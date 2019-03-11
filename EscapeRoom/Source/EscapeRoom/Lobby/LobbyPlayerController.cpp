@@ -231,6 +231,13 @@ void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionT
 	InGameUI->NavigateInventory(Direction);
 }
 
+void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->OnSelectItemInventory();
+}
+
 
 
 
