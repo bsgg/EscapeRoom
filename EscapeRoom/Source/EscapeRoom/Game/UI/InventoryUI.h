@@ -8,8 +8,8 @@
 #include "InventoryUI.generated.h"
 
 
-const static int COLUMNS = 3;
-const static int ROWS = 3;
+const static int COLUMNS = 4;
+const static int ROWS = 2;
 /**
  * 
  */
@@ -64,11 +64,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_7;
 
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot_8;
 
 	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* SelectedObject;
+	class UInventorySlot* CombineSlotA;
+
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* CombineSlotB;
 
 private:
 
@@ -77,8 +78,8 @@ private:
 	int SelectedRowSlot = -1;
 	int CurrentSlotIndex = -1;
 
-	int CombineSlotAIndex = -1;
-	int CombineSlotBIndex = -1;
+	//int CombineSlotAIndex = -1;
+	//int CombineSlotBIndex = -1;
 
 	int GetClampedIndex();
 };

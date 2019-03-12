@@ -20,7 +20,6 @@ bool UInventoryUI::Initialize()
 	Slots.Add(Slot_5);
 	Slots.Add(Slot_6);
 	Slots.Add(Slot_7);
-	Slots.Add(Slot_8);
 
 	for (int i = 0; i < Slots.Num(); i++)
 	{
@@ -32,40 +31,41 @@ bool UInventoryUI::Initialize()
 
 void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 {
-	ObjectNumberInInventory = Objects.Num();	
-
-	// No objects selected
-	CombineSlotAIndex = -1;
-	CombineSlotBIndex = -1;
+	ObjectNumberInInventory = Objects.Num();		
 
 	SetVisibility(ESlateVisibility::Visible);		
 
-	SelectedObject->Hide();
+	// No objects to combine
+	CombineSlotA->SetToDefault();
+	CombineSlotB->SetToDefault();
+	CombineSlotA->SetIndex(-1);
+	CombineSlotB->SetIndex(-1);
 
+	// Show all slots
 	for (int i = 0, iObject = 0; i < Slots.Num(); i++, iObject++)
 	{
+		Slots[i]->SetIndex(iObject);
+
 		if (iObject < Objects.Num())
 		{
 			Slots[i]->SetObjectSlot(Objects[iObject]);
 
 			Slots[i]->Show();
+
+			Slots[i]->UnHighlight();
 		}
 		else
 		{
-			Slots[i]->Hide();
+			Slots[i]->SetToDefault();
+
+			Slots[i]->Show();
 		}
-	}
+	}	
 
-	
-
-	if (ObjectNumberInInventory > 0)
-	{
-		SelectedColumnSlot = 0;
-		SelectedRowSlot = 0;
-		CurrentSlotIndex = 0;
-		Slots[CurrentSlotIndex]->Select();
-	}
-	   
+	SelectedColumnSlot = -1;
+	SelectedRowSlot = -1;
+	CurrentSlotIndex = -1;
+		   
 	if (DescriptionSlot != nullptr)
 	{
 		DescriptionSlot->SetText(FText::FromString(""));
@@ -81,7 +81,7 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 	// Deselect current slot
 	if ((CurrentSlotIndex > -1) && (CurrentSlotIndex < ObjectNumberInInventory))
 	{
-		Slots[CurrentSlotIndex]->UnSelect();
+		Slots[CurrentSlotIndex]->UnHighlight();
 	}
 
 	switch (Direction)
@@ -105,7 +105,22 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 	SelectedColumnSlot = FMath::Clamp(SelectedColumnSlot, 0, COLUMNS - 1);
 
 	CurrentSlotIndex = GetClampedIndex();
-	Slots[CurrentSlotIndex]->Select();
+	Slots[CurrentSlotIndex]->Highlight();
+
+	if (CombineSlotA->GetIndex() != -1)
+	{
+		FString NameObjectA = CombineSlotA->GetObjectSlot().Name.ToString();
+		FString NameObjectB = Slots[CurrentSlotIndex]->GetObjectSlot().Name.ToString();
+		FString Text = NameObjectA + " Combine with " + NameObjectB;
+
+		DescriptionSlot->SetText(FText::FromString(Text));
+	}
+	else
+	{
+		FText Desc = Slots[CurrentSlotIndex]->GetObjectSlot().Description;
+		DescriptionSlot->SetText(Desc);
+	}
+	
 
 	// TODO: If not object A selected show description of CurrentSlotIndex
 
@@ -123,54 +138,31 @@ void UInventoryUI::OnSelectItem()
 {
 	if (ObjectNumberInInventory == 0) return;
 
-	// Object A Not selected, select this object
-	if (CombineSlotAIndex == -1)
+	if (CombineSlotA->GetIndex() == -1)
 	{
-		CombineSlotAIndex = GetClampedIndex(); 
+		CombineSlotA->SetIndex(CurrentSlotIndex);
+		CombineSlotA->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
+		CombineSlotA->Highlight();
 
-		SelectedObject->SetObjectSlot(Slots[CombineSlotAIndex]->GetObjectSlot());		
+		FString NameObjectA = CombineSlotA->GetObjectSlot().Name.ToString();
+		FString Text = NameObjectA + " Combine with ";
 
-		FText DescSlot = Slots[CombineSlotAIndex]->GetObjectSlot().Description;
-		DescriptionSlot->SetText(DescSlot);
-
-		SelectedObject->Show();
+		DescriptionSlot->SetText(FText::FromString("Text"));
 	}
-
-	// Object A Selected
-	if (CombineSlotAIndex != -1)
+	else if (CombineSlotA->GetIndex() == CurrentSlotIndex)
 	{
-		// Same ID, toggle selection
-		int index = GetClampedIndex();
+		CombineSlotA->SetToDefault();
+		CombineSlotA->SetIndex(-1);
 
-		if (index == CombineSlotAIndex)
-		{
-			Slots[CombineSlotAIndex]->UnSelect();
-			SelectedObject->Hide();
-			DescriptionSlot->SetText(FText::FromString(""));
-
-			CombineSlotAIndex = -1;
-		}
+		CombineSlotB->SetToDefault();
+		CombineSlotB->SetIndex(-1);		
 	}
-
-
-	/*else
+	/*else if (CombineSlotB->GetIndex() == -1)
 	{
-		// First item is selected
-		// Check if current one is the same item
-		int index = GetClampedIndex();
+		CombineSlotB->SetIndex(CurrentSlotIndex);
+		CombineSlotB->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
+		CombineSlotB->Highlight();
 
-		if (index != CombineSlotAIndex)
-		{
-			CombineSlotBIndex = index;
-
-			FString ObjectBName = Slots[CombineSlotBIndex]->GetObjectSlot().Name.ToString();;
-
-			FString ObjectAName = Slots[CombineSlotAIndex]->GetObjectSlot().Name.ToString();
-
-			FString DesCombination = ObjectAName + " Combine with " + ObjectBName;
-
-			DescriptionSlot->SetText(FText::FromString(DesCombination));
-		}
+		// TODO:: Check combination
 	}*/
-
 }

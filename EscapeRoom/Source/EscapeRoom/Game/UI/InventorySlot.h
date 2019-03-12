@@ -29,32 +29,43 @@ protected:
 	class UImage* Thumbnail;
 
 	UPROPERTY(meta = (BindWidget))
-	class UImage* UnSelectedBackground;
-
-	UPROPERTY(meta = (BindWidget))
-	class UImage* SelectedBackground;
-
-	bool bIsEmpty = true;
+	class UImage* Background;
 
 	UPROPERTY()
 	FObjectInteraction ObjectSlot;
 
+	int index;
+
 public:
-	void Show();
 
-	void Hide();
+	FORCEINLINE int GetIndex() const { return index; };
 
-	void Select();
+	FORCEINLINE FObjectInteraction GetObjectSlot() const { return ObjectSlot; }
 
-	void UnSelect();
+	void SetIndex(int in_index);
 
 	void SetObjectSlot(const FObjectInteraction& Object);
+
+	void SetToDefault();
+
+	void Show();
+
+	void Hide();	
+
+	void Highlight();
+
+	void UnHighlight();
+	
 
 	void SetTitleSlot(FText Message);
 
 	void SetImageSlot(UTexture2D* Image);
 
-	FORCEINLINE bool IsEmpty() const { return bIsEmpty;}	
 
-	FORCEINLINE FObjectInteraction GetObjectSlot() const { return ObjectSlot; }
+
+
+	void Select();
+
+	void UnSelect();
+	
 };

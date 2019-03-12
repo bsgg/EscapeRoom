@@ -12,7 +12,7 @@
 
 #include "Game/GameLogic/InteractiveBase.h"
 #include "Game/GameLogic/PickupInteractive.h"
-#include "Game/GameLogic/SwitchInteractive.h"
+#include "Game/GameLogic/SwitchInteractive.h" 
 #include "Game/GameLogic/UseInteractive.h"
 
 //#include "Game/Pickup.h"
