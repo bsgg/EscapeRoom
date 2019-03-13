@@ -12,7 +12,6 @@ bool UInventorySlot::Initialize()
 
 	if (!Success) return false;
 
-
 	return true;
 }
 
@@ -36,8 +35,6 @@ void UInventorySlot::SetObjectSlot(const FObjectInteraction& Object)
 	ObjectSlot = Object;
 
 	SetImageSlot(ObjectSlot.Thumbnail);
-
-	SetTitleSlot(ObjectSlot.Name);	
 }
 
 void UInventorySlot::SetToDefault()
@@ -45,8 +42,6 @@ void UInventorySlot::SetToDefault()
 	if (Thumbnail == nullptr) return;
 
 	Thumbnail->SetVisibility(ESlateVisibility::Hidden);
-
-	SetTitleSlot(FText::FromString(""));
 
 	UnHighlight();
 }
@@ -61,36 +56,21 @@ void UInventorySlot::SetImageSlot(UTexture2D* Image)
 	Thumbnail->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UInventorySlot::SetTitleSlot(FText Title)
-{
-	if (TitleText == nullptr) return;
-
-	TitleText->SetText(Title);
-}
-
 
 void UInventorySlot::Highlight()
 {
-	if (Background == nullptr) return;
+	if ((Background == nullptr) || (Background1 == nullptr)) return;
 
-	Background->SetColorAndOpacity(FLinearColor(0.17, 0.69, 1, 1));
+	Background->SetVisibility(ESlateVisibility::Hidden);
+	Background1->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UInventorySlot::UnHighlight()
 {
-	if (Background == nullptr) return;
+	if ((Background == nullptr) || (Background1 == nullptr)) return;
 
-	Background->SetColorAndOpacity(FLinearColor(1, 1, 1, 1));
+	Background->SetVisibility(ESlateVisibility::Visible);
+	Background1->SetVisibility(ESlateVisibility::Hidden);
 }
 
-
-void UInventorySlot::Select()
-{
-
-}
-
-void UInventorySlot::UnSelect()
-{
-
-}
 

@@ -18,8 +18,6 @@ bool UInventoryUI::Initialize()
 	Slots.Add(Slot_3);
 	Slots.Add(Slot_4);
 	Slots.Add(Slot_5);
-	Slots.Add(Slot_6);
-	Slots.Add(Slot_7);
 
 	for (int i = 0; i < Slots.Num(); i++)
 	{
@@ -35,11 +33,11 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 
 	SetVisibility(ESlateVisibility::Visible);		
 
-	// No objects to combine
+
 	CombineSlotA->SetToDefault();
-	CombineSlotB->SetToDefault();
+
 	CombineSlotA->SetIndex(-1);
-	CombineSlotB->SetIndex(-1);
+
 
 	// Show all slots
 	for (int i = 0, iObject = 0; i < Slots.Num(); i++, iObject++)
@@ -62,8 +60,6 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 		}
 	}	
 
-	SelectedColumnSlot = -1;
-	SelectedRowSlot = -1;
 	CurrentSlotIndex = -1;
 		   
 	if (DescriptionSlot != nullptr)
@@ -78,6 +74,8 @@ void UInventoryUI::Hide()
 
 void UInventoryUI::Navigate(EDirectionType Direction)
 {
+	if (ObjectNumberInInventory == 0) return;
+
 	// Deselect current slot
 	if ((CurrentSlotIndex > -1) && (CurrentSlotIndex < ObjectNumberInInventory))
 	{
@@ -85,26 +83,18 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 	}
 
 	switch (Direction)
-	{
-		case EDirectionType::VE_UP:
-			SelectedRowSlot -= 1;
-		break;
-		case EDirectionType::VE_DOWN:
-			SelectedRowSlot += 1;
-		break;
+	{		
 		case EDirectionType::VE_RIGHT:
-			SelectedColumnSlot += 1;
+			CurrentSlotIndex += 1;
 		break;
 		case EDirectionType::VE_LEFT:
-			SelectedColumnSlot -= 1;
+			CurrentSlotIndex -= 1;
 		break;	
 	}
 
 	// Clamp selected column and selected row
-	SelectedRowSlot = FMath::Clamp(SelectedRowSlot, 0, ROWS - 1);
-	SelectedColumnSlot = FMath::Clamp(SelectedColumnSlot, 0, COLUMNS - 1);
+	CurrentSlotIndex = FMath::Clamp(CurrentSlotIndex, 0, ObjectNumberInInventory - 1);
 
-	CurrentSlotIndex = GetClampedIndex();
 	Slots[CurrentSlotIndex]->Highlight();
 
 	if (CombineSlotA->GetIndex() != -1)
@@ -127,12 +117,6 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 	// TODO: If object A selected set B description combine with...
 }
 
-int UInventoryUI::GetClampedIndex()
-{
-	int index = (SelectedColumnSlot + (SelectedRowSlot * COLUMNS));
-	index = FMath::Clamp(index, 0, ObjectNumberInInventory - 1);
-	return index;
-}
 
 void UInventoryUI::OnSelectItem()
 {
@@ -154,8 +138,8 @@ void UInventoryUI::OnSelectItem()
 		CombineSlotA->SetToDefault();
 		CombineSlotA->SetIndex(-1);
 
-		CombineSlotB->SetToDefault();
-		CombineSlotB->SetIndex(-1);		
+		//CombineSlotB->SetToDefault();
+		//CombineSlotB->SetIndex(-1);		
 	}
 	/*else if (CombineSlotB->GetIndex() == -1)
 	{

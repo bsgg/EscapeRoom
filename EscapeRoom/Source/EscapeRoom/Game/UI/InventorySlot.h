@@ -23,13 +23,13 @@ protected:
 	UPanelWidget* SlotBox;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* TitleText;
-
-	UPROPERTY(meta = (BindWidget))
 	class UImage* Thumbnail;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Background;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* Background1;
 
 	UPROPERTY()
 	FObjectInteraction ObjectSlot;
@@ -55,17 +55,9 @@ public:
 	void Highlight();
 
 	void UnHighlight();
-	
-
-	void SetTitleSlot(FText Message);
 
 	void SetImageSlot(UTexture2D* Image);
 
 
-
-
-	void Select();
-
-	void UnSelect();
 	
 };
