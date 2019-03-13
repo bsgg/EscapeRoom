@@ -8,7 +8,7 @@
 
 #include "Game/RoomGameMode.h"
 #include "Game/UI/InGamePlayer.h"
-
+#include "Game/UI/InventoryUI.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 
@@ -235,13 +235,25 @@ void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
 {
 	if (InGameUI == nullptr) return;
 
-	InGameUI->OnSelectItemInventory();
+	if (InGameUI->GetInventory() == nullptr) return;	
+
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation]"));
+	
+
+	if (InGameUI->GetInventory()->IsReadyToCombine())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] Ready to combine"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] OnSelectItem "));
+
+		InGameUI->GetInventory()->OnSelectItem();
+	}
+
+	//InGameUI->OnSelectItemInventory();
 }
-
-
-
-
-
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

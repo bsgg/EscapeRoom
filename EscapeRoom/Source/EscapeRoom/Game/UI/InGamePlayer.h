@@ -40,6 +40,7 @@ protected:
 
 	class ALobbyPlayerController* PlayerController;
 
+
 public:
 	void SetPortrait(ECharacterType Character);
 
@@ -57,6 +58,9 @@ public:
 	void NavigateInventory(EDirectionType Direction);
 
 	void OnSelectItemInventory();
+
+	FORCEINLINE class UInventoryUI* GetInventory() const { return Inventory; }
+
 
 
 	void ShowSelectedObject(const FObjectInteraction& Object);

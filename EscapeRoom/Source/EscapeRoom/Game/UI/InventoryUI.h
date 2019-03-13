@@ -27,6 +27,12 @@ public:
 	void Navigate(EDirectionType Direction);
 
 	void OnSelectItem();
+
+	FName GetObjectIDToCombineA();
+	FName GetObjectIDToCombineB();
+
+	bool IsReadyToCombine() const;
+
 	
 protected:
 
@@ -55,8 +61,7 @@ protected:
 	class UInventorySlot* Slot_4;
 
 	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* Slot_5;
-	
+	class UInventorySlot* Slot_5;	
 
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* CombineSlotA;
@@ -65,4 +70,7 @@ private:
 
 	int ObjectNumberInInventory = 0;
 	int CurrentSlotIndex = -1;
+
+	int ObjectBSlotIndex = -1;
+	bool bReadyToCombine;
 };

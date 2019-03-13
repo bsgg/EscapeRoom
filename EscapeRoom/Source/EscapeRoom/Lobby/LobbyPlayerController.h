@@ -62,8 +62,6 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_OnSelectItemInInventory();
 
-	//FORCEINLINE class UInGamePlayer* GetPlayerUI() const { return InGameUI; }
-
 
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
