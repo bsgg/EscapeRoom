@@ -16,8 +16,6 @@ void APickupInteractive::BeginPlay()
 {
 	Super::BeginPlay();	
 
-	UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::BeginPlay]"));
-
 	if (PickupAction.IsActive)
 	{		
 		PickupMesh->SetVisibility(true, true);
@@ -31,18 +29,15 @@ void APickupInteractive::BeginPlay()
 
 void APickupInteractive::PickupObject()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[APickupInteractive::PickupObject]"));
-
 	PickupAction.ObjectID = "None";
 
 	PickupAction.IsActive = false;
 	
 	OnRep_PickupActionChanged();
 
-	Definition.IsDefaultDetailInspectActive = true;
-
-	
+	Definition.IsDefaultDetailInspectActive = true;	
 }
+
 void APickupInteractive::OnRep_DefinitionChanged(FInteractiveDefinition PreviousData)
 {
 	Super::OnRep_DefinitionChanged(PreviousData);

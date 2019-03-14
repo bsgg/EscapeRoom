@@ -15,7 +15,6 @@ AUseInteractive::AUseInteractive()
 void AUseInteractive::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("[AUseInteractive::BeginPlay]"));
 
 }
 

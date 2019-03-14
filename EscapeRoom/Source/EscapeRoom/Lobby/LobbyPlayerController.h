@@ -63,6 +63,9 @@ public:
 	void Client_OnSelectItemInInventory();
 
 
+	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
+
+
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
 	class UInGamePlayer* InGameUI;
@@ -77,4 +80,10 @@ private:
 	TArray<FCharacterType> AvalaibleCharacters;	
 
 	TSubclassOf<class UUserWidget> InGameUIClass;	
+
+	UPROPERTY(EditDefaultsOnly)
+	class UDataTable* ObjectDB; // Objects database database
+
+	UPROPERTY(EditDefaultsOnly)
+	class UDataTable* ObjectCombinationDB; // Objects database database
 };

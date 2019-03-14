@@ -9,8 +9,12 @@
 #include "Game/RoomGameMode.h"
 #include "Game/UI/InGamePlayer.h"
 #include "Game/UI/InventoryUI.h"
+
+
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
+
+
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
@@ -206,8 +210,6 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 }
 
 
-
-
 void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FObjectInteraction>& Objects)
 {
 	if (InGameUI == nullptr) return;
@@ -237,13 +239,32 @@ void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
 
 	if (InGameUI->GetInventory() == nullptr) return;	
 
-
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation]"));
-	
 
 	if (InGameUI->GetInventory()->IsReadyToCombine())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] Ready to combine"));
+
+		FName idObjectA = InGameUI->GetInventory()->GetObjectIDToCombineA();
+		FName idObjectB = InGameUI->GetInventory()->GetObjectIDToCombineB();
+
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] idObjectA: %s  - idObjectB: %s  "), *idObjectA.ToString(), *idObjectB.ToString());
+
+		FObjectInteraction* newObject = FindCombinedObject(idObjectA, idObjectB);
+
+		if (newObject)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::OnSelectItemInInventory] newObject found %s"), *newObject->Name.ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::OnSelectItemInInventory] newObject not found"));
+		}
+
+
+		
+
+
 	}
 	else
 	{
@@ -254,6 +275,54 @@ void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
 
 	//InGameUI->OnSelectItemInventory();
 }
+
+FObjectInteraction* ALobbyPlayerController::FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const
+{
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] ObjectID_A %s - ObjectID_B %s"), *ObjectID_A.ToString(), *ObjectID_B.ToString());
+
+	if ((ObjectCombinationDB == nullptr) || (ObjectDB == nullptr)) return nullptr;
+
+	FName CombinedObjectID;
+
+	TArray<FName> RowNames = ObjectCombinationDB->GetRowNames();
+	bool CombinationFound = false;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] RowNamesNum %i "), RowNames.Num());
+
+	for (auto& Name : RowNames) // Iterate throught combinations
+	{
+		FObjectCombination* Row = ObjectCombinationDB->FindRow<FObjectCombination>(Name, TEXT("Object"));
+		if (Row)
+		{
+			// Check if both ID are contained
+
+			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] Combination Row found %s - %s  "), *Row->ObjectID_A.ToString(), *Row->ObjectID_B.ToString());
+
+			bool firstComb = (Row->ObjectID_A.ToString().Trim() == ObjectID_A.ToString().Trim()) && (Row->ObjectID_B.ToString().Trim() == ObjectID_B.ToString().Trim());
+			bool inverse = (Row->ObjectID_A.ToString().Trim() == ObjectID_B.ToString().Trim()) && (Row->ObjectID_B.ToString().Trim() == ObjectID_A.ToString().Trim());
+
+			if (firstComb || inverse)	
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] Same %s - %s  "), *ObjectID_A.ToString(), *ObjectID_B.ToString());
+
+				CombinedObjectID = Row->ObjectID_Result;
+				CombinationFound = true;
+				break;
+			}
+		}
+	}
+
+	if (CombinationFound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] CombinationFound %s"), *CombinedObjectID.ToString());
+
+		return (ObjectDB->FindRow<FObjectInteraction>(CombinedObjectID, TEXT("Object"), true));
+	}
+
+	return nullptr;
+}
+
+
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

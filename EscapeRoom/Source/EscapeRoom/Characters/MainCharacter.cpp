@@ -200,7 +200,14 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 
 	if (Obj == nullptr) return false;
 
-	if (Obj->ObjectType == EObjectType::VE_COMPLETE)
+	InventoryComponent->AddObject(ObjID, *Obj);
+
+	TArray<FObjectInteraction> Objects;
+	Objects.Add(*Obj);
+
+	return true;
+
+	/*if (Obj->ObjectType == EObjectType::VE_COMPLETE)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] %s: VE_COMPLETE"), *Obj->Name.ToString());
 
@@ -266,6 +273,7 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 	}
 
 	return false;
+	*/
 }
 
 void AMainCharacter::DoInteractAction()
@@ -311,19 +319,19 @@ void AMainCharacter::DoInteractAction()
 	AUseInteractive* UseInteractive = Cast<AUseInteractive>(OverlappedInteractive);
 	if (UseInteractive != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s is UseInteractive"), *UseInteractive->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s is UseInteractive"), *UseInteractive->GetName());
 		if (UseInteractive->GetUseAction().IsActive)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive UseAction Active"));
+			//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive UseAction Active"));
 
 			if (UseInteractive->GetUseAction().HasObject())
 			{
 				// Check if the player has the object on the inventory
 
-				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
+				//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
 				if (InventoryComponent->CheckIfObjectExists(UseInteractive->GetUseAction().ObjectID))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Object exists in inventory"));
+					//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Object exists in inventory"));
 
 					// Remove object from inventory
 					InventoryComponent->RemoveObject(UseInteractive->GetUseAction().ObjectID);
@@ -350,7 +358,7 @@ void AMainCharacter::DoInteractAction()
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Doesn't need an object"));
+				//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Doesn't need an object"));
 
 				UseInteractive->Use();
 
@@ -364,7 +372,7 @@ void AMainCharacter::DoInteractAction()
 		}
 		else if ((UseInteractive->GetPickupAction().IsActive) && (UseInteractive->GetPickupAction().HasObject()))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, PickupAction Is Active And Has Object"));
+			//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, PickupAction Is Active And Has Object"));
 
 			FName ObjectID = UseInteractive->GetPickupAction().ObjectID;
 

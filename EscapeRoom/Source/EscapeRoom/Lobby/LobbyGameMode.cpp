@@ -33,7 +33,7 @@ void ALobbyGameMode::ChangeCharacterStatus(ECharacterType Character)
 {
 	FString Char = GetEnumValueAsString<ECharacterType>("ECharacterType", Character);
 
-	UE_LOG(LogTemp, Warning, TEXT("[MakeCharacterUnavaliable] %s"), *Char);
+	//UE_LOG(LogTemp, Warning, TEXT("[MakeCharacterUnavaliable] %s"), *Char);
 
 	uint8 IndexCurrent = (uint8)Character;
 
@@ -41,13 +41,13 @@ void ALobbyGameMode::ChangeCharacterStatus(ECharacterType Character)
 	{
 		if (AvalaibleCharacters[IndexCurrent].bIsAvailable) // If that character was avaliable, set to false
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[MakeCharacterUnavaliable] Char = %s is available"), *Char);
+			//UE_LOG(LogTemp, Warning, TEXT("[MakeCharacterUnavaliable] Char = %s is available"), *Char);
 
 			AvalaibleCharacters[IndexCurrent].bIsAvailable = false;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[MakeCharacterUnavaliable] Char = %s is not available"), *Char);
+			//UE_LOG(LogTemp, Warning, TEXT("[MakeCharacterUnavaliable] Char = %s is not available"), *Char);
 
 			AvalaibleCharacters[IndexCurrent].bIsAvailable = true;
 		}
@@ -87,7 +87,7 @@ bool ALobbyGameMode::AllPlayersReady()
 
 void ALobbyGameMode::UpdateAllCharactersLobbyMenu()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[LobbyGameMode::UpdateMenuClients] PConnected: %i "), PlayerConnectedList.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("[LobbyGameMode::UpdateMenuClients] PConnected: %i "), PlayerConnectedList.Num());
 
 	for (ALobbyPlayerController* PC : PlayerConnectedList)
 	{

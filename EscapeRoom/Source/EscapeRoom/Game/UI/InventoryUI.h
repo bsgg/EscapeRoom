@@ -71,6 +71,8 @@ private:
 	int ObjectNumberInInventory = 0;
 	int CurrentSlotIndex = -1;
 
-	int ObjectBSlotIndex = -1;
 	bool bReadyToCombine;
+	int ObjecASlotIndex = -1;
+	int ObjectBSlotIndex = -1;
+	
 };

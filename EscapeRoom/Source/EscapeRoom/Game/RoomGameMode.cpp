@@ -206,10 +206,11 @@ FObjectInteraction* ARoomGameMode::FindCombinedObject(FName ObjectID_A, FName Ob
 
 	if (CombinationFound)
 	{
-		return nullptr;
+		return (ObjectDB->FindRow<FObjectInteraction>(CombinedObjectID, TEXT("Object"), true));
 	}
 
-	return (ObjectDB->FindRow<FObjectInteraction>(CombinedObjectID, TEXT("Object"), true));
+	return nullptr;
+	
 }
 
 
