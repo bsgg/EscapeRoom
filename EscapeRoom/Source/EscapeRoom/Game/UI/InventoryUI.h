@@ -40,6 +40,10 @@ protected:
 	class UTextBlock* DescriptionSlot;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* CombineText;
+	
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UUniformGridPanel* InventoryGrid;
 
 	// Slots
@@ -66,13 +70,16 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* CombineSlotA;
 
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* CombineSlotB;
+
 private:
 
 	int ObjectNumberInInventory = 0;
 	int CurrentSlotIndex = -1;
 
 	bool bReadyToCombine;
-	int ObjecASlotIndex = -1;
+	int ObjectASlotIndex = -1;
 	int ObjectBSlotIndex = -1;
 	
 };

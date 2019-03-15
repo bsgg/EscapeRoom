@@ -42,8 +42,6 @@ void UInventorySlot::SetToDefault()
 	if (Thumbnail == nullptr) return;
 
 	Thumbnail->SetVisibility(ESlateVisibility::Hidden);
-
-	UnHighlight();
 }
 
 
@@ -52,25 +50,36 @@ void UInventorySlot::SetImageSlot(UTexture2D* Image)
 	if ((Thumbnail == nullptr) || (Image == nullptr)) return;
 
 	Thumbnail->SetBrushFromTexture(Image);
-
+	
 	Thumbnail->SetVisibility(ESlateVisibility::Visible);
+
+	UnHighlight();
 }
 
 
 void UInventorySlot::Highlight()
 {
-	if ((Background == nullptr) || (Background1 == nullptr)) return;
+	if (Thumbnail == nullptr) return;
 
-	Background->SetVisibility(ESlateVisibility::Hidden);
-	Background1->SetVisibility(ESlateVisibility::Visible);
+	Thumbnail->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+
+	//if ((Background == nullptr) || (Background1 == nullptr)) return;
+
+	//Background->SetVisibility(ESlateVisibility::Hidden);
+	//Background1->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UInventorySlot::UnHighlight()
 {
-	if ((Background == nullptr) || (Background1 == nullptr)) return;
+	if (Thumbnail == nullptr) return;
 
-	Background->SetVisibility(ESlateVisibility::Visible);
-	Background1->SetVisibility(ESlateVisibility::Hidden);
+	Thumbnail->SetColorAndOpacity(FLinearColor(0.1f, 0.1f, 0.1f, 1.0f));
+
+	//if ((Background == nullptr) || (Background1 == nullptr)) return;
+
+
+	//Background->SetVisibility(ESlateVisibility::Visible);
+	//Background1->SetVisibility(ESlateVisibility::Hidden);
 }
 
 

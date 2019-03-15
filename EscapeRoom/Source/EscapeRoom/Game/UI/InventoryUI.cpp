@@ -31,11 +31,9 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 {
 	ObjectNumberInInventory = Objects.Num();		
 
-	SetVisibility(ESlateVisibility::Visible);		
+	SetVisibility(ESlateVisibility::Visible);	
 
-
-	CombineSlotA->SetToDefault();
-
+	
 	//CombineSlotA->SetIndex(-1);
 
 
@@ -61,9 +59,22 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 	}	
 
 	CurrentSlotIndex = -1;
+	
+
+	CombineSlotA->SetToDefault();
+	CombineSlotB->SetToDefault();
+
 	bReadyToCombine = false;
+	ObjectASlotIndex = -1;
 	ObjectBSlotIndex = -1;
-	ObjecASlotIndex = 1;
+	
+
+	if (ObjectNumberInInventory > 0)
+	{
+		CurrentSlotIndex = 0;
+		Slots[CurrentSlotIndex]->Highlight();
+
+	}
 
 	if (DescriptionSlot != nullptr)
 	{
@@ -100,24 +111,26 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 
 	Slots[CurrentSlotIndex]->Highlight();
 
-	if (ObjecASlotIndex != -1)
+	if (ObjectASlotIndex != -1)
 	{
-		ObjectBSlotIndex = CurrentSlotIndex;
+		//ObjectBSlotIndex = CurrentSlotIndex;
 
-		FString NameObjectA = Slots[ObjecASlotIndex]->GetObjectSlot().Name.ToString();
-		FString NameObjectB = Slots[ObjectBSlotIndex]->GetObjectSlot().Name.ToString();
-		FString Text = NameObjectA + " Combine with " + NameObjectB;
+		//FString NameObjectA = Slots[ObjectASlotIndex]->GetObjectSlot().Name.ToString();
+		//FString NameObjectB = Slots[ObjectBSlotIndex]->GetObjectSlot().Name.ToString();
+		//FString Text = NameObjectA + " Combine with " + NameObjectB;
 
-		DescriptionSlot->SetText(FText::FromString(Text));
+		//DescriptionSlot->SetText(FText::FromString(""));
 
-		bReadyToCombine = true;
+		//bReadyToCombine = true;
 	}
 	else
 	{
-		FText Desc = Slots[CurrentSlotIndex]->GetObjectSlot().Description;
-		DescriptionSlot->SetText(Desc);
+		//FText Desc = Slots[CurrentSlotIndex]->GetObjectSlot().Description;
+		
 	}
 	
+	DescriptionSlot->SetText(FText::FromString(""));
+
 
 	// TODO: If not object A selected show description of CurrentSlotIndex
 
@@ -128,36 +141,48 @@ void UInventoryUI::Navigate(EDirectionType Direction)
 void UInventoryUI::OnSelectItem()
 {
 	if (ObjectNumberInInventory == 0) return;
-
-	if (CombineSlotA->GetIndex() == -1)
+	
+	if (ObjectASlotIndex == -1) // Object selected
 	{
-		ObjecASlotIndex = CurrentSlotIndex;
-		//CombineSlotA->SetIndex(CurrentSlotIndex);
+		ObjectASlotIndex = CurrentSlotIndex;
 		CombineSlotA->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
 		CombineSlotA->Highlight();
 
 		FString NameObjectA = CombineSlotA->GetObjectSlot().Name.ToString();
 		FString Text = NameObjectA + " Combine with ";
-
-		DescriptionSlot->SetText(FText::FromString("Text"));
+		CombineText->SetText(FText::FromString(Text));
 	}
-	else if (ObjecASlotIndex == CurrentSlotIndex)
+	else if (ObjectASlotIndex > -1)
 	{
-		ObjecASlotIndex = -1;
-		ObjectBSlotIndex = -1;
-		CombineSlotA->SetToDefault();
-		//CombineSlotA->SetIndex(-1);
+		if (ObjectASlotIndex == CurrentSlotIndex) // Same selection, remove both objects
+		{
+			ObjectASlotIndex = -1;
+			ObjectBSlotIndex = -1;
+			CombineSlotA->SetToDefault();
+			CombineSlotB->SetToDefault();
+		}
+		else // Select second object
+		{
+			ObjectBSlotIndex = CurrentSlotIndex;
+			CombineSlotB->SetObjectSlot(Slots[ObjectBSlotIndex]->GetObjectSlot());
+			CombineSlotB->Highlight();
 
+			FString NameObjectA = CombineSlotA->GetObjectSlot().Name.ToString();
+			FString NameObjectB= CombineSlotB->GetObjectSlot().Name.ToString();
+			FString Text = NameObjectA + " Combine with " + NameObjectB;
+			CombineText->SetText(FText::FromString(Text));
+		}
 	}
+
 }
 
 FName UInventoryUI::GetObjectIDToCombineA()
 {
 	if (ObjectNumberInInventory == 0) return "NONE";
 
-	if ((ObjecASlotIndex == -1) || (ObjecASlotIndex >= ObjectNumberInInventory)) return "NONE";
+	if ((ObjectASlotIndex == -1) || (ObjectASlotIndex >= ObjectNumberInInventory)) return "NONE";
 
-	return Slots[ObjecASlotIndex]->GetObjectSlot().ID;
+	return Slots[ObjectASlotIndex]->GetObjectSlot().ID;
 	
 }
 FName UInventoryUI::GetObjectIDToCombineB()
@@ -171,5 +196,5 @@ FName UInventoryUI::GetObjectIDToCombineB()
 
 bool UInventoryUI::IsReadyToCombine() const
 {
-	return ((ObjecASlotIndex != -1) && (ObjectBSlotIndex != -1));
+	return ((ObjectASlotIndex != -1) && (ObjectBSlotIndex != -1));
 }
