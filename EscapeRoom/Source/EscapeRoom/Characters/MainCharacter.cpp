@@ -56,7 +56,7 @@ AMainCharacter::AMainCharacter()
 
 	// Inventory Component
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
-	InventoryComponent->OnInventoryChanged.AddDynamic(this, &AMainCharacter::OnInventoryChanged);
+	//InventoryComponent->OnInventoryChanged.AddDynamic(this, &AMainCharacter::OnInventoryChanged);
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
@@ -80,7 +80,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	check(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
+	//PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
 }
 
 void AMainCharacter::LockInput()
@@ -127,15 +127,15 @@ void AMainCharacter::MoveRight(float Value)
 }
 
 // REGION INVENTORY
-void AMainCharacter::SetInventoryActive(bool Active)
-{
-	bInventoryActive = Active;
-}
+//void AMainCharacter::SetInventoryActive(bool Active)
+//{
+	//bInventoryActive = Active;
+//}
 
-TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
-{
-	return InventoryComponent->GetObjects();
-}
+//TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
+//{
+	//return InventoryComponent->GetObjects();
+//}
 // ENDREGION INVENTORY
 
 
@@ -178,17 +178,22 @@ void AMainCharacter::DoInspectAction()
 
 
 // REGION INTERACT ACTION
-void AMainCharacter::OnInteract()
-{
+void AMainCharacter::OnInteract(FName SelectedObject)
+{	
+
+	
+
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInteract] SelectedObject: %s"), *SelectedObject.ToString());
+
 	if (bInputLocked) return;
 
 	if (Role < ROLE_Authority)
 	{
-		ServerRPCInteractAction();
+		ServerRPCInteractAction(SelectedObject);
 	}
 	else
 	{
-		DoInteractAction();
+		DoInteractAction(SelectedObject);
 	}
 }
 
@@ -208,78 +213,12 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 	OnAddItemToInventory.Broadcast(this, *NewObject);
 
 	return true;
-
-	/*if (Obj->ObjectType == EObjectType::VE_COMPLETE)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] %s: VE_COMPLETE"), *Obj->Name.ToString());
-
-		// Add Object to invetory and broadcast event
-		InventoryComponent->AddObject(ObjID, *Obj);
-
-		TArray<FObjectInteraction> Objects;
-		Objects.Add(*Obj);
-
-		return true;
-	}
-
-	else if (Obj->ObjectType == EObjectType::VE_PART)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] %s: VE_PART"), *Obj->Name.ToString());
-
-		// Get object parent
-		FObjectInteraction* ObjParent = GM->GetObjectByID(Obj->ParentID);
-
-		if (ObjParent == nullptr) return false;
-
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::HandlePickupObject] PARENT OBJECT %s, N Childs: %i"), *ObjParent->Name.ToString(), ObjParent->IDObjectParts.Num());
-
-		int NumberChildsInInvetory = 1; // The current object will be added
-		for (int i = 0; i < ObjParent->IDObjectParts.Num(); i++)
-		{
-			// Check if all object are in inventory except the current ObjID
-			FName IDChild = ObjParent->IDObjectParts[i];
-			if (IDChild != ObjID)
-			{
-				if (InventoryComponent->CheckIfObjectExists(IDChild))
-				{
-					NumberChildsInInvetory += 1;
-				}
-			}
-		}
-
-		// All objects in inventory, add the inventory and remove the rest of them
-		if (NumberChildsInInvetory == ObjParent->IDObjectParts.Num())
-		{
-			for (int i = 0; i < ObjParent->IDObjectParts.Num(); i++)
-			{
-				FName IDChild = ObjParent->IDObjectParts[i];
-				if (IDChild != ObjID)
-				{
-					InventoryComponent->RemoveObject(IDChild);
-				}
-			}
-
-			// Add the parent
-			InventoryComponent->AddObject(Obj->ParentID, *ObjParent);
-
-			// TODO: Remove the others objects visual
-
-		}
-		else
-		{
-			// Add the child
-			InventoryComponent->AddObject(ObjID, *Obj);
-
-			return true;
-		}
-	}
-
-	return false;
-	*/
 }
 
-void AMainCharacter::DoInteractAction()
+void AMainCharacter::DoInteractAction(FName SelectedObject)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] SelectedObject: %s"), *SelectedObject.ToString());
+
 	//  Check type action
 	if (OverlappedInteractive == nullptr) return;
 
@@ -330,9 +269,15 @@ void AMainCharacter::DoInteractAction()
 			{
 				// Check if the player has the object on the inventory
 
+
+
+				if (SelectedObject == UseInteractive->GetUseAction().ObjectID)
 				//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
-				if (InventoryComponent->CheckIfObjectExists(UseInteractive->GetUseAction().ObjectID))
+				//if (InventoryComponent->CheckIfObjectExists(UseInteractive->GetUseAction().ObjectID))
 				{
+
+					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive I have the object: %s"),*UseInteractive->GetUseAction().ObjectID.ToString());
+
 					//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Object exists in inventory"));
 
 					// Remove object from inventory
@@ -394,21 +339,23 @@ void AMainCharacter::DoInteractAction()
 	}
 }
 
-void AMainCharacter::ServerRPCInteractAction_Implementation()
+void AMainCharacter::ServerRPCInteractAction_Implementation(const FName& SelectedObject)
 {
-	DoInteractAction();
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::ServerRPCInteractAction] SelectedObject: %s"), *SelectedObject.ToString());
+
+	DoInteractAction(SelectedObject);
 }
 
-bool AMainCharacter::ServerRPCInteractAction_Validate()
+bool AMainCharacter::ServerRPCInteractAction_Validate(const FName& SelectedObject)
 {
 	return true;
 }
 // ENDREGION INTERACT ACTION
 
-void AMainCharacter::TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB)
-{
+//void AMainCharacter::TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB)
+//{
 
-}
+//}
 
 
 void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
@@ -441,13 +388,12 @@ void AMainCharacter::SetGestureToDefault()
 	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
 
-
+/*
 void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
 {
 	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInventoryChanged] ObjectID: %s"), *ObjectID.ToString());
 }
-
-
+*/
 
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
@@ -455,6 +401,8 @@ void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMainCharacter, CurrentGesture);
+
+	//DOREPLIFETIME(AMainCharacter, SelectedObjectInventory);	
 
 	DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
 }

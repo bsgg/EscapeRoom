@@ -31,17 +31,15 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* InGameMessages;
 
-
-
-
 	UPROPERTY(meta = (BindWidget))
 	class UInventoryUI* Inventory;
 
-	// Inventory Slot
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* SelectedItem;
-
 protected:
+
+	// Inventory Grid
+	UPROPERTY(meta = (BindWidget))
+	class UPanelWidget* InventoryGrid;
+
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_0;
 
@@ -58,10 +56,17 @@ protected:
 	class UInventorySlot* Slot_4;
 
 
+	// Item Selected from inventory
+	UPROPERTY(meta = (BindWidget))
+	class UInventorySlot* SelectedItem;
+
+
 	class ALobbyPlayerController* PlayerController;
 
 
 public:
+	FORCEINLINE UInventorySlot* GetSelectedItem() const { return SelectedItem; }
+
 	void SetPortrait(ECharacterType Character);
 
 	void SetInGameMessage(FText Message);
@@ -75,24 +80,8 @@ public:
 
 	void NavigateInventory(EDirectionType Direction);
 
-	void EndNavigateInventory();
+	void ToggleInventory();
 
-
-	void ShowInventory(const TArray<FObjectInteraction>& Objects);	
-
-	void HideInventory();
-
-	void OnSelectItemInventory();
-
-	FORCEINLINE class UInventoryUI* GetInventory() const { return Inventory; }
-
-	void ShowSelectedObject(const FObjectInteraction& Object);
-
-	void HideSelectedObject();
-
-	void AddObjectToInventory(const FObjectInteraction& Object);
-
-	void UpdateInventory(const TArray<FObjectInteraction>& Objects);
 
 private:
 
@@ -101,5 +90,7 @@ private:
 	int numberObjectsInventory = 0;
 
 	int CurrentSlotIndex = -1;
+
+	bool bInventoryVisible = false;
 
 };

@@ -14,8 +14,30 @@ bool UInGamePlayer::Initialize()
 
 	if (!Success) return false;
 
-	HideMessages();
-	HideSelectedObject();
+	// Get Hold Player Controller
+	APlayerController* PC = GetOwningPlayer();
+	if (PC == nullptr) return false;
+
+	PlayerController = Cast<ALobbyPlayerController>(PC);
+	if (PlayerController == nullptr) return false;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::Initialize] - Player Controller Not Null"));
+
+	// Set Debug Messages
+	if (PlayerController->HasAuthority())
+	{
+		SetInGameMessage(FText::FromString("Server"));
+
+	}
+	else
+	{
+		SetInGameMessage(FText::FromString("Client"));
+
+	}
+
+
+	//HideMessages();
+
 	
 	Slots.Add(Slot_0);
 	Slots.Add(Slot_1);
@@ -29,6 +51,13 @@ bool UInGamePlayer::Initialize()
 	}
 
 	SelectedItem->SetToDefault();
+
+	if (InventoryGrid != nullptr)
+	{
+		InventoryGrid->SetVisibility(ESlateVisibility::Hidden);
+
+		bInventoryVisible = false;
+	}
 
 	return true;
 }
@@ -97,14 +126,38 @@ void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 
 void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 {
+	if (!bInventoryVisible)
+	{
+		InventoryGrid->SetVisibility(ESlateVisibility::Visible);
+
+		bInventoryVisible = true;
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] - numberObjectsInventory %i"), numberObjectsInventory);
 
 	if (numberObjectsInventory == 0) return;
+
+	// None direction, end navigation
+	if (Direction == EDirectionType::VE_NONE)
+	{
+		if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
+		{
+			SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
+
+			Slots[CurrentSlotIndex]->UnHighlight();
+
+			PlayerController->Client_OnSelectItemInInventory(SelectedItem->GetObjectSlot());
+		}
+
+		return;
+	}
 
 	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
 		Slots[CurrentSlotIndex]->UnHighlight();
 	}
+
+	
 
 	if (Direction == EDirectionType::VE_LEFT)
 	{
@@ -134,84 +187,27 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
 		Slots[CurrentSlotIndex]->Highlight();
-		SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
+		//SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
 	}	
 }
 
-void UInGamePlayer::EndNavigateInventory()
+
+
+
+void UInGamePlayer::ToggleInventory()
 {
-	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
+	if (InventoryGrid == nullptr) return;
+
+	if (!bInventoryVisible)
 	{
-		Slots[CurrentSlotIndex]->UnHighlight();
+		InventoryGrid->SetVisibility(ESlateVisibility::Visible);
+
+		bInventoryVisible = true;
 	}
-}
-
-
-
-
-void UInGamePlayer::ShowInventory(const TArray<FObjectInteraction>& Objects)
-{
-	//if (Inventory == nullptr) return;
-	//Inventory->Show(Objects);
-}
-
-void UInGamePlayer::HideInventory()
-{
-	//if (Inventory == nullptr) return;
-	//Inventory->Hide();
-}
-
-
-
-void UInGamePlayer::OnSelectItemInventory()
-{
-	//if (Inventory == nullptr) return;
-
-	//Inventory->OnSelectItem();
-}
-
-
-void UInGamePlayer::ShowSelectedObject(const FObjectInteraction& Object)
-{
-	//if (SelectedObject == nullptr) return;
-	//SelectedObject->SetObjectSlot(Object);
-	//SelectedObject->Show();
-}
-
-void UInGamePlayer::HideSelectedObject()
-{
-	//if (SelectedObject == nullptr) return;
-	//SelectedObject->Hide();
-}
-
-
-
-void UInGamePlayer::AddObjectToInventory(const FObjectInteraction& Object)
-{
-	// Look for an inactive slot
-	/*for (int i = 0; i < InventorySlots.Num(); i++)
+	else
 	{
-		if (InventorySlots[i]->IsEmpty())
-		{
-			InventorySlots[i]->SetImageSlot(Object.Thumbnail);
-			return;
-		}
-	}*/
-}
+		InventoryGrid->SetVisibility(ESlateVisibility::Hidden);
 
-void UInGamePlayer::UpdateInventory(const TArray<FObjectInteraction>& Objects)
-{
-	// Remove all slots
-	/*for (int i = 0; i < InventorySlots.Num(); i++)
-	{
-		InventorySlots[i]->SetImageSlot(nullptr);
+		bInventoryVisible = false;
 	}
-
-	for (int i = 0; i < Objects.Num(); i++)
-	{
-		if (i < InventorySlots.Num())
-		{
-			InventorySlots[i]->SetImageSlot(Objects[i].Thumbnail);
-		}
-	}*/
 }

@@ -51,33 +51,21 @@ public:
 
 
 
-	// Inventory
+
+	// INVENTORY FUNCTIONS
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_AddObjectToSlot(const FObjectInteraction& Object);
+	void Client_ToggleInventory();	
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_NavigateInventory(EDirectionType Direction);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_EndNavigateInventory();
-
-
-
-
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_OpenInventory(const TArray<FObjectInteraction>& Objects);
-
+	void Client_AddObjectToSlot(const FObjectInteraction& Object);
 	
-
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_CloseInventory();
+	void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);
 
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-		void Client_OnSelectItemInInventory();
-
-	// Inventory
-
-
+	// INVENTORY FUNCTIONS
 
 
 	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
@@ -86,6 +74,9 @@ public:
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
 	class UInGamePlayer* InGameUI;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
+	FName SelectedObjectID;
 
 	// TODO CREATE PAUSE MENU
 
@@ -103,4 +94,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ObjectCombinationDB; // Objects database database
+
+	
 };

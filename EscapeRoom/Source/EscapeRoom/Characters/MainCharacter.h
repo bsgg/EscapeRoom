@@ -52,14 +52,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void UnLockInput();
 
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	FORCEINLINE bool IsInventoryActive() const { return bInventoryActive; }
+	//UFUNCTION(BlueprintCallable, Category = "Inventory")
+	//FORCEINLINE bool IsInventoryActive() const { return bInventoryActive; }
 
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void SetInventoryActive(bool Active);
+	//UFUNCTION(BlueprintCallable, Category = "Inventory")
+	//void SetInventoryActive(bool Active);
 
-	UFUNCTION(BlueprintCallable, Category = "Events")
-	TArray<FObjectInteraction> GetObjectsInInventory() const;
+	//UFUNCTION(BlueprintCallable, Category = "Events")
+	//TArray<FObjectInteraction> GetObjectsInInventory() const;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
@@ -69,10 +69,10 @@ public:
 	void MoveRight(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
-	void OnInteract();
+	void OnInteract(FName SelectedObject);
 
-	UFUNCTION(BlueprintCallable, Category = "Input Actions")
-	void TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB);
+	//UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	//void TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB);
 
 
 protected:
@@ -93,17 +93,15 @@ protected:
 	// Inspect Action
 
 	// Interact Action
-
-
-	void DoInteractAction();
+	void DoInteractAction(FName SelectedObject);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerRPCInteractAction();
+	void ServerRPCInteractAction(const FName& SelectedObject);
 	// Interact Action
 
 	
-	UFUNCTION()
-	void OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects);	
+	//UFUNCTION()
+	//void OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects);	
 
 	bool TryToAddNewObject(FName ObjID);
 
@@ -129,7 +127,10 @@ protected:
 	
 	FTimerHandle InteractionTimerHandle;	
 
-	bool bInventoryActive = false;
+	//bool bInventoryActive = false;
 
 	bool bInputLocked = false;
+
+	//UPROPERTY(Replicated)
+	//FText SelectedObjectInventory;
 };

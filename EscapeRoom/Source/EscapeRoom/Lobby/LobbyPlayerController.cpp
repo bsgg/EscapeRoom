@@ -38,7 +38,6 @@ void ALobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	if (PlayerState == nullptr) return;
 
 	AEscapeRoomPlayerState* ESPlayerState = Cast<AEscapeRoomPlayerState>(PlayerState);
@@ -210,15 +209,7 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 }
 
 
-void ALobbyPlayerController::Client_AddObjectToSlot_Implementation(const FObjectInteraction& Object)
-{
-	if (InGameUI == nullptr) return;
-
-	InGameUI->AddObjectToSlot(Object);
-}
-
-
-
+// Inventory
 void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionType Direction)
 {
 	// Create UI
@@ -229,34 +220,35 @@ void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionT
 	InGameUI->NavigateInventory(Direction);
 }
 
-void ALobbyPlayerController::Client_EndNavigateInventory_Implementation()
+void ALobbyPlayerController::Client_ToggleInventory_Implementation()
 {
 	if (InGameUI == nullptr) return;
 
-	InGameUI->EndNavigateInventory();
+	InGameUI->ToggleInventory();
+}
+
+
+void ALobbyPlayerController::Client_AddObjectToSlot_Implementation(const FObjectInteraction& Object)
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->AddObjectToSlot(Object);
 }
 
 
 
-void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FObjectInteraction>& Objects)
+
+
+
+void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation(const FObjectInteraction& SelectedObject)
 {
-	if (InGameUI == nullptr) return;
+	SelectedObjectID = SelectedObject.ID;
 
-	InGameUI->ShowInventory(Objects);
-}
-
-void ALobbyPlayerController::Client_CloseInventory_Implementation()
-{
-	if (InGameUI == nullptr) return;
-
-	InGameUI->HideInventory();
-}
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory] SelectedObjectID %s = %s"), *SelectedObjectID.ToString(), *SelectedObject.Name.ToString());
 
 
 
-void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
-{
-	if (InGameUI == nullptr) return;
+	/*if (InGameUI == nullptr) return;
 
 	if (InGameUI->GetInventory() == nullptr) return;	
 
@@ -292,10 +284,12 @@ void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
 		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] OnSelectItem "));
 
 		InGameUI->GetInventory()->OnSelectItem();
-	}
+	}*/
 
 	//InGameUI->OnSelectItemInventory();
 }
+
+// Inventory
 
 FObjectInteraction* ALobbyPlayerController::FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const
 {
