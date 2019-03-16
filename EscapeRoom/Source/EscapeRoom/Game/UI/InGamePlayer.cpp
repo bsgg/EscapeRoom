@@ -101,7 +101,7 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 
 	if (numberObjectsInventory == 0) return;
 
-	if ((CurrentSlotIndex >= 0) || (CurrentSlotIndex < numberObjectsInventory))
+	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
 		Slots[CurrentSlotIndex]->UnHighlight();
 	}
@@ -131,7 +131,7 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 
 	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] CurrentSlotIndex %i"), CurrentSlotIndex);
 
-	if ((CurrentSlotIndex >= 0) || (CurrentSlotIndex < numberObjectsInventory))
+	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
 		Slots[CurrentSlotIndex]->Highlight();
 		SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
@@ -140,7 +140,7 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 
 void UInGamePlayer::EndNavigateInventory()
 {
-	if ((CurrentSlotIndex >= 0) || (CurrentSlotIndex < numberObjectsInventory))
+	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
 		Slots[CurrentSlotIndex]->UnHighlight();
 	}
