@@ -196,14 +196,16 @@ bool AMainCharacter::TryToAddNewObject(FName ObjID)
 {
 	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 
-	FObjectInteraction* Obj = GM->GetObjectByID(ObjID);
+	FObjectInteraction* NewObject = GM->GetObjectByID(ObjID);
 
-	if (Obj == nullptr) return false;
+	if (NewObject == nullptr) return false;
 
-	InventoryComponent->AddObject(ObjID, *Obj);
+	InventoryComponent->AddObject(ObjID, *NewObject);
 
 	TArray<FObjectInteraction> Objects;
-	Objects.Add(*Obj);
+	Objects.Add(*NewObject);
+
+	OnAddItemToInventory.Broadcast(this, *NewObject);
 
 	return true;
 

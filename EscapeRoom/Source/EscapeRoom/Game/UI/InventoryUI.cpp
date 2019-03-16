@@ -40,7 +40,7 @@ void UInventoryUI::Show(const TArray<FObjectInteraction>& Objects)
 	// Show all slots
 	for (int i = 0, iObject = 0; i < Slots.Num(); i++, iObject++)
 	{
-		Slots[i]->SetIndex(iObject);
+		//Slots[i]->SetIndex(iObject);
 
 		if (iObject < Objects.Num())
 		{

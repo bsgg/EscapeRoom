@@ -50,17 +50,34 @@ public:
 	// GAMEPLAY ROOM IMPLEMENTATION
 
 
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_OpenInventory(const TArray<FObjectInteraction>& Objects);
 
+	// Inventory
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_CloseInventory();
+	void Client_AddObjectToSlot(const FObjectInteraction& Object);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_NavigateInventory(EDirectionType Direction);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_OnSelectItemInInventory();
+	void Client_EndNavigateInventory();
+
+
+
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_OpenInventory(const TArray<FObjectInteraction>& Objects);
+
+	
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_CloseInventory();
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+		void Client_OnSelectItemInInventory();
+
+	// Inventory
+
+
 
 
 	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;

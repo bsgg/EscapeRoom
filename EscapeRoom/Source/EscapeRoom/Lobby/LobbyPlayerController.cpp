@@ -173,7 +173,7 @@ void ALobbyPlayerController::Client_InitializeRoom_Implementation(TSubclassOf<AP
 	{
 		FString TCharacter = GetEnumValueAsString<ECharacterType>("ECharacterType", ESPlayerScape->SelectedCharacter);
 		FString Message = Authority + " " + TCharacter;
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_InitializeRoom] %  - MyCharacter: %s"), *Authority, *TCharacter);
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_InitializeRoom] %s  - MyCharacter: %s"), *Authority, *TCharacter);
 
 		if (InGameUI != nullptr)
 		{
@@ -210,6 +210,34 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 }
 
 
+void ALobbyPlayerController::Client_AddObjectToSlot_Implementation(const FObjectInteraction& Object)
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->AddObjectToSlot(Object);
+}
+
+
+
+void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionType Direction)
+{
+	// Create UI
+	if (InGameUI == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_NavigateInventory] "));
+
+	InGameUI->NavigateInventory(Direction);
+}
+
+void ALobbyPlayerController::Client_EndNavigateInventory_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->EndNavigateInventory();
+}
+
+
+
 void ALobbyPlayerController::Client_OpenInventory_Implementation(const TArray<FObjectInteraction>& Objects)
 {
 	if (InGameUI == nullptr) return;
@@ -225,13 +253,6 @@ void ALobbyPlayerController::Client_CloseInventory_Implementation()
 }
 
 
-void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionType Direction)
-{
-	// Create UI
-	if (InGameUI == nullptr) return;
-
-	InGameUI->NavigateInventory(Direction);
-}
 
 void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation()
 {

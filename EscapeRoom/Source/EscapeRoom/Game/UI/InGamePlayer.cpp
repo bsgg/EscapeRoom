@@ -16,8 +16,19 @@ bool UInGamePlayer::Initialize()
 
 	HideMessages();
 	HideSelectedObject();
-
 	
+	Slots.Add(Slot_0);
+	Slots.Add(Slot_1);
+	Slots.Add(Slot_2);
+	Slots.Add(Slot_3);
+	Slots.Add(Slot_4);
+
+	for (int i = 0; i < Slots.Num(); i++)
+	{
+		Slots[i]->SetToDefault();
+	}
+
+	SelectedItem->SetToDefault();
 
 	return true;
 }
@@ -63,44 +74,114 @@ void UInGamePlayer::ShowMessages()
 }
 
 
-void UInGamePlayer::ShowInventory(const TArray<FObjectInteraction>& Objects)
+void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 {
-	if (Inventory == nullptr) return;
-	Inventory->Show(Objects);
-}
+	for (int i = 0; i < Slots.Num(); i++)
+	{
+		if (Slots[i]->IsEmpty())
+		{
+			Slots[i]->SetObjectSlot(Object);
 
-void UInGamePlayer::HideInventory()
-{
-	if (Inventory == nullptr) return;
-	Inventory->Hide();
+			Slots[i]->UnHighlight();
+
+			numberObjectsInventory += 1;
+
+			break;
+		}
+		else
+		{
+			Slots[i]->UnHighlight();
+		}
+	}
 }
 
 void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 {
-	if (Inventory == nullptr) return;
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] - numberObjectsInventory %i"), numberObjectsInventory);
 
-	Inventory->Navigate(Direction);
+	if (numberObjectsInventory == 0) return;
+
+	if ((CurrentSlotIndex >= 0) || (CurrentSlotIndex < numberObjectsInventory))
+	{
+		Slots[CurrentSlotIndex]->UnHighlight();
+	}
+
+	if (Direction == EDirectionType::VE_LEFT)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] ToLeft"));
+
+		CurrentSlotIndex -= 1;
+
+		if (CurrentSlotIndex < 0)
+		{
+			CurrentSlotIndex = numberObjectsInventory - 1;
+		}
+	}
+	else if (Direction == EDirectionType::VE_RIGHT)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] ToRight"));
+
+		CurrentSlotIndex += 1;
+
+		if (CurrentSlotIndex >= numberObjectsInventory)
+		{
+			CurrentSlotIndex = 0;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] CurrentSlotIndex %i"), CurrentSlotIndex);
+
+	if ((CurrentSlotIndex >= 0) || (CurrentSlotIndex < numberObjectsInventory))
+	{
+		Slots[CurrentSlotIndex]->Highlight();
+		SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
+	}	
 }
+
+void UInGamePlayer::EndNavigateInventory()
+{
+	if ((CurrentSlotIndex >= 0) || (CurrentSlotIndex < numberObjectsInventory))
+	{
+		Slots[CurrentSlotIndex]->UnHighlight();
+	}
+}
+
+
+
+
+void UInGamePlayer::ShowInventory(const TArray<FObjectInteraction>& Objects)
+{
+	//if (Inventory == nullptr) return;
+	//Inventory->Show(Objects);
+}
+
+void UInGamePlayer::HideInventory()
+{
+	//if (Inventory == nullptr) return;
+	//Inventory->Hide();
+}
+
+
 
 void UInGamePlayer::OnSelectItemInventory()
 {
-	if (Inventory == nullptr) return;
+	//if (Inventory == nullptr) return;
 
-	Inventory->OnSelectItem();
+	//Inventory->OnSelectItem();
 }
 
 
 void UInGamePlayer::ShowSelectedObject(const FObjectInteraction& Object)
 {
-	if (SelectedObject == nullptr) return;
-	SelectedObject->SetObjectSlot(Object);
-	SelectedObject->Show();
+	//if (SelectedObject == nullptr) return;
+	//SelectedObject->SetObjectSlot(Object);
+	//SelectedObject->Show();
 }
 
 void UInGamePlayer::HideSelectedObject()
 {
-	if (SelectedObject == nullptr) return;
-	SelectedObject->Hide();
+	//if (SelectedObject == nullptr) return;
+	//SelectedObject->Hide();
 }
 
 

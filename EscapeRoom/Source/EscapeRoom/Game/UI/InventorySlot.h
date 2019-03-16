@@ -28,21 +28,16 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Background;
 
-	UPROPERTY(meta = (BindWidget))
-	class UImage* Background1;
-
 	UPROPERTY()
 	FObjectInteraction ObjectSlot;
 
-	int index;
+	bool bIsEmpty;
 
 public:
-
-	FORCEINLINE int GetIndex() const { return index; };
+		
+	FORCEINLINE bool IsEmpty() const { return bIsEmpty; };
 
 	FORCEINLINE FObjectInteraction GetObjectSlot() const { return ObjectSlot; }
-
-	void SetIndex(int in_index);
 
 	void SetObjectSlot(const FObjectInteraction& Object);
 
@@ -57,7 +52,5 @@ public:
 	void UnHighlight();
 
 	void SetImageSlot(UTexture2D* Image);
-
-
 	
 };

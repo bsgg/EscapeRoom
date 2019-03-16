@@ -17,24 +17,21 @@ bool UInventorySlot::Initialize()
 
 void UInventorySlot::Show()
 {
-	SlotBox->SetVisibility(ESlateVisibility::Visible);
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void UInventorySlot::Hide()
 {
-	SlotBox->SetVisibility(ESlateVisibility::Hidden);
-}
+	SetVisibility(ESlateVisibility::Hidden);}
 
-void UInventorySlot::SetIndex(int in_index)
-{
-	index = in_index;
-}
 
 void UInventorySlot::SetObjectSlot(const FObjectInteraction& Object)
 {
 	ObjectSlot = Object;
 
 	SetImageSlot(ObjectSlot.Thumbnail);
+
+	bIsEmpty = false;
 }
 
 void UInventorySlot::SetToDefault()
@@ -42,6 +39,8 @@ void UInventorySlot::SetToDefault()
 	if (Thumbnail == nullptr) return;
 
 	Thumbnail->SetVisibility(ESlateVisibility::Hidden);
+
+	bIsEmpty = true;
 }
 
 
@@ -61,25 +60,14 @@ void UInventorySlot::Highlight()
 {
 	if (Thumbnail == nullptr) return;
 
-	Thumbnail->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-
-	//if ((Background == nullptr) || (Background1 == nullptr)) return;
-
-	//Background->SetVisibility(ESlateVisibility::Hidden);
-	//Background1->SetVisibility(ESlateVisibility::Visible);
+	Thumbnail->SetColorAndOpacity(FLinearColor(0.2f, 0.8f, 1.0f, 1.0f));
 }
 
 void UInventorySlot::UnHighlight()
 {
 	if (Thumbnail == nullptr) return;
 
-	Thumbnail->SetColorAndOpacity(FLinearColor(0.1f, 0.1f, 0.1f, 1.0f));
-
-	//if ((Background == nullptr) || (Background1 == nullptr)) return;
-
-
-	//Background->SetVisibility(ESlateVisibility::Visible);
-	//Background1->SetVisibility(ESlateVisibility::Hidden);
+	Thumbnail->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 

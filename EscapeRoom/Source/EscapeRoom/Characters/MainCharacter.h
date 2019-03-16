@@ -9,7 +9,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text, bool, HideMessages);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAddItemToInventory, AMainCharacter*, Char, FObjectInteraction, Object);
 
 UCLASS()
 class ESCAPEROOM_API AMainCharacter : public ACharacter
@@ -42,6 +42,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnAddItemToInventory OnAddItemToInventory;
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void LockInput();
