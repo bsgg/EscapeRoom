@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
 #include "Utils/Definitions.h"
 #include "InGamePlayer.generated.h"
 
@@ -31,8 +32,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* InGameMessages;
 
-	UPROPERTY(meta = (BindWidget))
-	class UInventoryUI* Inventory;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UImage* SelectedItemIcon;
 
 protected:
 
@@ -55,17 +56,10 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UInventorySlot* Slot_4;
 
-
-	// Item Selected from inventory
-	UPROPERTY(meta = (BindWidget))
-	class UInventorySlot* SelectedItem;
-
-
 	class ALobbyPlayerController* PlayerController;
 
 
 public:
-	FORCEINLINE UInventorySlot* GetSelectedItem() const { return SelectedItem; }
 
 	void SetPortrait(ECharacterType Character);
 
@@ -75,13 +69,11 @@ public:
 
 	void HideMessages();
 
-
 	void AddObjectToSlot(FObjectInteraction Object);
 
 	void NavigateInventory(EDirectionType Direction);
 
 	void ToggleInventory();
-
 
 private:
 
@@ -92,5 +84,4 @@ private:
 	int CurrentSlotIndex = -1;
 
 	bool bInventoryVisible = false;
-
 };

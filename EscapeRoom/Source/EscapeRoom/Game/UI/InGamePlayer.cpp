@@ -3,6 +3,7 @@
 #include "InGamePlayer.h"
 #include "Components/TextBlock.h"
 #include "Components/ScaleBox.h"
+#include "Components/Image.h"
 #include "Lobby/LobbyPlayerController.h"
 #include "InventoryUI.h"
 #include "InventorySlot.h"
@@ -34,10 +35,7 @@ bool UInGamePlayer::Initialize()
 		SetInGameMessage(FText::FromString("Client"));
 
 	}
-
-
 	//HideMessages();
-
 	
 	Slots.Add(Slot_0);
 	Slots.Add(Slot_1);
@@ -50,7 +48,7 @@ bool UInGamePlayer::Initialize()
 		Slots[i]->SetToDefault();
 	}
 
-	SelectedItem->SetToDefault();
+	SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
 
 	if (InventoryGrid != nullptr)
 	{
@@ -133,8 +131,6 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 		bInventoryVisible = true;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] - numberObjectsInventory %i"), numberObjectsInventory);
-
 	if (numberObjectsInventory == 0) return;
 
 	// None direction, end navigation
@@ -142,11 +138,11 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 	{
 		if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 		{
-			SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
+			SelectedItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
+			SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
 
-			Slots[CurrentSlotIndex]->UnHighlight();
-
-			PlayerController->Client_OnSelectItemInInventory(SelectedItem->GetObjectSlot());
+			PlayerController->Client_OnSelectItemInInventory(Slots[CurrentSlotIndex]->GetObjectSlot());			
+			Slots[CurrentSlotIndex]->UnHighlight();			
 		}
 
 		return;
@@ -157,42 +153,37 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 		Slots[CurrentSlotIndex]->UnHighlight();
 	}
 
-	
-
 	if (Direction == EDirectionType::VE_LEFT)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] ToLeft"));
-
 		CurrentSlotIndex -= 1;
 
+		// Last element
 		if (CurrentSlotIndex < 0)
 		{
-			CurrentSlotIndex = numberObjectsInventory - 1;
+			//CurrentSlotIndex = numberObjectsInventory - 1;
+			CurrentSlotIndex = -1;
+
+			SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 	else if (Direction == EDirectionType::VE_RIGHT)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] ToRight"));
-
 		CurrentSlotIndex += 1;
-
+		
+		// Last element
 		if (CurrentSlotIndex >= numberObjectsInventory)
 		{
-			CurrentSlotIndex = 0;
+			CurrentSlotIndex = numberObjectsInventory;
+
+			SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] CurrentSlotIndex %i"), CurrentSlotIndex);
 
 	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
 		Slots[CurrentSlotIndex]->Highlight();
-		//SelectedItem->SetObjectSlot(Slots[CurrentSlotIndex]->GetObjectSlot());
 	}	
 }
-
-
-
 
 void UInGamePlayer::ToggleInventory()
 {

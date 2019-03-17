@@ -60,7 +60,7 @@ void UInventorySlot::Highlight()
 {
 	if (Thumbnail == nullptr) return;
 
-	Thumbnail->SetColorAndOpacity(FLinearColor(0.2f, 0.8f, 1.0f, 1.0f));
+	Thumbnail->SetColorAndOpacity(FLinearColor(0.3f, 0.3f, 0.3f, 1.0f));
 }
 
 void UInventorySlot::UnHighlight()

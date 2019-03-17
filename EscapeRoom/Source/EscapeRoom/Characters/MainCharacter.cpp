@@ -142,7 +142,6 @@ void AMainCharacter::MoveRight(float Value)
 // REGION INSPECT ACTION
 void AMainCharacter::OnInspect()
 {
-	//if (OverlappedInteractable == nullptr) return;
 	if (OverlappedInteractive == nullptr) return;
 
 	if (Role < ROLE_Authority)

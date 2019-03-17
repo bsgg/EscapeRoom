@@ -235,11 +235,6 @@ void ALobbyPlayerController::Client_AddObjectToSlot_Implementation(const FObject
 	InGameUI->AddObjectToSlot(Object);
 }
 
-
-
-
-
-
 void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation(const FObjectInteraction& SelectedObject)
 {
 	SelectedObjectID = SelectedObject.ID;
