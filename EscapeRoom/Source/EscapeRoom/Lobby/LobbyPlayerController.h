@@ -61,6 +61,9 @@ public:
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_AddObjectToSlot(const FObjectInteraction& Object);
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_RemoveObjectFromSlot(const FName& ObjectID);
 	
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);

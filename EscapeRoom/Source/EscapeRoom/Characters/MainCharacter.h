@@ -10,6 +10,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text, bool, HideMessages);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAddItemToInventory, AMainCharacter*, Char, FObjectInteraction, Object);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRemoveItemInventory, AMainCharacter*, Char, FName, ObjectID);
 
 UCLASS()
 class ESCAPEROOM_API AMainCharacter : public ACharacter
@@ -46,21 +47,14 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnAddItemToInventory OnAddItemToInventory;
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnRemoveItemInventory OnRemoveItemInventory;
+
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void LockInput();
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void UnLockInput();
-
-	//UFUNCTION(BlueprintCallable, Category = "Inventory")
-	//FORCEINLINE bool IsInventoryActive() const { return bInventoryActive; }
-
-	//UFUNCTION(BlueprintCallable, Category = "Inventory")
-	//void SetInventoryActive(bool Active);
-
-	//UFUNCTION(BlueprintCallable, Category = "Events")
-	//TArray<FObjectInteraction> GetObjectsInInventory() const;
-
 
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveForward(float Value);
@@ -70,9 +64,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void OnInteract(FName SelectedObject);
-
-	//UFUNCTION(BlueprintCallable, Category = "Input Actions")
-	//void TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB);
 
 
 protected:
@@ -99,10 +90,6 @@ protected:
 	void ServerRPCInteractAction(const FName& SelectedObject);
 	// Interact Action
 
-	
-	//UFUNCTION()
-	//void OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects);	
-
 	bool TryToAddNewObject(FName ObjID);
 
 	void StartGesture(EGestureType NewGesture);
@@ -127,10 +114,6 @@ protected:
 	
 	FTimerHandle InteractionTimerHandle;	
 
-	//bool bInventoryActive = false;
-
 	bool bInputLocked = false;
 
-	//UPROPERTY(Replicated)
-	//FText SelectedObjectInventory;
 };

@@ -122,6 +122,71 @@ void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 	}
 }
 
+void UInGamePlayer::RemoveObjectFromSlot(FName ObjectID)
+{
+	int idToRemove = -1;
+	for (int i = 0; i < Slots.Num(); i++)
+	{
+		if (Slots[i]->GetObjectSlot().ID == ObjectID)
+		{
+			idToRemove = i;
+
+			Slots[i]->SetToDefault();
+
+			Slots[i]->UnHighlight();
+
+			SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);			
+
+			numberObjectsInventory -= 1;
+
+			if (numberObjectsInventory < -1)
+			{
+				numberObjectsInventory = 0;
+			}
+
+			CurrentSlotIndex = -1;
+
+			break;
+		}		
+	}
+
+	if (idToRemove > -1)
+	{
+		for (int i = idToRemove+1; i < Slots.Num(); i++, idToRemove++)
+		{
+			if (Slots[i]->IsEmpty())
+			{
+				Slots[idToRemove]->SetToDefault();
+			}
+			else
+			{
+				Slots[idToRemove]->SetObjectSlot(Slots[i]->GetObjectSlot());
+			}
+			
+
+		}
+
+
+		//for (int i = idToRemove, iNext = idToRemove +1; i < Slots.Num(); i++)
+		//{
+			//if (iNext <= numberObjectsInventory)
+			//{
+				//Slots[i]->SetObjectSlot(Slots[iNext]->GetObjectSlot());
+				//Slots[iNext]->SetToDefault();
+			//}
+			//else
+			//{
+				//if (iNext < Slots.Num())
+				//{
+					//Slots[iNext]->SetToDefault();
+				//}
+				//Slots[i]->SetToDefault();
+			//}
+		//}
+	}
+
+}
+
 void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 {
 	if (!bInventoryVisible)

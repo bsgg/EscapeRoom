@@ -69,11 +69,15 @@ public:
 
 	void HideMessages();
 
-	void AddObjectToSlot(FObjectInteraction Object);
+
 
 	void NavigateInventory(EDirectionType Direction);
 
 	void ToggleInventory();
+
+	void AddObjectToSlot(FObjectInteraction Object);
+
+	void RemoveObjectFromSlot(FName ObjectID);
 
 private:
 

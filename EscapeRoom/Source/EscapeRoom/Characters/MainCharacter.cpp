@@ -267,10 +267,8 @@ void AMainCharacter::DoInteractAction(FName SelectedObject)
 			if (UseInteractive->GetUseAction().HasObject())
 			{
 				// Check if the player has the object on the inventory
-
-
-
-				if (SelectedObject == UseInteractive->GetUseAction().ObjectID)
+				FName objectID = UseInteractive->GetUseAction().ObjectID;
+				if (SelectedObject == objectID)
 				//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
 				//if (InventoryComponent->CheckIfObjectExists(UseInteractive->GetUseAction().ObjectID))
 				{
@@ -280,9 +278,10 @@ void AMainCharacter::DoInteractAction(FName SelectedObject)
 					//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Object exists in inventory"));
 
 					// Remove object from inventory
-					InventoryComponent->RemoveObject(UseInteractive->GetUseAction().ObjectID);
+					
+					OnRemoveItemInventory.Broadcast(this, objectID);
 
-					//TODO: REMOVE THE OBJECT VISUALLY
+					InventoryComponent->RemoveObject(objectID);
 
 					UseInteractive->Use();
 
