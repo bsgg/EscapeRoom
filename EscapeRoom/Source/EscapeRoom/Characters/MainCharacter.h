@@ -8,6 +8,8 @@
 #include "MainCharacter.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnOverlappedInteractive, AMainCharacter*, Char, AInteractiveBase*, Interactive);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text, bool, HideMessages);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAddItemToInventory, AMainCharacter*, Char, FObjectInteraction, Object);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRemoveItemInventory, AMainCharacter*, Char, FName, ObjectID);
@@ -40,6 +42,9 @@ public:
 
 	/** Returns Gesture **/
 	FORCEINLINE EGestureType GetCurrentGesture() const { return CurrentGesture; };
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnOverlappedInteractive OnOverlappedInteractive;
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnUIMessageUpdated OnUIMessageUpdated;

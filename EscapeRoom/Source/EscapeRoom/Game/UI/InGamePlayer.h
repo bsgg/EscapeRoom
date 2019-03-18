@@ -21,19 +21,28 @@ private:
 protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UScaleBox* RacoonPortrait;
+	class UWidget* RacoonPortraitIcon;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UScaleBox* CatPortrait;
+	class UWidget* CatPortraitIcon;
 
 	UPROPERTY(meta = (BindWidget))
-	UWidget* MessagesBox;
+	UWidget* InGameMessagesBox;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* InGameMessages;
+	class UTextBlock* InGameMessageText;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UImage* SelectedItemIcon;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidget* InventoryIconBox;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidget* InspectIconBox;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidget* UseIconBox;
 
 protected:
 

@@ -65,16 +65,16 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 	switch (Character)
 	{
 		case ECharacterType::VE_CAT:
-			RacoonPortrait->SetVisibility(ESlateVisibility::Hidden);
-			CatPortrait->SetVisibility(ESlateVisibility::Visible);
+			RacoonPortraitIcon->SetVisibility(ESlateVisibility::Hidden);
+			CatPortraitIcon->SetVisibility(ESlateVisibility::Visible);
 		break;
 		case ECharacterType::VE_RACOON:
-			RacoonPortrait->SetVisibility(ESlateVisibility::Visible);
-			CatPortrait->SetVisibility(ESlateVisibility::Hidden);
+			RacoonPortraitIcon->SetVisibility(ESlateVisibility::Visible);
+			CatPortraitIcon->SetVisibility(ESlateVisibility::Hidden);
 		break;
 		case ECharacterType::VE_NONE:
-			RacoonPortrait->SetVisibility(ESlateVisibility::Hidden);
-			CatPortrait->SetVisibility(ESlateVisibility::Hidden);
+			RacoonPortraitIcon->SetVisibility(ESlateVisibility::Hidden);
+			CatPortraitIcon->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	}
 
@@ -82,22 +82,22 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 
 void UInGamePlayer::SetInGameMessage(FText Message)
 {
-	if (InGameMessages == nullptr) return;	
-	InGameMessages->SetText(Message);	
+	if (InGameMessageText == nullptr) return;
+	InGameMessageText->SetText(Message);
 }
 
 void UInGamePlayer::HideMessages()
 {
-	if (MessagesBox == nullptr) return;
+	if (InGameMessagesBox == nullptr) return;
 
-	MessagesBox->SetVisibility(ESlateVisibility::Hidden);
+	InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UInGamePlayer::ShowMessages()
 {
-	if (MessagesBox == nullptr) return;
+	if (InGameMessagesBox == nullptr) return;
 
-	MessagesBox->SetVisibility(ESlateVisibility::Visible);
+	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
 }
 
 
