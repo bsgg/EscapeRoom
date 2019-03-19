@@ -46,7 +46,9 @@ public:
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
-	
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_UpdateControlsUI(const AInteractiveBase* Interactive);
 	// GAMEPLAY ROOM IMPLEMENTATION
 
 

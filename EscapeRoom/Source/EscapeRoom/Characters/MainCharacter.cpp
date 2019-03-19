@@ -366,6 +366,8 @@ void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
 		{
 			OnUIMessageUpdated.Broadcast(this, "", true);
 		}
+		
+		OnOverlappedInteractive.Broadcast(this, OverlappedInteractive);
 	}
 }
 

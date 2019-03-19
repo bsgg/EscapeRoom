@@ -37,6 +37,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsDefaultDetailInspectActive;
 
+	// Whether the interactive has the use action or not, by default is true
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HasUseAction = true;
+
 };
 
 UCLASS()

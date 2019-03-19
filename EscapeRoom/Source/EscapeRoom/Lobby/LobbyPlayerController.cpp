@@ -9,6 +9,7 @@
 #include "Game/RoomGameMode.h"
 #include "Game/UI/InGamePlayer.h"
 #include "Game/UI/InventoryUI.h"
+#include "Game/GameLogic/InteractiveBase.h"
 
 
 #include "UObject/ConstructorHelpers.h"
@@ -240,6 +241,32 @@ void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FN
 	if (InGameUI == nullptr) return;
 
 	InGameUI->RemoveObjectFromSlot(ObjectID);
+}
+
+void ALobbyPlayerController::Client_UpdateControlsUI_Implementation(const AInteractiveBase* Interactive)
+{
+	if (InGameUI == nullptr) return;
+
+	if (Interactive == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive == nullptr"));
+
+		//InGameUI->HideInventoryIcon();
+		InGameUI->HideInspectIcon();
+		InGameUI->HideUseIcon();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive != nullptr"));
+
+		//InGameUI->ShowInventoryIcon();
+		InGameUI->ShowInspectIcon();
+
+		if (Interactive->GetData().HasUseAction)
+		{
+			InGameUI->ShowUseIcon();
+		}
+	}
 }
 
 

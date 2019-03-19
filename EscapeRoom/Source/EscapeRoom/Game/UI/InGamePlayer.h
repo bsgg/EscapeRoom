@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UImage* SelectedItemIcon;
 
+
+
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UWidget* InventoryIconBox;
 
@@ -67,12 +69,21 @@ protected:
 
 	class ALobbyPlayerController* PlayerController;
 
-
 public:
 
 	void SetPortrait(ECharacterType Character);
 
 	void SetInGameMessage(FText Message);
+
+	void ShowInventoryIcon();
+	void HideInventoryIcon();
+
+	void ShowInspectIcon();
+	void HideInspectIcon();
+
+	void ShowUseIcon();
+	void HideUseIcon();
+
 
 	void ShowMessages();
 

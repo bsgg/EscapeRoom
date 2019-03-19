@@ -267,3 +267,47 @@ void UInGamePlayer::ToggleInventory()
 		bInventoryVisible = false;
 	}
 }
+
+
+void UInGamePlayer::ShowInventoryIcon()
+{
+	if (InventoryIconBox == nullptr) return;
+
+	InventoryIconBox->SetVisibility(ESlateVisibility::Visible);
+
+}
+void UInGamePlayer::HideInventoryIcon()
+{
+	if (InventoryIconBox == nullptr) return;
+
+	InventoryIconBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInGamePlayer::ShowInspectIcon()
+{
+	if (InspectIconBox == nullptr) return;
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowInspectIcon] "));
+
+	InspectIconBox->SetVisibility(ESlateVisibility::Visible);
+}
+void UInGamePlayer::HideInspectIcon()
+{
+	if (InspectIconBox == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::HideInspectIcon] "));
+	InspectIconBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInGamePlayer::ShowUseIcon()
+{
+	if (UseIconBox == nullptr) return;
+
+	UseIconBox->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UInGamePlayer::HideUseIcon()
+{
+	if (UseIconBox == nullptr) return;
+
+	UseIconBox->SetVisibility(ESlateVisibility::Hidden);
+}
