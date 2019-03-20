@@ -153,6 +153,35 @@ void AInteractiveBase::ResetInspectDetail()
 	Definition.IndexDetailInspect = 0;
 }
 
+void AInteractiveBase::DisableCollider()
+{
+	//Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Stop collision
+	//Collision->bGenerateOverlapEvents = 0; // Stop overlap events
+
+	//Collision->bVisible = true;
+	//Collision->SetVisibility(false, true);
+	//Collision->bHiddenInGame = false;
+	//Collision->
+	Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Collision->SetGenerateOverlapEvents(false);
+
+	//Collision->SetBoxExtent(FVector::ZeroVector, false);
+	//Collision = nullptr;
+}
+
+void AInteractiveBase::EnableCollider()
+{
+	//Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); // Stop collision
+	//Collision->bGenerateOverlapEvents = 0; // Stop overlap events
+
+	Collision->bVisible = false;
+	Collision->bHiddenInGame = true;
+
+	Collision->SetVisibility(true, true);
+	Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Collision->SetGenerateOverlapEvents(true);
+}
+
 
 void AInteractiveBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

@@ -72,6 +72,8 @@ void APickupInteractive::OnRep_PickupActionChanged()
 	{
 		AInputIconMesh->SetVisibility(false);
 		PickupMesh->SetVisibility(false, true);
+
+		DisableCollider();
 	}
 }
 

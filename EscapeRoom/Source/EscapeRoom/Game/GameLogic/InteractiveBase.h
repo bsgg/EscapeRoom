@@ -92,6 +92,10 @@ protected:
 	UFUNCTION()
 	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData);
 
+	void DisableCollider();
+
+	void EnableCollider();
+
 public:	
 
 	virtual FString GetInspectDetail() const;
