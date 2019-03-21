@@ -42,7 +42,7 @@ void APickupInteractive::OnRep_DefinitionChanged(FInteractiveDefinition Previous
 {
 	Super::OnRep_DefinitionChanged(PreviousData);
 
-	if (PickupAction.IsActive)
+	/*if (PickupAction.IsActive)
 	{
 		if (Definition.IsLocked)
 		{
@@ -56,7 +56,7 @@ void APickupInteractive::OnRep_DefinitionChanged(FInteractiveDefinition Previous
 	else
 	{
 		AInputIconMesh->SetVisibility(false);
-	}
+	}*/
 
 }
 
@@ -65,15 +65,20 @@ void APickupInteractive::OnRep_PickupActionChanged()
 {	
 	if (PickupAction.IsActive)
 	{
-		AInputIconMesh->SetVisibility(true);
+		//AInputIconMesh->SetVisibility(true);
 		PickupMesh->SetVisibility(true, true);
 	}
 	else
 	{
-		AInputIconMesh->SetVisibility(false);
+		//AInputIconMesh->SetVisibility(false);
 		PickupMesh->SetVisibility(false, true);
 
 		DisableCollider();
+
+		if (PickupAction.DestroyWhenActionCompleted)
+		{
+			Destroy();
+		}
 	}
 }
 

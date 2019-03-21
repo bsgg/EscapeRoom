@@ -19,23 +19,23 @@ AInteractiveBase::AInteractiveBase()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MainMesh"));
 	Mesh->SetupAttachment(RootComponent);
 
-	// Icons
-	ConstructorHelpers::FObjectFinder<UStaticMesh> iconAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cylinder"));
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> XInputIconMaterial(TEXT("/Game/Game/GameLogic/Interactives/Materials/M_XInputControl"));
+	
+	ConstructorHelpers::FObjectFinder<UStaticMesh> highlightAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cone"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> highlightMaterial(TEXT("/Game/Common/Materials/HighlightMat"));
 
-	XInputIconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("XInputIconMesh"));
-	XInputIconMesh->SetupAttachment(RootComponent);
+	HighlightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HighlightMesh"));
+	HighlightMesh->SetupAttachment(RootComponent);
 
-	if (iconAsset.Succeeded())
-	{	
-		XInputIconMesh->SetStaticMesh(iconAsset.Object);
-		XInputIconMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		XInputIconMesh->SetRelativeRotation(FRotator(90.0f, 90.0f, 0.0f));
-		XInputIconMesh->SetWorldScale3D(FVector(0.4f, 0.4f, 0.04f));
+	if (highlightAsset.Succeeded())
+	{
+		HighlightMesh->SetStaticMesh(highlightAsset.Object);
+		HighlightMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+		HighlightMesh->SetRelativeRotation(FRotator(180.0f, 0.0f, 0.0f));
+		HighlightMesh->SetWorldScale3D(FVector(0.4f, 0.4f, 0.4f));
 
-		if (XInputIconMaterial.Succeeded())
+		if (highlightMaterial.Succeeded())
 		{
-			XInputIconMesh->SetMaterial(0, XInputIconMaterial.Object);
+			HighlightMesh->SetMaterial(0, highlightMaterial.Object);
 		}
 	}
 
@@ -53,8 +53,7 @@ void AInteractiveBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	XInputIconMesh->SetVisibility(false);
-	
+	HighlightMesh->SetVisibility(false, true);	
 }
 
 
@@ -113,11 +112,11 @@ void AInteractiveBase::OnRep_DefinitionChanged(FInteractiveDefinition PreviousDa
 {
 	if (Definition.IsLocked)
 	{
-		XInputIconMesh->SetVisibility(true);
+		HighlightMesh->SetVisibility(true, true);
 	}
 	else
 	{
-		XInputIconMesh->SetVisibility(false);
+		HighlightMesh->SetVisibility(false, true);
 	}
 }
 
@@ -155,33 +154,9 @@ void AInteractiveBase::ResetInspectDetail()
 
 void AInteractiveBase::DisableCollider()
 {
-	//Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Stop collision
-	//Collision->bGenerateOverlapEvents = 0; // Stop overlap events
-
-	//Collision->bVisible = true;
-	//Collision->SetVisibility(false, true);
-	//Collision->bHiddenInGame = false;
-	//Collision->
 	Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Collision->SetGenerateOverlapEvents(false);
-
-	//Collision->SetBoxExtent(FVector::ZeroVector, false);
-	//Collision = nullptr;
 }
-
-void AInteractiveBase::EnableCollider()
-{
-	//Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); // Stop collision
-	//Collision->bGenerateOverlapEvents = 0; // Stop overlap events
-
-	Collision->bVisible = false;
-	Collision->bHiddenInGame = true;
-
-	Collision->SetVisibility(true, true);
-	Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Collision->SetGenerateOverlapEvents(true);
-}
-
 
 void AInteractiveBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

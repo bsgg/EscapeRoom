@@ -14,8 +14,8 @@ class ESCAPEROOM_API AInteractive : public AInteractiveBase
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* AInputIconMesh;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
+	//class UStaticMeshComponent* AInputIconMesh;
 	
 public:	
 	AInteractive();

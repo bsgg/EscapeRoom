@@ -204,6 +204,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AnimationLength;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool DestroyWhenActionCompleted = false;
+
 	bool HasObject()
 	{
 		return (ObjectID.ToString().ToLower() != "none");

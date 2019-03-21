@@ -64,7 +64,7 @@ protected:
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* XInputIconMesh;
+	class UStaticMeshComponent* HighlightMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InteractiveObject", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* Collision;
@@ -93,8 +93,7 @@ protected:
 	virtual void OnRep_DefinitionChanged(FInteractiveDefinition PreviousData);
 
 	void DisableCollider();
-
-	void EnableCollider();
+	
 
 public:	
 

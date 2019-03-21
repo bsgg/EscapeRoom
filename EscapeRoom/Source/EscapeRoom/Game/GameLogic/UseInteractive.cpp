@@ -54,7 +54,7 @@ void AUseInteractive::Pickup()
 		PickupAction.IsActive = false;
 		PickupAction.ObjectID = "NONE";
 
-		AInputIconMesh->SetVisibility(false);
+		//AInputIconMesh->SetVisibility(false);
 		PickupMesh->SetVisibility(false);
 
 		OnRep_PickupActionChanged();
@@ -77,20 +77,20 @@ void AUseInteractive::OnRep_UseActionChanged()
 {
 	if (!UseAction.IsActive)
 	{
-		AInputIconMesh->SetVisibility(false);
+		//AInputIconMesh->SetVisibility(false);
 	}
 }
 
 void AUseInteractive::OnRep_PickupActionChanged()
 {
-	if (PickupAction.IsActive)
+	/*if (PickupAction.IsActive)
 	{
 		AInputIconMesh->SetVisibility(true);
 	}
 	else
 	{
 		AInputIconMesh->SetVisibility(false);
-	}
+	}*/
 
 	if (PickupAction.HasObject())
 	{
