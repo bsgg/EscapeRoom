@@ -101,8 +101,9 @@ public:
 	{
 		Name = FText::FromString("Object Name");
 		ID = "Obj_";
-		ObjectType = EObjectType::VE_COMPLETE;
+		//ObjectType = EObjectType::VE_COMPLETE;
 		Thumbnail = nullptr;
+		
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -117,16 +118,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Thumbnail = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EObjectType ObjectType;
-
-	// Parent ID to form a complete object (only possible for PART OBJECTS)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "ID to form an object"))
-	FName ParentID;
-
-	// List of object ID Parts to form this item (only possible for COMPLETE OBJECTS)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "List of ID Parts to complete this object"))
-	TArray<FName> IDObjectParts;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelUp)
+	TSoftObjectPtr<UMeshComponent> Mesh;
 
 	// Override equal operator for this structure
 	bool operator==(const FObjectInteraction& object) const

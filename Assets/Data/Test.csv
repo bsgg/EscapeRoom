@@ -1,2 +1,0 @@
----,Name,PrimaryAction,SecondaryAction
-Room1_PC,"NSLOCTEXT(""[685E05844A668AF9C493708AEE377B91]"", ""600FC12C4D52CF894481DFB66A0A8294"", ""Old PC"")","(ObjectID="""",InteractionType=VE_VIEW,InteractionName=""View"",Active=True,DescriptionList=("""",""""))","(ObjectID="""",InteractionType=VE_NONE,InteractionName="""",Active=True,DescriptionList=)"
