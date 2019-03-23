@@ -99,7 +99,7 @@ public:
 
 	FObjectInteraction()
 	{
-		Name = FText::FromString("Object Name");
+		Name = "Object Name";
 		ID = "Obj_";
 		//ObjectType = EObjectType::VE_COMPLETE;
 		Thumbnail = nullptr;
@@ -110,10 +110,10 @@ public:
 	FName ID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Name;
+	FName Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Description;
+	FName Description;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Thumbnail = nullptr;

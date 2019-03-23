@@ -343,8 +343,8 @@ FObjectInteraction* ALobbyPlayerController::FindCombinedObject(FName ObjectID_A,
 
 			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] Combination Row found %s - %s  "), *Row->ObjectID_A.ToString(), *Row->ObjectID_B.ToString());
 
-			bool firstComb = (Row->ObjectID_A.ToString().Trim() == ObjectID_A.ToString().Trim()) && (Row->ObjectID_B.ToString().Trim() == ObjectID_B.ToString().Trim());
-			bool inverse = (Row->ObjectID_A.ToString().Trim() == ObjectID_B.ToString().Trim()) && (Row->ObjectID_B.ToString().Trim() == ObjectID_A.ToString().Trim());
+			bool firstComb = (Row->ObjectID_A == ObjectID_A) && (Row->ObjectID_B == ObjectID_B);
+			bool inverse = (Row->ObjectID_A == ObjectID_B) && (Row->ObjectID_B == ObjectID_A);
 
 			if (firstComb || inverse)	
 			{
