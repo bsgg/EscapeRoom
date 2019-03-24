@@ -20,6 +20,9 @@ private:
 
 protected:
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* DebugText;
+
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UWidget* RacoonPortraitIcon;
 
@@ -35,7 +38,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UImage* SelectedItemIcon;
 
-
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidget* ControlsBox;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UWidget* InventoryIconBox;
@@ -75,6 +79,9 @@ public:
 
 	void SetInGameMessage(FText Message);
 
+	void ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, bool ShowUseIcon);
+	void HideControls();
+
 	void ShowInventoryIcon();
 	void HideInventoryIcon();
 
@@ -84,12 +91,8 @@ public:
 	void ShowUseIcon();
 	void HideUseIcon();
 
-
 	void ShowMessages();
-
 	void HideMessages();
-
-
 
 	void NavigateInventory(EDirectionType Direction);
 

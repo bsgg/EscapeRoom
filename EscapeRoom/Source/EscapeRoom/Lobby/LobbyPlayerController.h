@@ -70,7 +70,35 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);
 
+
+
 	// INVENTORY FUNCTIONS
+
+
+
+	void OnOverlapInteractive(class AInteractiveBase* Interactive);
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "Interaction")
+	void Client_OnOverlappedInteractive(class AInteractiveBase* Interactive);
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Interaction")
+	void Server_OnOverlappedInteractive(class AInteractiveBase* Interactive);
+
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "Interaction")
+	void Client_OnInspect();
+
+
+	UFUNCTION(BLueprintCallable, Category = "Interaction")
+	void OnInteract();
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "Interaction")
+	void Client_OnInteract();
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Interaction")
+	void Server_OnInteractAction();
+
+	void DoInteraction();
 
 
 	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
@@ -83,7 +111,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
 	FName SelectedObjectID;
 
+	class AInteractiveBase* OverlappedInteractive;
+
 	// TODO CREATE PAUSE MENU
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float LockCharacterTime = 3.0f;
+
+	
 
 private:
 	TSubclassOf<class UUserWidget> LobbyMenuClass;
@@ -99,6 +134,13 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ObjectCombinationDB; // Objects database database
+
+	class AMainCharacter* MyCharacter = nullptr;
+
+	FTimerHandle LockCharacterTimerHandle;
+
+
+	void UnlockCharacter();
 
 	
 };
