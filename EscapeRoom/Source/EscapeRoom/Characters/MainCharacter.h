@@ -70,13 +70,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void OnInteract(FName SelectedObject);
 
-	void StartGesture(EGestureType NewGesture);
-
 
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	
 
 	
 	// Inspect Action
@@ -97,7 +97,7 @@ protected:
 
 	bool TryToAddNewObject(FName ObjID);
 
-	
+	void StartGesture(EGestureType NewGesture);
 
 	void SetGestureToDefault();
 
@@ -107,8 +107,6 @@ public:
 	void OnOverlapInteractive(class AInteractiveBase* Interactive);
 
 protected:
-
-	
 
 	UPROPERTY(Replicated)
 	class AInteractiveBase* OverlappedInteractive;

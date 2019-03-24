@@ -9,19 +9,17 @@
 #include "Game/RoomGameMode.h"
 #include "Game/UI/InGamePlayer.h"
 #include "Game/UI/InventoryUI.h"
-#include "Characters/MainCharacter.h"
-
 #include "Game/GameLogic/InteractiveBase.h"
-#include "Game/GameLogic/PickupInteractive.h"
-#include "Game/GameLogic/SwitchInteractive.h" 
-#include "Game/GameLogic/UseInteractive.h"
+
 
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 
 
+
 ALobbyPlayerController::ALobbyPlayerController()
 {
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> LobbyMenuBPClass(TEXT("/Game/Lobby/LobbyMenu_WBP"));
 
 	if (LobbyMenuBPClass.Class != nullptr)
@@ -60,28 +58,6 @@ void ALobbyPlayerController::BeginPlay()
 	FString TypeChar = GetEnumValueAsString<ECharacterType>("ECharacterType", ESPlayerState->SelectedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay] %s = ChararcerSelected %s"), *Authority, *TypeChar);
-
-	if (MyCharacter == nullptr)
-	{
-
-		if (GetPawn() != nullptr)
-		{
-			MyCharacter = Cast<AMainCharacter>(GetPawn());
-
-			if (MyCharacter != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay]  MyCharacter: not null"));
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay]  GetPawn() nullptr"));
-		}
-
-	}
-
-	
-
 }
 
 
@@ -205,37 +181,16 @@ void ALobbyPlayerController::Client_InitializeRoom_Implementation(TSubclassOf<AP
 			InGameUI->SetInGameMessage(FText::FromString(Message));
 		}
 	}
-
-	// TODO: Get a reference to MainCharacter here
 }
 
 void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 {
-	if (MyCharacter == nullptr)
-	{
-		if (GetPawn() != nullptr)
-		{
-			MyCharacter = Cast<AMainCharacter>(GetPawn());
-
-			if (MyCharacter != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI]  MyCharacter: not null"));
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI]  GetPawn() nullptr"));
-		}
-	}
-
-
 	// Create UI
 	if (InGameUIClass == nullptr) return;
 	InGameUI = CreateWidget<UInGamePlayer>(this, InGameUIClass);
 
 	if (InGameUI == nullptr) return;
 	InGameUI->AddToViewport();
-
 }
 
 void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const FString& Text, bool hideMessages)
@@ -253,240 +208,6 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 		InGameUI->SetInGameMessage(FText::FromString(Text));
 	}
 }
-
-
-void ALobbyPlayerController::OnOverlapInteractive(class AInteractiveBase* Interactive)
-{
-	//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::OnOverlapInteractive] Called: %s"), *Interactive->GetData().ID.ToString());
-
-	//Server_OnOverlappedInteractive(Interactive);
-
-	OverlappedInteractive = Interactive;
-
-	Client_OnOverlappedInteractive(Interactive);
-
-}
-
-void ALobbyPlayerController::Server_OnOverlappedInteractive_Implementation(class AInteractiveBase* Interactive)
-{
-	//OverlappedInteractive = Interactive;
-
-	//Client_OnOverlappedInteractive(Interactive);	
-}
-
-bool ALobbyPlayerController::Server_OnOverlappedInteractive_Validate(class AInteractiveBase* Interactive)
-{
-	return true;
-}
-
-
-// REGION INTERACTIVE
-void ALobbyPlayerController::Client_OnOverlappedInteractive_Implementation(class AInteractiveBase* Interactive)
-{
-	UE_LOG(LogTemp, Warning, TEXT("[Client_OnOverlappedInteractive] Called: %s"), *Interactive->GetData().ID.ToString());
-
-	OverlappedInteractive = Interactive;
-
-	if (InGameUI == nullptr) return;
-	if (Interactive == nullptr)
-	{
-		InGameUI->HideMessages();
-		InGameUI->HideControls();
-	}
-	else
-	{
-		if (Interactive->GetData().HasUseAction)
-		{
-
-			InGameUI->ShowControls(true, true, true);
-		}
-		else
-		{
-			InGameUI->ShowControls(true, true, false);
-		}
-	}
-}
-
-void ALobbyPlayerController::Client_OnInspect_Implementation()
-{
-	if ((InGameUI == nullptr) || (OverlappedInteractive == nullptr)) return;
-
-	FString desc = OverlappedInteractive->GetInspectDetail();
-
-	OverlappedInteractive->ForwardInspectDetail(); 
-
-	InGameUI->HideControls();
-
-	// TODO: HIDE MESSAGES AFTER A WHILE AND BLOCK INTERACTION AFTER IS FINISHED
-	InGameUI->ShowMessages();
-	InGameUI->SetInGameMessage(FText::FromString(desc));
-
-	if (MyCharacter != nullptr)
-	{
-		MyCharacter->LockInput();
-
-		GetWorld()->GetTimerManager().SetTimer(LockCharacterTimerHandle, this, &ALobbyPlayerController::UnlockCharacter, LockCharacterTime, false);
-		
-	}
-
-}
-
-void ALobbyPlayerController::UnlockCharacter()
-{
-	GetWorld()->GetTimerManager().ClearTimer(LockCharacterTimerHandle);
-	if (MyCharacter != nullptr)
-	{
-		MyCharacter->UnLockInput();
-	}
-
-	if (InGameUI != nullptr)
-	{
-		InGameUI->HideMessages();
-	}
-
-}
-
-void ALobbyPlayerController::OnInteract()
-{
-	APickupInteractive* Pickup = Cast<APickupInteractive>(OverlappedInteractive);
-	if (Pickup != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnInteract] It's a pickup"));
-
-		if ((Pickup->GetPickupAction().IsActive) && (Pickup->GetPickupAction().HasObject()))
-		{
-			FName ObjectID = Pickup->GetPickupAction().ObjectID;
-			//Pickup->PickupObject();
-
-
-			if (Role < ROLE_Authority)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnInteract] Client Do Pickup"));
-
-				Server_OnInteractAction();
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnInteract] Do Pickup"));
-				Pickup->PickupObject();
-
-				OverlappedInteractive = nullptr;
-
-			}
-
-			FString desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
-
-
-			InGameUI->ShowMessages();
-
-			InGameUI->SetInGameMessage(FText::FromString(desc));
-
-			if (MyCharacter != nullptr)
-			{
-				MyCharacter->LockInput();
-
-				MyCharacter->StartGesture(EGestureType::VE_INTERACT);
-
-				GetWorld()->GetTimerManager().SetTimer(LockCharacterTimerHandle, this, &ALobbyPlayerController::UnlockCharacter, LockCharacterTime, false);
-			}
-
-			
-		}
-	}
-
-}
-
-void ALobbyPlayerController::Server_OnInteractAction_Implementation()
-{
-	if (OverlappedInteractive == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::erver_OnInteractAction] OverlappedInteractive is null"));
-
-		return;
-	}
-
-	APickupInteractive* Pickup = Cast<APickupInteractive>(OverlappedInteractive);
-	if (Pickup != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Server_OnInteractAction] Do Pickup"));
-
-		Pickup->PickupObject();
-
-		OverlappedInteractive = nullptr;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Server_OnInteractAction] Pickup is null"));
-	}
-
-
-	//Client_OnInteract();
-	//DoInteraction();
-
-
-}
-
-bool ALobbyPlayerController::Server_OnInteractAction_Validate()
-{
-	return true;
-}
-
-void ALobbyPlayerController::DoInteraction()
-{
-	if ((InGameUI == nullptr) || (OverlappedInteractive == nullptr)) return;
-
-	APickupInteractive* Pickup = Cast<APickupInteractive>(OverlappedInteractive);
-	if (Pickup != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnInteract] It's a pickup"));
-
-		if ((Pickup->GetPickupAction().IsActive) && (Pickup->GetPickupAction().HasObject()))
-		{
-			FName ObjectID = Pickup->GetPickupAction().ObjectID;
-
-			Pickup->PickupObject();
-
-			FString desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
-
-
-			InGameUI->ShowMessages();
-
-			InGameUI->SetInGameMessage(FText::FromString(desc));
-
-			if (MyCharacter != nullptr)
-			{
-				MyCharacter->LockInput();
-
-				MyCharacter->StartGesture(EGestureType::VE_INTERACT);
-			}
-
-			GetWorld()->GetTimerManager().SetTimer(LockCharacterTimerHandle, this, &ALobbyPlayerController::UnlockCharacter, LockCharacterTime, false);
-
-			// TODO: Pickup Object
-
-
-			//if (TryToAddNewObject(ObjectID))
-			//{
-				//FString desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
-
-				//OnUIMessageUpdated.Broadcast(this, desc, false);
-
-				//StartGesture(EGestureType::VE_INTERACT);
-			//}
-		}
-		return;
-	}
-}
-
-
-void ALobbyPlayerController::Client_OnInteract_Implementation()
-{
-	
-
-}
-
-// ENDREGION INTERACTIVE
-
 
 
 // Inventory
@@ -528,20 +249,22 @@ void ALobbyPlayerController::Client_UpdateControlsUI_Implementation(const AInter
 
 	if (Interactive == nullptr)
 	{
-		InGameUI->HideControls();
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive == nullptr"));
+
+		//InGameUI->HideInventoryIcon();
+		InGameUI->HideInspectIcon();
+		InGameUI->HideUseIcon();
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive != nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive != nullptr"));
+
+		//InGameUI->ShowInventoryIcon();
+		InGameUI->ShowInspectIcon();
 
 		if (Interactive->GetData().HasUseAction)
 		{
-
-			InGameUI->ShowControls(true, true, true);
-		}
-		else
-		{
-			InGameUI->ShowControls(true, true, false);
+			InGameUI->ShowUseIcon();
 		}
 	}
 }

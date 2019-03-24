@@ -14,7 +14,7 @@ APickup::APickup()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set pickup mesh as a root
-	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root")); 
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootScene;
 
 	// Mesh

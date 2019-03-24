@@ -67,9 +67,6 @@ AMainCharacter::AMainCharacter()
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-
 }
 
 void AMainCharacter::Tick(float DeltaTime)
@@ -82,7 +79,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
+	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
 	//PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
 }
 
@@ -129,6 +126,19 @@ void AMainCharacter::MoveRight(float Value)
 	}
 }
 
+// REGION INVENTORY
+//void AMainCharacter::SetInventoryActive(bool Active)
+//{
+	//bInventoryActive = Active;
+//}
+
+//TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
+//{
+	//return InventoryComponent->GetObjects();
+//}
+// ENDREGION INVENTORY
+
+
 // REGION INSPECT ACTION
 void AMainCharacter::OnInspect()
 {
@@ -155,13 +165,13 @@ bool AMainCharacter::ServerRPCInspectAction_Validate()
 
 void AMainCharacter::DoInspectAction()
 {
-	//if (OverlappedInteractive == nullptr) return;
+	if (OverlappedInteractive == nullptr) return;
 
-	//FString desc = OverlappedInteractive->GetInspectDetail();
+	FString desc = OverlappedInteractive->GetInspectDetail();
 
-	//OverlappedInteractive->ForwardInspectDetail();
+	OverlappedInteractive->ForwardInspectDetail();
 
-	//OnUIMessageUpdated.Broadcast(this, desc, false);
+	OnUIMessageUpdated.Broadcast(this, desc, false);
 }
 // ENDREGION INSPECT ACTION
 
@@ -169,6 +179,9 @@ void AMainCharacter::DoInspectAction()
 // REGION INTERACT ACTION
 void AMainCharacter::OnInteract(FName SelectedObject)
 {	
+
+	
+
 	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInteract] SelectedObject: %s"), *SelectedObject.ToString());
 
 	if (bInputLocked) return;
@@ -374,6 +387,13 @@ void AMainCharacter::SetGestureToDefault()
 	CurrentGesture = EGestureType::VE_NONE;
 	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
+
+/*
+void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInventoryChanged] ObjectID: %s"), *ObjectID.ToString());
+}
+*/
 
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const

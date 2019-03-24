@@ -3,7 +3,6 @@
 #include "InteractiveBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Lobby/LobbyPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Characters/MainCharacter.h"
 #include "UnrealNetwork.h"
@@ -71,18 +70,7 @@ void AInteractiveBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 			CharacterOverlapping = Cast<AMainCharacter>(OtherActor);
 			if (CharacterOverlapping == nullptr) return;
 
-			ALobbyPlayerController* Controller = Cast<ALobbyPlayerController>(CharacterOverlapping->GetController());
-
-			if (Controller != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[AInteractiveBase::BeginOverlap] Controller found"));
-
-				Controller->OnOverlapInteractive(this);
-			}
-
-
-
-			//CharacterOverlapping->OnOverlapInteractive(this);
+			CharacterOverlapping->OnOverlapInteractive(this);
 
 			OldDefinition.IsLocked = false;
 
@@ -102,7 +90,6 @@ void AInteractiveBase::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 	{
 		AMainCharacter* OtherCharacter = Cast<AMainCharacter>(OtherActor);
 		if (OtherCharacter == nullptr) return;
-
 
 		// There is a character already overlapping and it's the same as the leaving character
 		if ((CharacterOverlapping != nullptr) && (CharacterOverlapping == OtherCharacter))
