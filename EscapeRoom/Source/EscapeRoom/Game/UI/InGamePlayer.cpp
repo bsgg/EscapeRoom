@@ -25,17 +25,21 @@ bool UInGamePlayer::Initialize()
 	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::Initialize] - Player Controller Not Null"));
 
 	// Set Debug Messages
-	if (PlayerController->HasAuthority())
+	if (DebugText != nullptr)
 	{
-		SetInGameMessage(FText::FromString("Server"));
+		if (PlayerController->HasAuthority())
+		{
+			DebugText->SetText(FText::FromString("Server"));
 
-	}
-	else
-	{
-		SetInGameMessage(FText::FromString("Client"));
+		}
+		else
+		{
+			DebugText->SetText(FText::FromString("Client"));
 
+		}
 	}
-	//HideMessages();
+	HideMessages();
+	HideControls();
 	
 	Slots.Add(Slot_0);
 	Slots.Add(Slot_1);
@@ -267,6 +271,47 @@ void UInGamePlayer::ToggleInventory()
 		bInventoryVisible = false;
 	}
 }
+
+
+
+void UInGamePlayer::ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, bool ShowUseIcon)
+{
+	if ((ControlsBox == nullptr) || (InventoryIconBox == nullptr) || (UseIconBox == nullptr) || (InspectIconBox == nullptr)) return;
+
+	ControlsBox->SetVisibility(ESlateVisibility::Visible);
+
+	if (ShowInventoryIcon)
+	{
+		InventoryIconBox->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		InventoryIconBox->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (ShowInspectIcon)
+	{
+		InspectIconBox->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		InspectIconBox->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (ShowUseIcon)
+	{
+		UseIconBox->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		UseIconBox->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+void UInGamePlayer::HideControls()
+{
+	ControlsBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
 
 
 void UInGamePlayer::ShowInventoryIcon()
