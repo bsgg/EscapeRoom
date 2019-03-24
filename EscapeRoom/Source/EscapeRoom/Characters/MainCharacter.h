@@ -70,17 +70,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void OnInteract(FName SelectedObject);
 
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void OnInspect();
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	FORCEINLINE class AInteractiveBase* GetInteractive() const { return OverlappedInteractive; }
+
 
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	//virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 	
 
 	
-	// Inspect Action
-	void OnInspect();
+	
 
 	void DoInspectAction();
 

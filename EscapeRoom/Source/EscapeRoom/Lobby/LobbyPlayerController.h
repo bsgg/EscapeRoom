@@ -48,6 +48,13 @@ public:
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_UpdateInGame(const AInteractiveBase* Interactive);
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void Client_HideInGameMessage();
+
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateControlsUI(const AInteractiveBase* Interactive);
 	// GAMEPLAY ROOM IMPLEMENTATION
 
@@ -82,7 +89,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
 	FName SelectedObjectID;
-
 	// TODO CREATE PAUSE MENU
 
 private:
@@ -99,6 +105,11 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	class UDataTable* ObjectCombinationDB; // Objects database database
+
+
+	FTimerHandle InteractionTimerHandle;
+
+	void EndInteraction();
 
 	
 };

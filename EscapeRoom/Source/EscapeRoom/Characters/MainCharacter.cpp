@@ -74,14 +74,14 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+/*void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
+	//PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
 	//PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
-}
+}*/
 
 void AMainCharacter::LockInput()
 {
@@ -126,19 +126,6 @@ void AMainCharacter::MoveRight(float Value)
 	}
 }
 
-// REGION INVENTORY
-//void AMainCharacter::SetInventoryActive(bool Active)
-//{
-	//bInventoryActive = Active;
-//}
-
-//TArray<FObjectInteraction> AMainCharacter::GetObjectsInInventory() const
-//{
-	//return InventoryComponent->GetObjects();
-//}
-// ENDREGION INVENTORY
-
-
 // REGION INSPECT ACTION
 void AMainCharacter::OnInspect()
 {
@@ -167,11 +154,13 @@ void AMainCharacter::DoInspectAction()
 {
 	if (OverlappedInteractive == nullptr) return;
 
-	FString desc = OverlappedInteractive->GetInspectDetail();
+	//FString desc = OverlappedInteractive->GetInspectDetail();
+
+	StartGesture(EGestureType::VE_DISMISS);
 
 	OverlappedInteractive->ForwardInspectDetail();
 
-	OnUIMessageUpdated.Broadcast(this, desc, false);
+	//OnUIMessageUpdated.Broadcast(this, desc, false);
 }
 // ENDREGION INSPECT ACTION
 
@@ -179,8 +168,6 @@ void AMainCharacter::DoInspectAction()
 // REGION INTERACT ACTION
 void AMainCharacter::OnInteract(FName SelectedObject)
 {	
-
-	
 
 	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInteract] SelectedObject: %s"), *SelectedObject.ToString());
 

@@ -251,6 +251,8 @@ void ALobbyPlayerController::Client_UpdateControlsUI_Implementation(const AInter
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive == nullptr"));
 
+
+		InGameUI->HideMessages();
 		//InGameUI->HideInventoryIcon();
 		InGameUI->HideInspectIcon();
 		InGameUI->HideUseIcon();
@@ -258,6 +260,8 @@ void ALobbyPlayerController::Client_UpdateControlsUI_Implementation(const AInter
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_UpdateControlsUI] Interactive != nullptr"));
+
+		//InGameUI->HideMessages();
 
 		//InGameUI->ShowInventoryIcon();
 		InGameUI->ShowInspectIcon();
@@ -267,6 +271,48 @@ void ALobbyPlayerController::Client_UpdateControlsUI_Implementation(const AInter
 			InGameUI->ShowUseIcon();
 		}
 	}
+}
+
+
+void ALobbyPlayerController::Client_UpdateInGame_Implementation(const AInteractiveBase* Interactive)
+{
+	if (InGameUI == nullptr) return;
+
+	if (Interactive == nullptr)
+	{
+		InGameUI->HideControls();
+
+
+		//InGameUI->HideInventoryIcon();
+		//InGameUI->HideInspectIcon();
+		//InGameUI->HideUseIcon();
+	}
+	else
+	{
+		InGameUI->HideControls();
+		InGameUI->ShowMessages();
+
+		InGameUI->ShowControls(true, true, false);
+
+		InGameUI->SetInGameMessage(FText::FromString(Interactive->GetDetailedInfo()));
+
+		GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &ALobbyPlayerController::EndInteraction, 2.0f, false);
+
+	}
+}
+
+void ALobbyPlayerController::EndInteraction()
+{
+	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
+
+	Client_HideInGameMessage();
+}
+
+void ALobbyPlayerController::Client_HideInGameMessage_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->HideMessages();
 }
 
 

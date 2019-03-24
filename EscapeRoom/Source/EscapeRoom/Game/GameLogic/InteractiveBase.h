@@ -54,6 +54,7 @@ public:
 
 	FORCEINLINE FName GetInteractiveID() const { return Definition.ID; } 
 
+	UFUNCTION(BlueprintCallable, Category = "InteractiveObject")
 	FORCEINLINE FInteractiveDefinition GetData() const { return Definition; }
 
 protected:
@@ -97,9 +98,12 @@ protected:
 
 public:	
 
+	UFUNCTION(BlueprintCallable, Category = "InteractiveObject")
 	virtual FString GetInspectDetail() const;
 
+	UFUNCTION(BlueprintCallable, Category = "InteractiveObject")
 	virtual void ForwardInspectDetail();
 
+	UFUNCTION(BlueprintCallable, Category = "InteractiveObject")
 	virtual void ResetInspectDetail();
 };
