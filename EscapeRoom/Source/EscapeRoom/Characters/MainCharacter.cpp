@@ -126,6 +126,43 @@ void AMainCharacter::MoveRight(float Value)
 	}
 }
 
+//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
+{
+	if (IsLocallyControlled())
+	{
+		CurrentInteractive = CastChecked<IInteractiveInterface>(Interactive);
+		if (CurrentInteractive)
+		{
+			auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
+			//PlayerController->ShowInteractText(CurrentInteractive->GetInteractMessage());
+		}
+	}
+}
+
+void AMainCharacter::NotifyLeaveInteractRange(AActor* Interactive)
+{
+	if (IsLocallyControlled())
+	{
+		CurrentInteractive = nullptr;
+		auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
+
+		//PlayerController->HideInteractText();
+	}
+}
+
+void AMainCharacter::TestInteract()
+{
+	if (IsLocallyControlled() && CurrentInteractive)
+	{
+		CurrentInteractive->StartInteract(this);
+	}
+}
+
+//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
+
+
 // REGION INSPECT ACTION
 void AMainCharacter::OnInspect()
 {

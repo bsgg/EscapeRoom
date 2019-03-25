@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Utils/Definitions.h"
+#include "Game/GameLogic/Interactives/Interact.h"
+#include "Game/GameLogic/Interactives/InteractiveInterface.h"
 #include "MainCharacter.generated.h"
 
 
@@ -15,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAddItemToInventory, AMainCharact
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRemoveItemInventory, AMainCharacter*, Char, FName, ObjectID);
 
 UCLASS()
-class ESCAPEROOM_API AMainCharacter : public ACharacter
+class ESCAPEROOM_API AMainCharacter : public ACharacter, public IInteract
 {
 	GENERATED_BODY()
 
@@ -42,6 +44,17 @@ public:
 
 	/** Returns Gesture **/
 	FORCEINLINE EGestureType GetCurrentGesture() const { return CurrentGesture; };
+
+	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+	virtual void NotifyInInteractRange(AActor* Interactive) override;
+
+	virtual void NotifyLeaveInteractRange(AActor* Interactive) override;
+	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
+
+
+
+
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnOverlappedInteractive OnOverlappedInteractive;
@@ -126,4 +139,10 @@ protected:
 
 	bool bInputLocked = false;
 
+
+private:
+
+	IInteractiveInterface* CurrentInteractive = nullptr;
+
+	void TestInteract();
 };
