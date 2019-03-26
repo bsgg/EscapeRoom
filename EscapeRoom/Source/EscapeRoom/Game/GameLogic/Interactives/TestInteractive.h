@@ -48,6 +48,8 @@ public:
 
 	virtual FString GetInteractMessage() override;
 
+	virtual void Inspect(APawn* Instigator)  override;
+
 	// Start execution of the interactive, Add items to inventory, bring up UI
 	virtual void StartInteract(APawn* Instigator) override;
 

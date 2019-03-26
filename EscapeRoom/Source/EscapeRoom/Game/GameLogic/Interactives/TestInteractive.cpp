@@ -106,6 +106,11 @@ FString ATestInteractive::GetInteractMessage()
 	return FString(TEXT("Inspect"));
 }
 
+void ATestInteractive::Inspect(APawn* Instigator)
+{
+
+}
+
 // Start execution of the interactive, Add items to inventory, bring up UI
 void ATestInteractive::StartInteract(APawn* Instigator)
 {

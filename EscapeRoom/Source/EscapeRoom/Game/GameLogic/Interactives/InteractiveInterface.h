@@ -20,14 +20,13 @@ class ESCAPEROOM_API IInteractiveInterface
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual FString GetInteractMessage() = 0;
+	virtual void Inspect(APawn* Instigator) = 0;
 
-	// Start execution of the interactive, Add items to inventory, bring up UI
 	virtual void StartInteract(APawn* Instigator) = 0;
 
-	// Finish execution of the interactive, closes UI, destroy objects, etc
 	virtual void FinishInteract(APawn* Instigator) = 0;
+
+	virtual FString GetInteractMessage() = 0;
 };
