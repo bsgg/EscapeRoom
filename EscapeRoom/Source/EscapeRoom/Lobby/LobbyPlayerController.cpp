@@ -15,8 +15,6 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 
-
-
 ALobbyPlayerController::ALobbyPlayerController()
 {
 
@@ -205,8 +203,36 @@ void  ALobbyPlayerController::ShowDebugLog_Implementation(const FString& Text)
 	if (InGameUI == nullptr) return;
 
 	InGameUI->DebugLog(Text);
-
 }
+
+void ALobbyPlayerController::ShowMessage_Implementation(const FString& Text)
+{
+	if (InGameUI == nullptr) return;
+	InGameUI->ShowMessage(Text);
+}
+
+void ALobbyPlayerController::HideMessage_Implementation()
+{
+	if (InGameUI == nullptr) return;
+	InGameUI->HideMessage();
+}
+
+
+void ALobbyPlayerController::ShowControls_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->ShowControls(true, true, true);
+}
+
+void ALobbyPlayerController::HideControls_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->HideControls();
+}
+
+
 // GAMEPLAY ROOM IMPLEMENTATION
 
 

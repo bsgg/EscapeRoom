@@ -49,6 +49,18 @@ public:
 	// GAMEPLAY INTERACTIVE INTERFACES
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void ShowDebugLog(const FString& Text);
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void ShowMessage(const FString& Text);
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void HideMessage();
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void ShowControls();
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void HideControls();
 	// GAMEPLAY ROOM IMPLEMENTATION
 
 
