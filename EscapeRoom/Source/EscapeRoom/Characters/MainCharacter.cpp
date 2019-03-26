@@ -82,8 +82,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::TestInteract);
+	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::HandleInspectInput);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::HandleInteractInput);
 }
 
 void AMainCharacter::LockInput()
@@ -138,7 +138,12 @@ void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 		if (CurrentInteractive)
 		{
 			auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
-			PlayerController->ShowDebugLog(CurrentInteractive->GetInteractMessage());
+			//PlayerController->ShowDebugLog(CurrentInteractive->GetInteractMessage());
+
+			PlayerController->ShowDebugLog("Entering in Interactive");
+
+			// Show Controls
+			PlayerController->ShowControls();
 		}
 	}
 }
@@ -150,20 +155,41 @@ void AMainCharacter::NotifyLeaveInteractRange(AActor* Interactive)
 		CurrentInteractive = nullptr;
 		auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
 
-		PlayerController->ShowDebugLog("Leaving");
-		//PlayerController->HideInteractText();
+		PlayerController->ShowDebugLog("Leaving Interactive");
+
+		// Hide Controls
+		PlayerController->HideControls();	
+		PlayerController->HideMessage();
+	}
+}
+//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
+//// INPUT IMPLEMENTATION ////////////////////
+
+void AMainCharacter::HandleInspectInput()
+{
+	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
+
+	if (IsLocallyControlled() && CurrentInteractive)
+	{
+		StartGesture(EGestureType::VE_INTERACT);
+
+		CurrentInteractive->Inspect(this);
 	}
 }
 
-void AMainCharacter::TestInteract()
+
+void AMainCharacter::HandleInteractInput()
 {
+	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
+
 	if (IsLocallyControlled() && CurrentInteractive)
 	{
 		CurrentInteractive->StartInteract(this);
 	}
 }
 
-//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+//// INPUT IMPLEMENTATION ////////////////////
 
 
 
@@ -399,8 +425,9 @@ void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
 	}
 }
 
-void AMainCharacter::StartGesture(EGestureType NewGesture)
+void AMainCharacter::StartGesture_Implementation(EGestureType NewGesture)
 {
+	bInputLocked = true;
 	CurrentGesture = NewGesture;
 
 	if (NewGesture != EGestureType::VE_NONE)
@@ -409,9 +436,16 @@ void AMainCharacter::StartGesture(EGestureType NewGesture)
 	}
 }
 
+bool AMainCharacter::StartGesture_Validate(EGestureType NewGesture)
+{
+	return true;
+}
+
 
 void AMainCharacter::SetGestureToDefault()
 {	
+	bInputLocked = false;
+
 	CurrentGesture = EGestureType::VE_NONE;
 	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }

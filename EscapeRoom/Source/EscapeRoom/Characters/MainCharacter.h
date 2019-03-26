@@ -115,6 +115,7 @@ protected:
 
 	bool TryToAddNewObject(FName ObjID);
 
+	UFUNCTION(Server, Reliable, WithValidation)
 	void StartGesture(EGestureType NewGesture);
 
 	void SetGestureToDefault();
@@ -142,7 +143,15 @@ protected:
 
 private:
 
+	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
 	IInteractiveInterface* CurrentInteractive = nullptr;
 
-	void TestInteract();
+	void HandleInspectInput();
+
+	void HandleInteractInput();
+
+	
+
+	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
 };
