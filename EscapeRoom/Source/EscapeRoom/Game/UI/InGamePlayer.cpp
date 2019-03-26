@@ -84,6 +84,23 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 
 }
 
+
+void UInGamePlayer::ShowMessage(const FString& Text)
+{
+	if (InGameMessageText == nullptr) return;
+
+	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
+
+	InGameMessageText->SetText(FText::FromString(Text));
+}
+void UInGamePlayer::HideMessage()
+{
+	if (InGameMessageText == nullptr) return;
+
+	InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
+
 void UInGamePlayer::SetInGameMessage(FText Message)
 {
 	if (InGameMessageText == nullptr) return;

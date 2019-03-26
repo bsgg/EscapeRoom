@@ -94,6 +94,8 @@ public:
 	void ShowUseIcon();
 	void HideUseIcon();
 
+	void ShowMessage(const FString& Text);
+	void HideMessage();
 
 	void ShowMessages();
 
