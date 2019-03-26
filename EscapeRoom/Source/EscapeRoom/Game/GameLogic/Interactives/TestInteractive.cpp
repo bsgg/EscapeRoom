@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TestInteractive.h"
+#include "Characters/MainCharacter.h"
 #include "Lobby/LobbyPlayerController.h"
 
 // Sets default values
@@ -47,18 +48,56 @@ ATestInteractive::ATestInteractive()
 void ATestInteractive::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HighlightMesh->SetVisibility(false, true);
 	
 }
 
 
 void ATestInteractive::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
+	if (CharacterOverlapping != nullptr) return;	
 
+	auto MainCharacter = Cast<AMainCharacter>(OtherActor);
+	if (MainCharacter)
+	{
+		CharacterOverlapping = MainCharacter;
+
+		IInteract* Interface = Cast<IInteract>(MainCharacter);
+
+		if (Interface)
+		{
+			SetOwner(MainCharacter);
+
+			Interface->NotifyInInteractRange(this);
+
+			HighlightMesh->SetVisibility(true, true);
+			
+		}
+	}
 }
 
 void ATestInteractive::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	auto MainCharacter = Cast<AMainCharacter>(OtherActor);
+	if (MainCharacter)
+	{
+		if ((CharacterOverlapping != nullptr) && (CharacterOverlapping == MainCharacter))
+		{
 
+			CharacterOverlapping = nullptr; 
+			IInteract* Interface = Cast<IInteract>(MainCharacter);
+
+			if (Interface)
+			{
+				SetOwner(nullptr);
+
+				Interface->NotifyLeaveInteractRange(this);
+
+				HighlightMesh->SetVisibility(false, true);
+			}
+		}
+	}
 }
 
 
@@ -75,6 +114,10 @@ void ATestInteractive::StartInteract(APawn* Instigator)
 	if (PlayerController)
 	{
 		// SHOW DEBUG WITH A TEXT
+
+		PlayerController->ShowDebugLog("Start Interact With This Interactive");
+
+		DestroyPickup();
 	}
 
 }
@@ -86,7 +129,9 @@ void ATestInteractive::FinishInteract(APawn* Instigator)
 
 	if (PlayerController)
 	{
-		// SHOW DEBUG WITH A TEXT
+		// HIDE DEBUG WITH A TEXT
+
+		PlayerController->ShowDebugLog("Finish Interacting");
 	}
 }
 

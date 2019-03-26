@@ -109,6 +109,8 @@ public:
 
 	void RemoveObjectFromSlot(FName ObjectID);
 
+	void DebugLog(const FString& Text);
+
 private:
 
 	TArray<class UInventorySlot*> Slots;

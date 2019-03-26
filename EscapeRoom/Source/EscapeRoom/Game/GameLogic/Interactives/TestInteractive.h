@@ -57,6 +57,6 @@ public:
 
 protected:
 
-	//FObjectInteraction PickupInfo;
+	class AMainCharacter* CharacterOverlapping = nullptr;
 
 };

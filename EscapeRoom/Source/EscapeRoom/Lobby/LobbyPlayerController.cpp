@@ -60,6 +60,11 @@ void ALobbyPlayerController::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay] %s = ChararcerSelected %s"), *Authority, *TypeChar);
 }
 
+void ALobbyPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+}
+
 
 
 void ALobbyPlayerController::Client_Initialize_Implementation()
@@ -192,6 +197,18 @@ void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 	if (InGameUI == nullptr) return;
 	InGameUI->AddToViewport();
 }
+
+
+// GAMEPLAY INTERACTIVE INTERFACES
+void  ALobbyPlayerController::ShowDebugLog_Implementation(const FString& Text)
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->DebugLog(Text);
+
+}
+// GAMEPLAY ROOM IMPLEMENTATION
+
 
 void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const FString& Text, bool hideMessages)
 {

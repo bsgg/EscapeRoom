@@ -356,3 +356,11 @@ void UInGamePlayer::HideUseIcon()
 
 	UseIconBox->SetVisibility(ESlateVisibility::Hidden);
 }
+
+
+void UInGamePlayer::DebugLog(const FString& Text)
+{
+	if (DebugText == nullptr) return;
+
+	DebugText->SetText(FText::FromString(Text));
+}

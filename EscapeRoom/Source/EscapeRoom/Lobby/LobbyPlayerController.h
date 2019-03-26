@@ -37,12 +37,20 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "PlayerController")
 	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
 
+
+
 	// GAMEPLAY ROOM IMPLEMENTATION
 	UFUNCTION(Client, Reliable)
 	void Client_InitializeRoom(TSubclassOf<APawn> PawnToSpawn);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_CreateInGameUI();
+
+	// GAMEPLAY INTERACTIVE INTERFACES
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void ShowDebugLog(const FString& Text);
+	// GAMEPLAY ROOM IMPLEMENTATION
+
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
@@ -90,6 +98,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
 	FName SelectedObjectID;
 	// TODO CREATE PAUSE MENU
+
+
+	virtual void SetupInputComponent() override;
 
 private:
 	TSubclassOf<class UUserWidget> LobbyMenuClass;

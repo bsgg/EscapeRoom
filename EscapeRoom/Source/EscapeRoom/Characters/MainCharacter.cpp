@@ -8,12 +8,15 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+
+
 #include "Game/Components/InventoryComponent.h"
 
 #include "Game/GameLogic/InteractiveBase.h"
 #include "Game/GameLogic/PickupInteractive.h"
 #include "Game/GameLogic/SwitchInteractive.h" 
 #include "Game/GameLogic/UseInteractive.h"
+#include "Lobby/LobbyPlayerController.h"
 
 //#include "Game/Pickup.h"
 #include "Game/RoomGameMode.h" 
@@ -74,14 +77,14 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-/*void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
 	//PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::OnInspect);
-	//PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::OnInteract);
-}*/
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::TestInteract);
+}
 
 void AMainCharacter::LockInput()
 {
@@ -135,7 +138,7 @@ void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 		if (CurrentInteractive)
 		{
 			auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
-			//PlayerController->ShowInteractText(CurrentInteractive->GetInteractMessage());
+			PlayerController->ShowDebugLog(CurrentInteractive->GetInteractMessage());
 		}
 	}
 }
@@ -147,6 +150,7 @@ void AMainCharacter::NotifyLeaveInteractRange(AActor* Interactive)
 		CurrentInteractive = nullptr;
 		auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
 
+		PlayerController->ShowDebugLog("Leaving");
 		//PlayerController->HideInteractText();
 	}
 }
