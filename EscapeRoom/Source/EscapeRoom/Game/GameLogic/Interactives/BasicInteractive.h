@@ -63,7 +63,7 @@ protected:
 
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Basic Interactive Properties")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Basic Interactive Properties")
 	FInteractiveProperties Properties;
 
 	class AMainCharacter* CharacterOverlapping = nullptr;
@@ -89,6 +89,8 @@ public:
 	virtual void FinishInteract(APawn* Instigator) override;
 
 	virtual FString GetInteractMessage() override;
+
+	virtual FString GetInteractID() override;
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 

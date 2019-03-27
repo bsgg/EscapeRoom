@@ -140,6 +140,11 @@ void ATestInteractive::FinishInteract(APawn* Instigator)
 	}
 }
 
+FString ATestInteractive::GetInteractID()
+{
+	return FString(TEXT("None"));
+}
+
 
 
 void ATestInteractive::DestroyPickup_Implementation()

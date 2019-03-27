@@ -84,6 +84,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::HandleInspectInput);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::HandleInteractInput);
+
+	// TODO: BIND MOVE INTERACT AGAIN
 }
 
 void AMainCharacter::LockInput()
@@ -140,7 +142,9 @@ void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 			auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
 			//PlayerController->ShowDebugLog(CurrentInteractive->GetInteractMessage());
 
-			PlayerController->ShowDebugLog("Entering in Interactive");
+			FString Debug = "Enter in Interactive " + CurrentInteractive->GetInteractID();
+
+			PlayerController->ShowDebugLog(Debug);
 
 			// Show Controls
 			PlayerController->ShowControls();
@@ -152,10 +156,14 @@ void AMainCharacter::NotifyLeaveInteractRange(AActor* Interactive)
 {
 	if (IsLocallyControlled())
 	{
-		CurrentInteractive = nullptr;
+		
 		auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
 
-		PlayerController->ShowDebugLog("Leaving Interactive");
+		FString Debug = "Leaving Interactive " + CurrentInteractive->GetInteractID();
+
+		PlayerController->ShowDebugLog(Debug);
+
+		CurrentInteractive = nullptr;
 
 		// Hide Controls
 		PlayerController->HideControls();	
@@ -190,6 +198,10 @@ void AMainCharacter::HandleInteractInput()
 }
 
 //// INPUT IMPLEMENTATION ////////////////////
+
+
+
+
 
 
 

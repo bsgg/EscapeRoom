@@ -3,6 +3,7 @@
 #include "BasicInteractive.h"
 #include "Characters/MainCharacter.h"
 #include "Lobby/LobbyPlayerController.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 ABasicInteractive::ABasicInteractive()
@@ -156,7 +157,20 @@ void ABasicInteractive::FinishInteract(APawn* Instigator)
 
 }
 
+FString ABasicInteractive::GetInteractID()
+{
+	return Properties.ID.ToString();
+}
+
 /////// IInteractiveInterface IMPLEMENTATION /////////
+
+
+void ABasicInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABasicInteractive, Properties);
+}
 
 
 

@@ -56,6 +56,8 @@ public:
 	// Finish execution of the interactive, closes UI, destroy objects, etc
 	virtual void FinishInteract(APawn* Instigator) override;
 
+	virtual FString GetInteractID() override;
+
 
 protected:
 
