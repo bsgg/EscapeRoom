@@ -68,6 +68,8 @@ protected:
 
 	class AMainCharacter* CharacterOverlapping = nullptr;
 
+	class ALobbyPlayerController* CurrentController;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -77,7 +79,6 @@ protected:
 
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 
 public:
 
@@ -91,8 +92,8 @@ public:
 	virtual FString GetInteractMessage() override;
 
 	virtual FString GetInteractID() override;
-
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 
-
+protected:
+	
 };

@@ -144,11 +144,11 @@ FString ABasicInteractive::GetInteractMessage()
 
 void ABasicInteractive::StartInteract(APawn* Instigator)
 {
-	auto PlayerController = Cast<ALobbyPlayerController>(Instigator->GetController());
+	CurrentController = Cast<ALobbyPlayerController>(Instigator->GetController());
 
-	if (PlayerController)
+	if (CurrentController)
 	{
-		PlayerController->ShowDebugLog("Interacting");
+		CurrentController->ShowDebugLog("Interacting");
 	}
 }
 

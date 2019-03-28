@@ -115,15 +115,19 @@ protected:
 
 	bool TryToAddNewObject(FName ObjID);
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void StartGesture(EGestureType NewGesture);
+
 
 	void SetGestureToDefault();
 
 public:	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void StartGesture(EGestureType NewGesture);
+	
 	virtual void Tick(float DeltaTime) override;
 
 	void OnOverlapInteractive(class AInteractiveBase* Interactive);
+
+
 
 protected:
 

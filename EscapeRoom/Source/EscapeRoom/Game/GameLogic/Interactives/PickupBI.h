@@ -14,6 +14,10 @@ class ESCAPEROOM_API APickupBI : public ABasicInteractive
 {
 	GENERATED_BODY()
 
+public:
+
+	APickupBI();
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup Interactive", meta = (AllowPrivateAccess = "true"))
@@ -23,25 +27,24 @@ protected:
 	FActionDefinition PickupAction;
 
 protected:
-
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void OnRep_PickupActionChanged();
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerDoAction();	
+	//virtual void DoInteractAction() override;
 
-	void DoAction();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerDoInteractAction();
+
+	void DoInteractAction();
 
 public:
 
-	APickupBI();
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 
 	virtual void StartInteract(APawn* Instigator) override;
-
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 	

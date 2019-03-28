@@ -2,6 +2,7 @@
 
 #include "PickupBI.h"
 #include "Lobby/LobbyPlayerController.h"
+#include "Characters/MainCharacter.h"
 #include "UnrealNetwork.h"
 
 APickupBI::APickupBI()
@@ -26,62 +27,64 @@ void APickupBI::BeginPlay()
 	}
 }
 
-
-
 void APickupBI::StartInteract(APawn* Instigator)
 {
-	//Super::StartInteract(Instigator);
+	Super::StartInteract(Instigator);
 
-	UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] "));
+	if (CurrentController == nullptr) return;
 
-	auto PlayerController = Cast<ALobbyPlayerController>(Instigator->GetController());
-
-	if (PlayerController)
+	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
 	{
-		FString Debug = "Interacting Pickup Object" + PickupAction.ObjectID.ToString();
+		CurrentController->ShowMessage(PickupAction.DetailDefaultAction.ToString());
 
-		PlayerController->ShowDebugLog("Interacting Pickup Object");
-
-		//UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] Player controller Found %s"), *Debug);
-
-		if ((PickupAction.ObjectID != "None") && (PickupAction.IsActive))
+		if (CharacterOverlapping != nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] OBJECT"));
-
-			//if (Role == ROLE_Authority)
-			//{
-
-
-				UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] OBJECT EXECUTING PICKUP ACTION"));
-
-				
-
-				//PickupMesh->SetVisibility(false, true);
-
-				//OnRep_PickupActionChanged();
-			//}
-
-				if (Role < ROLE_Authority)
-				{
-
-					ServerDoAction();
-					
-				}
-				else
-				{
-					DoAction();
-				}
-
-				// TODO: SHOW ANIMATION AND SEND PICKUP ID
-			PlayerController->ShowMessage(PickupAction.DetailDefaultAction.ToString());
-
+			CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT);
 		}
-		else
+	}
+	else
+	{
+		CurrentController->ShowMessage(PickupAction.DetailWrongAction.ToString());
+
+		if (CharacterOverlapping != nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] NO OBJECT"));
-
-			PlayerController->ShowMessage(PickupAction.DetailWrongAction.ToString());
+			CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS);
 		}
+	}
+
+	if (Role < ROLE_Authority)
+	{
+		ServerDoInteractAction();
+	}
+	else
+	{
+		DoInteractAction();
+	}
+}
+
+void APickupBI::ServerDoInteractAction_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[ABasicInteractive::ServerDoInteractAction]"));
+
+	DoInteractAction();
+}
+
+bool APickupBI::ServerDoInteractAction_Validate()
+{
+	return true;
+}
+
+void APickupBI::DoInteractAction()
+{
+	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
+	{
+		PickupAction.ObjectID = "None";
+
+		PickupAction.IsActive = false;
+
+		Properties.EnableDefaultInspectMessage = true;
+
+		PickupMesh->SetVisibility(false, true);
 	}
 }
 
@@ -92,64 +95,12 @@ void APickupBI::OnRep_PickupActionChanged()
 	if (PickupAction.IsActive)
 	{
 		PickupMesh->SetVisibility(true, true);
-
 	}
 	else
 	{
 		PickupMesh->SetVisibility(false, true);
-
 	}
 }
-
-
-
-
-void APickupBI::ServerDoAction_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("[APickupBI::DoAction_Implementation]"));
-	DoAction();
-	
-	/*if (PickupAction.IsActive)
-	{
-		PickupMesh->SetVisibility(true, true);
-	}
-	else
-	{
-		PickupMesh->SetVisibility(false, true);
-
-		if (PickupAction.DestroyWhenActionCompleted)
-		{
-			Destroy();
-		}
-	}*/
-
-
-	//if (PickupAction.DestroyWhenActionCompleted)
-	//{
-		//Destroy();
-	//}
-}
-
-bool APickupBI::ServerDoAction_Validate()
-{
-	return true;
-}
-
-void APickupBI::DoAction()
-{
-	PickupAction.ObjectID = "None";
-
-	PickupAction.IsActive = false;
-
-	Properties.EnableDefaultInspectMessage = true;
-
-	PickupMesh->SetVisibility(false, true);
-
-	// TODO: TEST IF THIS IS NECESARY
-	OnRep_PickupActionChanged();
-}
-
-
 
 void APickupBI::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
