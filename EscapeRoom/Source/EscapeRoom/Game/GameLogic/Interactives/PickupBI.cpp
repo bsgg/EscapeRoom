@@ -37,6 +37,10 @@ void APickupBI::StartInteract(APawn* Instigator)
 	{
 		CurrentController->ShowMessage(PickupAction.DetailDefaultAction.ToString());
 
+		CurrentController->AddItemToInventory(PickupAction.ObjectID);
+
+		// TODO: PICKUP OBJECT AND ADDED IT IN THE INVENTORY
+
 		if (CharacterOverlapping != nullptr)
 		{
 			CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT);

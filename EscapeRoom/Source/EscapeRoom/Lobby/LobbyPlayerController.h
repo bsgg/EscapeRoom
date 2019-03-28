@@ -64,6 +64,12 @@ public:
 	// GAMEPLAY ROOM IMPLEMENTATION
 
 
+
+
+
+
+
+
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
 
@@ -133,6 +139,16 @@ private:
 	FTimerHandle InteractionTimerHandle;
 
 	void EndInteraction();
+
+
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UInventoryComponent* InventoryComponent;
+
+public:
+
+	void AddItemToInventory(const FName& ObjID);
 
 	
 };

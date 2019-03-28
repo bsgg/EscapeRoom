@@ -6,6 +6,9 @@
 #include "LobbyGameMode.h"
 #include "Game/EscapeRoomPlayerState.h"
 
+#include "Game/Components/InventoryComponent.h"
+#include "Game/GameLogic/Objects/ObjectHelper.h"
+
 #include "Game/RoomGameMode.h"
 #include "Game/UI/InGamePlayer.h"
 #include "Game/UI/InventoryUI.h"
@@ -17,6 +20,9 @@
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
+	// Inventory Component
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> LobbyMenuBPClass(TEXT("/Game/Lobby/LobbyMenu_WBP"));
 
@@ -31,6 +37,8 @@ ALobbyPlayerController::ALobbyPlayerController()
 	{
 		InGameUIClass = InGameMenuBPClass.Class;
 	}
+
+	
 }
 
 void ALobbyPlayerController::BeginPlay()
@@ -455,6 +463,29 @@ FObjectInteraction* ALobbyPlayerController::FindCombinedObject(FName ObjectID_A,
 
 	return nullptr;
 }
+
+void ALobbyPlayerController::AddItemToInventory(const FName& ObjID)
+{
+	if (InventoryComponent == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::AddItemToInventory] ObjID %s"), *ObjID.ToString());
+
+	FObjectInteraction* NewObject = UObjectHelper::GetObjectByID(ObjID);
+	
+	if (NewObject == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::AddItemToInventory] New Object added %s"), *NewObject->ID.ToString());
+
+	InventoryComponent->AddObject(ObjID, *NewObject);
+
+	//Client_AddObjectToSlot(*NewObject);
+
+	if (InGameUI == nullptr) return;
+
+	InGameUI->AddObjectToSlot(*NewObject);
+
+}
+
 
 
 

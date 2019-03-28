@@ -81,9 +81,7 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 			CatPortraitIcon->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	}
-
 }
-
 
 void UInGamePlayer::ShowMessage(const FString& Text)
 {
@@ -93,6 +91,9 @@ void UInGamePlayer::ShowMessage(const FString& Text)
 
 	InGameMessageText->SetText(FText::FromString(Text));
 }
+
+
+
 void UInGamePlayer::HideMessage()
 {
 	if (InGameMessageText == nullptr) return;
