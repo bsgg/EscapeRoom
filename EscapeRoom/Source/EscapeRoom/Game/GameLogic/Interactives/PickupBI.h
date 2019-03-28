@@ -32,8 +32,6 @@ protected:
 	UFUNCTION()
 	void OnRep_PickupActionChanged();
 
-	//virtual void DoInteractAction() override;
-
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerDoInteractAction();
 
@@ -41,11 +39,9 @@ protected:
 
 public:
 
-
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 
 	virtual void StartInteract(APawn* Instigator) override;
 
-	/////// IInteractiveInterface IMPLEMENTATION /////////
-	
+	/////// IInteractiveInterface IMPLEMENTATION /////////	
 };
