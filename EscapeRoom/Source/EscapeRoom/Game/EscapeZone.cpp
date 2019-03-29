@@ -56,7 +56,7 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	//UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] Found GamePC"));	
 
 	//if (MActor->bIsCarryingObjective)
-	if ((MainActor->GetInventory() != nullptr) && (MainActor->GetInventory()->CheckIfObjectExists(ObjectID)))
+	/*if ((MainActor->GetInventory() != nullptr) && (MainActor->GetInventory()->CheckIfObjectExists(ObjectID)))
 	{
 		if (OtherActor->Role == ROLE_Authority)
 		{
@@ -99,5 +99,6 @@ void AEscapeZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AEscapeZone::HandleOverlap] NOT OBJECTIVED FOUND"));
 	}
+	*/
 }
 

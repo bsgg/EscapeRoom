@@ -70,7 +70,7 @@ void AInteractiveBase::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 			CharacterOverlapping = Cast<AMainCharacter>(OtherActor);
 			if (CharacterOverlapping == nullptr) return;
 
-			CharacterOverlapping->OnOverlapInteractive(this);
+			//CharacterOverlapping->OnOverlapInteractive(this);
 
 			OldDefinition.IsLocked = false;
 
@@ -94,7 +94,7 @@ void AInteractiveBase::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 		// There is a character already overlapping and it's the same as the leaving character
 		if ((CharacterOverlapping != nullptr) && (CharacterOverlapping == OtherCharacter))
 		{
-			CharacterOverlapping->OnOverlapInteractive(nullptr);
+			//CharacterOverlapping->OnOverlapInteractive(nullptr);
 
 			ResetInspectDetail();
 

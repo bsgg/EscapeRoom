@@ -58,7 +58,7 @@ AMainCharacter::AMainCharacter()
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Inventory Component
-	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+	//InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 	//InventoryComponent->OnInventoryChanged.AddDynamic(this, &AMainCharacter::OnInventoryChanged);
 
 	// Activate ticking in order to update the cursor every frame.
@@ -79,13 +79,15 @@ void AMainCharacter::Tick(float DeltaTime)
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// set up gameplay key bindings
 	check(PlayerInputComponent);
+
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::HandleInspectInput);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::HandleInteractInput);
-
-	// TODO: BIND MOVE INTERACT AGAIN
 }
 
 void AMainCharacter::LockInput()
@@ -93,18 +95,17 @@ void AMainCharacter::LockInput()
 	bInputLocked = true;
 }
 
-
 void AMainCharacter::UnLockInput()
 {
 	bInputLocked = false;
 }
 
-
 void AMainCharacter::MoveForward(float Value)
-{
+{	
+
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
-	if (Value != 0.0f)
+	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		const FRotator Rotation = GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -117,9 +118,11 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
+	
+
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
-	if (Value != 0.0f)
+	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		const FRotator Rotation = GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -132,6 +135,7 @@ void AMainCharacter::MoveRight(float Value)
 }
 
 //// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
 void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 {
 	if (IsLocallyControlled())
@@ -143,7 +147,6 @@ void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 			//PlayerController->ShowDebugLog(CurrentInteractive->GetInteractMessage());
 
 			FString Debug = "Enter in Interactive " + CurrentInteractive->GetInteractID();
-
 			PlayerController->ShowDebugLog(Debug);
 
 			// Show Controls
@@ -172,6 +175,7 @@ void AMainCharacter::NotifyLeaveInteractRange(AActor* Interactive)
 }
 //// INTERFACE IInteract IMPLEMENTATION ////////////////////
 
+
 //// INPUT IMPLEMENTATION ////////////////////
 
 void AMainCharacter::HandleInspectInput()
@@ -186,7 +190,6 @@ void AMainCharacter::HandleInspectInput()
 	}
 }
 
-
 void AMainCharacter::HandleInteractInput()
 {
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
@@ -199,14 +202,36 @@ void AMainCharacter::HandleInteractInput()
 
 //// INPUT IMPLEMENTATION ////////////////////
 
+void AMainCharacter::StartGesture_Implementation(EGestureType NewGesture)
+{
+	bInputLocked = true;
+	CurrentGesture = NewGesture;
 
+	if (NewGesture != EGestureType::VE_NONE)
+	{
+		GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, InteractAnimationTime, false);
+	}
+}
+
+bool AMainCharacter::StartGesture_Validate(EGestureType NewGesture)
+{
+	return true;
+}
+
+void AMainCharacter::SetGestureToDefault()
+{
+	bInputLocked = false;
+
+	CurrentGesture = EGestureType::VE_NONE;
+	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
+}
 
 
 
 
 
 // REGION INSPECT ACTION
-void AMainCharacter::OnInspect()
+/*void AMainCharacter::OnInspect()
 {
 	if (OverlappedInteractive == nullptr) return;
 
@@ -240,11 +265,12 @@ void AMainCharacter::DoInspectAction()
 	OverlappedInteractive->ForwardInspectDetail();
 
 	//OnUIMessageUpdated.Broadcast(this, desc, false);
-}
+}*/
 // ENDREGION INSPECT ACTION
 
 
 // REGION INTERACT ACTION
+/*
 void AMainCharacter::OnInteract(FName SelectedObject)
 {	
 
@@ -435,32 +461,9 @@ void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
 		
 		OnOverlappedInteractive.Broadcast(this, OverlappedInteractive);
 	}
-}
-
-void AMainCharacter::StartGesture_Implementation(EGestureType NewGesture)
-{
-	bInputLocked = true;
-	CurrentGesture = NewGesture;
-
-	if (NewGesture != EGestureType::VE_NONE)
-	{
-		GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, InteractAnimationTime, false);
-	}
-}
-
-bool AMainCharacter::StartGesture_Validate(EGestureType NewGesture)
-{
-	return true;
-}
+}*/
 
 
-void AMainCharacter::SetGestureToDefault()
-{	
-	bInputLocked = false;
-
-	CurrentGesture = EGestureType::VE_NONE;
-	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
-}
 
 /*
 void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
@@ -478,7 +481,7 @@ void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 
 	//DOREPLIFETIME(AMainCharacter, SelectedObjectInventory);	
 
-	DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
+	//DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
 }
 
 
