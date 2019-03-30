@@ -18,7 +18,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 
-ALobbyPlayerController::ALobbyPlayerController()
+ALobbyPlayerController::ALobbyPlayerController() 
 {
 	// Inventory Component
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
@@ -37,8 +37,6 @@ ALobbyPlayerController::ALobbyPlayerController()
 	{
 		InGameUIClass = InGameMenuBPClass.Class;
 	}
-
-	
 }
 
 void ALobbyPlayerController::BeginPlay()
@@ -69,10 +67,15 @@ void ALobbyPlayerController::BeginPlay()
 void ALobbyPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	// Bind inventory
+	InputComponent->BindAction("NavigateInventoryLeft", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryLeft);
+	InputComponent->BindAction("NavigateInventoryRight", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryRight);
+	InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
 }
 
 
-
+///////////// LOBBY IMPLEMENTATION ////////////////
 void ALobbyPlayerController::Client_Initialize_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_Initialize]"));
@@ -163,6 +166,9 @@ void ALobbyPlayerController::Client_UpdateReadyButton_Implementation()
 	LobbyMenu->UpdateReadyState();
 }
 
+///////////// LOBBY IMPLEMENTATION ////////////////
+
+///////////// GAMEPLAY ROOM IMPLEMENTATION ////////////////
 void ALobbyPlayerController::Client_InitializeRoom_Implementation(TSubclassOf<APawn> PawnToSpawn)
 {   
 	// TODO: SETUP IN GAME
@@ -203,9 +209,10 @@ void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 	if (InGameUI == nullptr) return;
 	InGameUI->AddToViewport();
 }
+///////////// GAMEPLAY ROOM IMPLEMENTATION ////////////////
 
 
-// GAMEPLAY INTERACTIVE INTERFACES
+///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 void  ALobbyPlayerController::ShowDebugLog_Implementation(const FString& Text)
 {
 	if (InGameUI == nullptr) return;
@@ -239,11 +246,95 @@ void ALobbyPlayerController::HideControls_Implementation()
 
 	InGameUI->HideControls();
 }
+///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 
 
-// GAMEPLAY ROOM IMPLEMENTATION
+///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
+void ALobbyPlayerController::NavigateInventoryLeft()
+{
+	if (InGameUI == nullptr) return;
+
+	//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::NavigateInventoryLeft] "));
+
+	InGameUI->NavigateInventory(EDirectionType::VE_LEFT);
+}
+
+void ALobbyPlayerController::NavigateInventoryRight()
+{
+	if (InGameUI == nullptr) return;
+
+	//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::NavigateInventoryRight] "));
+
+	InGameUI->NavigateInventory(EDirectionType::VE_RIGHT);
+}
+
+void ALobbyPlayerController::ToggleInventory()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->ToggleInventory();
+}
+
+FName ALobbyPlayerController::GetSelectedItem()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::GetSelectedItem] "));
+
+	if (InGameUI == nullptr) return "NONE";
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::GetSelectedItem] %s "), *InGameUI->GetSelectedItem().ToString());
+
+	return InGameUI->GetSelectedItem();
+}
 
 
+/*void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionType Direction)
+{
+	// Create UI
+	if (InGameUI == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_NavigateInventory] "));
+
+	InGameUI->NavigateInventory(Direction);
+}*/
+
+
+
+/*void ALobbyPlayerController::Client_ToggleInventory_Implementation()
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->ToggleInventory();
+}*/
+
+
+/*void ALobbyPlayerController::Client_AddObjectToSlot_Implementation(const FObjectInteraction& Object)
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->AddObjectToSlot(Object);
+}*/
+
+void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FName& ObjectID)
+{
+	if (InGameUI == nullptr) return;
+
+	InGameUI->RemoveObjectFromSlot(ObjectID);
+}
+
+void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation(const FObjectInteraction& SelectedObject)
+{
+	SelectedObjectID = SelectedObject.ID;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory] SelectedObjectID %s = %s"), *SelectedObjectID.ToString(), *SelectedObject.Name.ToString());
+
+
+}
+
+///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
+
+
+
+/*
 void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const FString& Text, bool hideMessages)
 {
 	// Create UI
@@ -259,41 +350,16 @@ void ALobbyPlayerController::Client_UpdateInGameMessageUI_Implementation(const F
 		InGameUI->SetInGameMessage(FText::FromString(Text));
 	}
 }
+*/
 
 
 // Inventory
-void ALobbyPlayerController::Client_NavigateInventory_Implementation(EDirectionType Direction)
-{
-	// Create UI
-	if (InGameUI == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_NavigateInventory] "));
-
-	InGameUI->NavigateInventory(Direction);
-}
-
-void ALobbyPlayerController::Client_ToggleInventory_Implementation()
-{
-	if (InGameUI == nullptr) return;
-
-	InGameUI->ToggleInventory();
-}
 
 
-void ALobbyPlayerController::Client_AddObjectToSlot_Implementation(const FObjectInteraction& Object)
-{
-	if (InGameUI == nullptr) return;
 
-	InGameUI->AddObjectToSlot(Object);
-}
 
-void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FName& ObjectID)
-{
-	if (InGameUI == nullptr) return;
 
-	InGameUI->RemoveObjectFromSlot(ObjectID);
-}
-
+/*
 void ALobbyPlayerController::Client_UpdateControlsUI_Implementation(const AInteractiveBase* Interactive)
 {
 	if (InGameUI == nullptr) return;
@@ -352,6 +418,8 @@ void ALobbyPlayerController::Client_UpdateInGame_Implementation(const AInteracti
 	}
 }
 
+
+
 void ALobbyPlayerController::EndInteraction()
 {
 	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
@@ -365,104 +433,12 @@ void ALobbyPlayerController::Client_HideInGameMessage_Implementation()
 
 	InGameUI->HideMessages();
 }
-
-
-void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation(const FObjectInteraction& SelectedObject)
-{
-	SelectedObjectID = SelectedObject.ID;
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory] SelectedObjectID %s = %s"), *SelectedObjectID.ToString(), *SelectedObject.Name.ToString());
+*/
 
 
 
-	/*if (InGameUI == nullptr) return;
-
-	if (InGameUI->GetInventory() == nullptr) return;	
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation]"));
-
-	if (InGameUI->GetInventory()->IsReadyToCombine())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] Ready to combine"));
-
-		FName idObjectA = InGameUI->GetInventory()->GetObjectIDToCombineA();
-		FName idObjectB = InGameUI->GetInventory()->GetObjectIDToCombineB();
-
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] idObjectA: %s  - idObjectB: %s  "), *idObjectA.ToString(), *idObjectB.ToString());
-
-		FObjectInteraction* newObject = FindCombinedObject(idObjectA, idObjectB);
-
-		if (newObject)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::OnSelectItemInInventory] newObject found %s"), *newObject->Name.ToString());
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::OnSelectItemInInventory] newObject not found"));
-		}
 
 
-		
-
-
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation] OnSelectItem "));
-
-		InGameUI->GetInventory()->OnSelectItem();
-	}*/
-
-	//InGameUI->OnSelectItemInventory();
-}
-
-// Inventory
-
-FObjectInteraction* ALobbyPlayerController::FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const
-{
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] ObjectID_A %s - ObjectID_B %s"), *ObjectID_A.ToString(), *ObjectID_B.ToString());
-
-	if ((ObjectCombinationDB == nullptr) || (ObjectDB == nullptr)) return nullptr;
-
-	FName CombinedObjectID;
-
-	TArray<FName> RowNames = ObjectCombinationDB->GetRowNames();
-	bool CombinationFound = false;
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] RowNamesNum %i "), RowNames.Num());
-
-	for (auto& Name : RowNames) // Iterate throught combinations
-	{
-		FObjectCombination* Row = ObjectCombinationDB->FindRow<FObjectCombination>(Name, TEXT("Object"));
-		if (Row)
-		{
-			// Check if both ID are contained
-
-			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] Combination Row found %s - %s  "), *Row->ObjectID_A.ToString(), *Row->ObjectID_B.ToString());
-
-			bool firstComb = (Row->ObjectID_A == ObjectID_A) && (Row->ObjectID_B == ObjectID_B);
-			bool inverse = (Row->ObjectID_A == ObjectID_B) && (Row->ObjectID_B == ObjectID_A);
-
-			if (firstComb || inverse)	
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] Same %s - %s  "), *ObjectID_A.ToString(), *ObjectID_B.ToString());
-
-				CombinedObjectID = Row->ObjectID_Result;
-				CombinationFound = true;
-				break;
-			}
-		}
-	}
-
-	if (CombinationFound)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::FindCombinedObject] CombinationFound %s"), *CombinedObjectID.ToString());
-
-		return (ObjectDB->FindRow<FObjectInteraction>(CombinedObjectID, TEXT("Object"), true));
-	}
-
-	return nullptr;
-}
 
 void ALobbyPlayerController::AddItemToInventory(const FName& ObjID)
 {
@@ -483,7 +459,6 @@ void ALobbyPlayerController::AddItemToInventory(const FName& ObjID)
 	if (InGameUI == nullptr) return;
 
 	InGameUI->AddObjectToSlot(*NewObject);
-
 }
 
 

@@ -14,11 +14,13 @@ UCLASS()
 class ESCAPEROOM_API ALobbyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
 public:
 	ALobbyPlayerController();
 
 	virtual void BeginPlay() override;
 
+	///////////// LOBBY IMPLEMENTATION ////////////////
 	UFUNCTION(Client, Reliable)
 	void Client_Initialize();
 
@@ -33,20 +35,18 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void Client_UpdateReadyButton();
+	///////////// LOBBY IMPLEMENTATION ////////////////
+	
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "PlayerController")
-	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
-
-
-
-	// GAMEPLAY ROOM IMPLEMENTATION
+	///////////// GAMEPLAY ROOM IMPLEMENTATION ////////////////
 	UFUNCTION(Client, Reliable)
 	void Client_InitializeRoom(TSubclassOf<APawn> PawnToSpawn);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_CreateInGameUI();
+	///////////// GAMEPLAY ROOM IMPLEMENTATION ////////////////
 
-	// GAMEPLAY INTERACTIVE INTERFACES
+	///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void ShowDebugLog(const FString& Text);
 
@@ -61,7 +61,7 @@ public:
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void HideControls();
-	// GAMEPLAY ROOM IMPLEMENTATION
+	///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 
 
 
@@ -69,7 +69,7 @@ public:
 
 
 
-
+	/*
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
 
@@ -82,20 +82,29 @@ public:
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_UpdateControlsUI(const AInteractiveBase* Interactive);
-	// GAMEPLAY ROOM IMPLEMENTATION
+
+	*/
 
 
 
+	///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
+protected:
+	void NavigateInventoryRight();
+	void NavigateInventoryLeft();
+	void ToggleInventory();
 
-	// INVENTORY FUNCTIONS
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_ToggleInventory();	
 
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_NavigateInventory(EDirectionType Direction);
+public:
+	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	//void Client_ToggleInventory();	
 
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_AddObjectToSlot(const FObjectInteraction& Object);
+	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	//void Client_NavigateInventory(EDirectionType Direction);
+
+	
+
+	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	//void Client_AddObjectToSlot(const FObjectInteraction& Object);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_RemoveObjectFromSlot(const FName& ObjectID);
@@ -103,52 +112,39 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);
 
-	// INVENTORY FUNCTIONS
+	void AddItemToInventory(const FName& ObjID);
+
+	FName GetSelectedItem();
+
+	///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
 
 
-	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
-
+	///////////// OLD EXAMPLE EVENT WHEN ROOM IS COMPLETED////////////////
+	UFUNCTION(BlueprintImplementableEvent, Category = "PlayerController")
+	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
+	///////////// OLD ////////////////
 
 protected:
-	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
-	class UInGamePlayer* InGameUI;
+	
+	virtual void SetupInputComponent() override;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
 	FName SelectedObjectID;
-	// TODO CREATE PAUSE MENU
 
+	UPROPERTY(Replicated)
+	TArray<FCharacterType> AvalaibleCharacters;
 
-	virtual void SetupInputComponent() override;
-
-private:
 	TSubclassOf<class UUserWidget> LobbyMenuClass;
 	class ULobbyMenu* LobbyMenu;
 
-	UPROPERTY(Replicated)
-	TArray<FCharacterType> AvalaibleCharacters;	
-
 	TSubclassOf<class UUserWidget> InGameUIClass;	
 
-	UPROPERTY(EditDefaultsOnly)
-	class UDataTable* ObjectDB; // Objects database database
-
-	UPROPERTY(EditDefaultsOnly)
-	class UDataTable* ObjectCombinationDB; // Objects database database
-
-
-	FTimerHandle InteractionTimerHandle;
-
-	void EndInteraction();
-
-
-
+	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
+	class UInGamePlayer* InGameUI;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UInventoryComponent* InventoryComponent;
 
-public:
-
-	void AddItemToInventory(const FName& ObjID);
 
 	
 };

@@ -113,6 +113,8 @@ public:
 
 	void DebugLog(const FString& Text);
 
+	FName GetSelectedItem();
+
 private:
 
 	TArray<class UInventorySlot*> Slots;
@@ -120,6 +122,10 @@ private:
 	int numberObjectsInventory = 0;
 
 	int CurrentSlotIndex = -1;
+
+	FName SelectedObjectID;
+
+	
 
 	bool bInventoryVisible = false;
 };
