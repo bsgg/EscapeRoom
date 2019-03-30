@@ -151,12 +151,12 @@ void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 	}
 }
 
-void UInGamePlayer::RemoveObjectFromSlot(FName ObjectID)
+void UInGamePlayer::RemoveObjectFromSlot(const FName& ObjID)
 {
 	int idToRemove = -1;
 	for (int i = 0; i < Slots.Num(); i++)
 	{
-		if (Slots[i]->GetObjectSlot().ID == ObjectID)
+		if (Slots[i]->GetObjectSlot().ID == ObjID)
 		{
 			idToRemove = i;
 

@@ -33,7 +33,7 @@ void APickupBI::StartInteract(APawn* Instigator)
 
 	if (CurrentController == nullptr) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] %s "), *CurrentController->GetSelectedItem().ToString());
+	//UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] %s "), *CurrentController->GetSelectedItem().ToString());
 
 	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
 	{

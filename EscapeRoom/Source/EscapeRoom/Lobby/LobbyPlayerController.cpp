@@ -321,14 +321,14 @@ void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FN
 	InGameUI->RemoveObjectFromSlot(ObjectID);
 }
 
-void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation(const FObjectInteraction& SelectedObject)
+/*void ALobbyPlayerController::Client_OnSelectItemInInventory_Implementation(const FObjectInteraction& SelectedObject)
 {
 	SelectedObjectID = SelectedObject.ID;
 
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_OnSelectItemInInventory] SelectedObjectID %s = %s"), *SelectedObjectID.ToString(), *SelectedObject.Name.ToString());
 
 
-}
+}*/
 
 ///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
 
@@ -454,11 +454,22 @@ void ALobbyPlayerController::AddItemToInventory(const FName& ObjID)
 
 	InventoryComponent->AddObject(ObjID, *NewObject);
 
-	//Client_AddObjectToSlot(*NewObject);
-
 	if (InGameUI == nullptr) return;
 
 	InGameUI->AddObjectToSlot(*NewObject);
+}
+
+void ALobbyPlayerController::RemoveItemFromInventory(const FName& ObjID)
+{
+	if (InventoryComponent == nullptr) return;
+
+	InventoryComponent->RemoveObject(ObjID);
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::RemoveItemFromInventory] ObjID to remove %s"), *ObjID.ToString());
+
+	if (InGameUI == nullptr) return;
+
+	InGameUI->RemoveObjectFromSlot(ObjID);
 }
 
 

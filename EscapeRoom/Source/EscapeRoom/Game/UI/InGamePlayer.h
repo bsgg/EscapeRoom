@@ -109,7 +109,7 @@ public:
 
 	void AddObjectToSlot(FObjectInteraction Object);
 
-	void RemoveObjectFromSlot(FName ObjectID);
+	void RemoveObjectFromSlot(const FName& ObjID);
 
 	void DebugLog(const FString& Text);
 

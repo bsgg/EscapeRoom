@@ -24,9 +24,9 @@ public:
 	
 	void AddObject(FName ObjectID, const FObjectInteraction& Object);
 
-	bool CheckIfObjectExists(FName ObjectID);
+	bool CheckIfObjectExists(const FName& ObjID);
 
-	void RemoveObject(FName ObjectID);
+	void RemoveObject(const FName& ObjID);
 	
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Inventory")
 	int ObjectNum;

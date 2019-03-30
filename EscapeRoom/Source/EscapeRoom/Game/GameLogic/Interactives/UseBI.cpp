@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UseBI.h"
+#include "Lobby/LobbyPlayerController.h"
+#include "Characters/MainCharacter.h"
 
 AUseBI::AUseBI()
 {
@@ -10,16 +12,50 @@ AUseBI::AUseBI()
 	SetReplicates(true);
 }
 
-
-
 void AUseBI::StartInteract(APawn* Instigator)
 {
 	Super::StartInteract(Instigator);
+
+	if (CurrentController == nullptr) return;
 
 	if (UseAction.IsActive)
 	{
 		if (UseAction.HasObject())
 		{
+			// Check if Player Controller has the object selected
+			if (CurrentController->GetSelectedItem() == UseAction.ObjectID)
+			{
+				CurrentController->ShowMessage(UseAction.DetailDefaultAction.ToString());
+
+				CurrentController->RemoveItemFromInventory(UseAction.ObjectID);
+
+				if (CharacterOverlapping != nullptr)
+				{
+					CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT);
+				}
+
+				if (Role < ROLE_Authority)
+				{
+					ServerDoInteractAction();
+				}
+				else
+				{
+					DoInteractAction();
+				}
+			}
+			else
+			{
+				CurrentController->ShowMessage(UseAction.DetailWrongAction.ToString());
+
+				if (CharacterOverlapping != nullptr)
+				{
+					CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS);
+				}
+			}
+			UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] %s "), *CurrentController->GetSelectedItem().ToString());
+
+
+
 			// Check if Player Controller has the object selected
 			// Remove the object from Player Inventory
 
@@ -27,13 +63,16 @@ void AUseBI::StartInteract(APawn* Instigator)
 
 			// Show message in player
 
-			if (Role < ROLE_Authority)
+			
+
+		}
+		else
+		{
+			CurrentController->ShowMessage(UseAction.DetailDefaultAction.ToString());			
+
+			if (CharacterOverlapping != nullptr)
 			{
-				ServerDoInteractAction();
-			}
-			else
-			{
-				DoInteractAction();
+				CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS);
 			}
 
 		}
@@ -56,7 +95,26 @@ bool AUseBI::ServerDoInteractAction_Validate()
 
 void AUseBI::DoInteractAction()
 {
-	
+	OnUseEvent();
+
+	UseAction.IsActive = false;
+
+	OnRep_UseActionChanged();
+
+	if (UseAction.HasAnimation())
+	{
+		// Set timer
+		GetWorld()->GetTimerManager().SetTimer(AnimationTimerHandle, this, &AUseBI::OnEndAnimationTimer, UseAction.AnimationLength, false);
+	}
+	else
+	{
+		// Enable Pickup action
+		if (PickupAction.HasObject() && (!PickupAction.IsActive))
+		{
+			PickupAction.IsActive = true;
+			OnRep_PickupActionChanged();
+		}
+	}
 }
 
 void AUseBI::OnEndAnimationTimer()

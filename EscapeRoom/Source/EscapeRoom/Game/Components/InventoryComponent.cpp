@@ -32,8 +32,6 @@ void UInventoryComponent::AddObject(FName ObjectID, const FObjectInteraction& Ob
 		UE_LOG(LogTemp, Warning, TEXT("[UInventoryComponent::AddObject] New Object (OBJECT) Added: %s"), *Object.ID.ToString());
 
 		if (CheckIfObjectExists(ObjectID)) return;
-
-
 	  
 		// Only the server is allow to change Objects
 		// GetOwnerRole is the only one who has Role, not a component
@@ -46,9 +44,9 @@ void UInventoryComponent::AddObject(FName ObjectID, const FObjectInteraction& Ob
 
 }
 
-void UInventoryComponent::RemoveObject(FName ObjectID)
+void UInventoryComponent::RemoveObject(const FName& ObjID)
 {
-	if (ObjectID == "NONE")
+	if (ObjID == "NONE")
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[UInventoryComponent::RemoveObject] The Object is NONE"));
 		return;
@@ -56,9 +54,9 @@ void UInventoryComponent::RemoveObject(FName ObjectID)
 
 	if (GetOwnerRole() == ROLE_Authority)
 	{
-		if (CheckIfObjectExists(ObjectID))
+		if (CheckIfObjectExists(ObjID))
 		{
-			ObjectIDs.Remove(ObjectID);
+			ObjectIDs.Remove(ObjID);
 			ObjectNum = ObjectIDs.Num();
 
 		}
@@ -66,15 +64,15 @@ void UInventoryComponent::RemoveObject(FName ObjectID)
 }
 
 
-bool UInventoryComponent::CheckIfObjectExists(FName ObjectID)
+bool UInventoryComponent::CheckIfObjectExists(const FName& ObjID)
 {
 	FName None = FName(TEXT("NONE"));
-	if (ObjectID == None) return false;
+	if (ObjID == None) return false;
 	
 	bool objFound = false;
 	for (FName Obj : ObjectIDs)
 	{
-		if (Obj == ObjectID)
+		if (Obj == ObjID)
 		{
 			return true;
 		}

@@ -26,8 +26,8 @@ public:
 
 	AUseBI();
 
-protected:
 
+protected:
 	
 	UPROPERTY(ReplicatedUsing = OnRep_UseActionChanged, EditDefaultsOnly, Category = "Use Interactive Settings")
 	FActionDefinition UseAction;

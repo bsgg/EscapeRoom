@@ -109,10 +109,12 @@ public:
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void Client_RemoveObjectFromSlot(const FName& ObjectID);
 	
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);
+	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	//void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);
 
 	void AddItemToInventory(const FName& ObjID);
+
+	void RemoveItemFromInventory(const FName& ObjID);
 
 	FName GetSelectedItem();
 

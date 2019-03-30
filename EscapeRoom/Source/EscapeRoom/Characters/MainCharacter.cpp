@@ -158,8 +158,7 @@ void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 void AMainCharacter::NotifyLeaveInteractRange(AActor* Interactive)
 {
 	if (IsLocallyControlled())
-	{
-		
+	{		
 		auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
 
 		FString Debug = "Leaving Interactive " + CurrentInteractive->GetInteractID();
@@ -312,28 +311,6 @@ void AMainCharacter::DoInteractAction(FName SelectedObject)
 
 	//  Check type action
 	if (OverlappedInteractive == nullptr) return;
-
-	APickupInteractive* Pickup = Cast<APickupInteractive>(OverlappedInteractive);
-	if (Pickup != nullptr)
-	{
-		if ((Pickup->GetPickupAction().IsActive) && (Pickup->GetPickupAction().HasObject()))
-		{
-			FName ObjectID = Pickup->GetPickupAction().ObjectID;
-
-			Pickup->PickupObject();
-
-			if (TryToAddNewObject(ObjectID))
-			{
-				FString desc = Pickup->GetPickupAction().DetailDefaultAction.ToString();
-
-				OnUIMessageUpdated.Broadcast(this, desc, false);
-
-				StartGesture(EGestureType::VE_INTERACT);
-			}			
-		}	
-		return;
-	}	
-
 
 	ASwitchInteractive* Switch = Cast<ASwitchInteractive>(OverlappedInteractive);
 	if (Switch != nullptr)
