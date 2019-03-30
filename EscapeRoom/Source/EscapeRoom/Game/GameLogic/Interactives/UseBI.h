@@ -44,11 +44,15 @@ protected:
 	UFUNCTION()
 	void OnRep_PickupActionChanged();
 
-
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerDoUseAction();
 
 	void DoUseAction();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerDoPickupAction();
+
+	void DoPickupAction();
 
 public:
 

@@ -78,6 +78,27 @@ void AUseBI::StartInteract(APawn* Instigator)
 		}
 	}
 
+	if (PickupAction.IsActive && PickupAction.HasObject())
+	{
+		CurrentController->ShowMessage(PickupAction.DetailDefaultAction.ToString(), 2.0f);
+
+		CurrentController->AddItemToInventory(PickupAction.ObjectID);
+
+		if (CharacterOverlapping != nullptr)
+		{
+			CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT, 2.0f);
+		}
+
+		if (Role < ROLE_Authority)
+		{
+			ServerDoPickupAction();
+		}
+		else
+		{
+			DoPickupAction();
+		}
+	}
+
 }
 
 
@@ -126,16 +147,44 @@ void AUseBI::OnEndAnimationTimer()
 	}	
 }
 
+void AUseBI::ServerDoPickupAction_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::ServerDoPickupAction]"));
+
+	DoPickupAction();
+}
+bool AUseBI::ServerDoPickupAction_Validate()
+{
+	return true;
+}
+
+		
+void AUseBI::DoPickupAction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::DoPickupAction]"));
+
+	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
+	{
+		PickupAction.ObjectID = "None";
+
+		PickupAction.IsActive = false;
+
+		Properties.EnableDefaultInspectMessage = true;
+
+		PickupMesh->SetVisibility(false, true);
+	}
+}
+
 
 void AUseBI::OnRep_PickupActionChanged()
 {
 	if (PickupAction.HasObject())
 	{
-		PickupMesh->SetVisibility(true);
+		PickupMesh->SetVisibility(true, true);
 	}
 	else
 	{
-		PickupMesh->SetVisibility(false);
+		PickupMesh->SetVisibility(false, true);
 	}
 }
 

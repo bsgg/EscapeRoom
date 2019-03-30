@@ -118,28 +118,6 @@ void UInGamePlayer::HideMessage()
 	}
 }
 
-
-/*void UInGamePlayer::SetInGameMessage(FText Message)
-{
-	if (InGameMessageText == nullptr) return;
-	InGameMessageText->SetText(Message);
-}*/
-
-/*void UInGamePlayer::HideMessages()
-{
-	if (InGameMessagesBox == nullptr) return;
-
-	InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UInGamePlayer::ShowMessages()
-{
-	if (InGameMessagesBox == nullptr) return;
-
-	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
-}*/
-
-
 void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 {
 	for (int i = 0; i < Slots.Num(); i++)
@@ -238,9 +216,9 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 
 	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
-		SelectedItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
-		SelectedObjectID = Slots[CurrentSlotIndex]->GetObjectSlot().ID;
 		SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
+		SelectedItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
+		SelectedObjectID = Slots[CurrentSlotIndex]->GetObjectSlot().ID;		
 	}	
 }
 
@@ -275,6 +253,10 @@ void UInGamePlayer::ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, b
 
 	ControlsBox->SetVisibility(ESlateVisibility::Visible);
 	bControlsVisible = true;
+
+	SelectedObjectID = "NONE";
+	SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
+
 	if (ShowInventoryIcon)
 	{
 		InventoryIconBox->SetVisibility(ESlateVisibility::Visible);
@@ -308,52 +290,6 @@ void UInGamePlayer::HideControls()
 
 	bControlsVisible = false;
 }
-
-
-/*
-void UInGamePlayer::ShowInventoryIcon()
-{
-	if (InventoryIconBox == nullptr) return;
-
-	InventoryIconBox->SetVisibility(ESlateVisibility::Visible);
-
-}
-void UInGamePlayer::HideInventoryIcon()
-{
-	if (InventoryIconBox == nullptr) return;
-
-	InventoryIconBox->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UInGamePlayer::ShowInspectIcon()
-{
-	if (InspectIconBox == nullptr) return;
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowInspectIcon] "));
-
-	InspectIconBox->SetVisibility(ESlateVisibility::Visible);
-}
-void UInGamePlayer::HideInspectIcon()
-{
-	if (InspectIconBox == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::HideInspectIcon] "));
-	InspectIconBox->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UInGamePlayer::ShowUseIcon()
-{
-	if (UseIconBox == nullptr) return;
-
-	UseIconBox->SetVisibility(ESlateVisibility::Visible);
-}
-
-void UInGamePlayer::HideUseIcon()
-{
-	if (UseIconBox == nullptr) return;
-
-	UseIconBox->SetVisibility(ESlateVisibility::Hidden);
-}*/
-
 
 void UInGamePlayer::DebugLog(const FString& Text)
 {

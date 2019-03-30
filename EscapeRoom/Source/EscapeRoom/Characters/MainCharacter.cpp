@@ -228,8 +228,6 @@ void AMainCharacter::StartGesture_Implementation(const EGestureType& NewGesture,
 	ElpasedLockedInput = 0.0f;
 	WaitTimeToUnlockInput = lockTime;
 
-	//GetWorld()->GetTimerManager().SetTimer(LockInputTimerHandle, this, &AMainCharacter::UnLockInput, lockTime, false);
-
 	// Set new animation
 	if (NewGesture != EGestureType::VE_NONE)
 	{
@@ -250,8 +248,6 @@ void AMainCharacter::StartGesture_Implementation(const EGestureType& NewGesture,
 		ElpasedAnimationToDefault = 0.0f;
 		bSetAnimationToDefault = true;
 
-
-		//GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, animationTime, false);
 	}
 }
 
@@ -263,7 +259,6 @@ bool AMainCharacter::StartGesture_Validate(const EGestureType& NewGesture, float
 void AMainCharacter::SetGestureToDefault()
 {
 	CurrentGesture = EGestureType::VE_NONE;
-	//GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
 
 
