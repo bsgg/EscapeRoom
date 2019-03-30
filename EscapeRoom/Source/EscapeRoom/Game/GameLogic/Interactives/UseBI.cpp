@@ -25,54 +25,54 @@ void AUseBI::StartInteract(APawn* Instigator)
 			// Check if Player Controller has the object selected
 			if (CurrentController->GetSelectedItem() == UseAction.ObjectID)
 			{
-				CurrentController->ShowMessage(UseAction.DetailDefaultAction.ToString());
+				CurrentController->ShowMessage(UseAction.DetailDefaultAction.ToString(), 2.0f);
 
 				CurrentController->RemoveItemFromInventory(UseAction.ObjectID);
 
 				if (CharacterOverlapping != nullptr)
 				{
-					CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT);
+					CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT, 2.0f);
 				}
 
 				if (Role < ROLE_Authority)
 				{
-					ServerDoInteractAction();
+					ServerDoUseAction();
 				}
 				else
 				{
-					DoInteractAction();
+					DoUseAction();
 				}
 			}
 			else
 			{
-				CurrentController->ShowMessage(UseAction.DetailWrongAction.ToString());
+				CurrentController->ShowMessage(UseAction.DetailWrongAction.ToString(), 2.0f);
 
 				if (CharacterOverlapping != nullptr)
 				{
-					CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS);
+					CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS, 2.0f);
 				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] %s "), *CurrentController->GetSelectedItem().ToString());
-
-
-
-			// Check if Player Controller has the object selected
-			// Remove the object from Player Inventory
-
-			// Finish action use
-
-			// Show message in player
-
 			
-
 		}
-		else
+		
+
+		if (!UseAction.HasObject())
 		{
-			CurrentController->ShowMessage(UseAction.DetailDefaultAction.ToString());			
+			CurrentController->ShowMessage(UseAction.DetailDefaultAction.ToString(), 2.0f);
 
 			if (CharacterOverlapping != nullptr)
 			{
-				CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS);
+				CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS,2.0f);
+			}
+
+			if (Role < ROLE_Authority)
+			{
+				ServerDoUseAction();
+			}
+			else
+			{
+				DoUseAction();
 			}
 
 		}
@@ -81,19 +81,19 @@ void AUseBI::StartInteract(APawn* Instigator)
 }
 
 
-void AUseBI::ServerDoInteractAction_Implementation()
+void AUseBI::ServerDoUseAction_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::ServerDoInteractAction]"));
 
-	DoInteractAction();
+	DoUseAction();
 }
 
-bool AUseBI::ServerDoInteractAction_Validate()
+bool AUseBI::ServerDoUseAction_Validate()
 {
 	return true;
 }
 
-void AUseBI::DoInteractAction()
+void AUseBI::DoUseAction()
 {
 	OnUseEvent();
 

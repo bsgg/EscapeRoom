@@ -40,7 +40,7 @@ bool UInGamePlayer::Initialize()
 
 		}
 	}
-	HideMessages();
+	HideMessage();
 	HideControls();
 	
 	Slots.Add(Slot_0);
@@ -85,13 +85,22 @@ void UInGamePlayer::SetPortrait(ECharacterType Character)
 	}
 }
 
-void UInGamePlayer::ShowMessage(const FString& Text)
+void UInGamePlayer::ShowMessage(const FString& Text, float time)
 {
 	if (InGameMessageText == nullptr) return;
+
+	if (bWaitingToHideMessage) return;
 
 	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
 
 	InGameMessageText->SetText(FText::FromString(Text));
+
+	if (time > 0.0f)
+	{
+		GetWorld()->GetTimerManager().SetTimer(MessageTimerHandle, this, &UInGamePlayer::HideMessage, time, false);
+	}
+
+	bWaitingToHideMessage = true;
 }
 
 
@@ -100,17 +109,23 @@ void UInGamePlayer::HideMessage()
 {
 	if (InGameMessageText == nullptr) return;
 
-	InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
+	if (bWaitingToHideMessage)
+	{
+		InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
+
+		bWaitingToHideMessage = false;
+		GetWorld()->GetTimerManager().ClearTimer(MessageTimerHandle);
+	}
 }
 
 
-void UInGamePlayer::SetInGameMessage(FText Message)
+/*void UInGamePlayer::SetInGameMessage(FText Message)
 {
 	if (InGameMessageText == nullptr) return;
 	InGameMessageText->SetText(Message);
-}
+}*/
 
-void UInGamePlayer::HideMessages()
+/*void UInGamePlayer::HideMessages()
 {
 	if (InGameMessagesBox == nullptr) return;
 
@@ -122,7 +137,7 @@ void UInGamePlayer::ShowMessages()
 	if (InGameMessagesBox == nullptr) return;
 
 	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
-}
+}*/
 
 
 void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
@@ -197,40 +212,8 @@ void UInGamePlayer::RemoveObjectFromSlot(const FName& ObjID)
 
 void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 {
-	// Make inventory visible if it's not visible
-	if (!bInventoryVisible)
-	{
-		InventoryGrid->SetVisibility(ESlateVisibility::Visible);
-
-		bInventoryVisible = true;
-
-		CurrentSlotIndex = -1;
-	}
-
-	// Check number objects
-	if (numberObjectsInventory == 0) return;
-
-	// None direction, end navigation
-	//if (Direction == EDirectionType::VE_NONE)
-	//{
-		//if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
-		//{
-			//UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] Update Item selected"));
-
-			//SelectedItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
-			//SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
-
-			//PlayerController->Client_OnSelectItemInInventory(Slots[CurrentSlotIndex]->GetObjectSlot());			
-			//Slots[CurrentSlotIndex]->UnHighlight();			
-		//}
-
-		//return;
-	//}
-
-	//if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
-	//{
-		//Slots[CurrentSlotIndex]->UnHighlight();
-	//}
+	if ((!bControlsVisible) || (numberObjectsInventory == 0)) return;
+	
 
 	if (Direction == EDirectionType::VE_LEFT)
 	{
@@ -239,12 +222,7 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 		// Last element
 		if (CurrentSlotIndex < 0)
 		{
-			//CurrentSlotIndex = numberObjectsInventory - 1;
-			CurrentSlotIndex = -1;
-
-			//SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
-
-			SelectedObjectID = "NONE";
+			CurrentSlotIndex = numberObjectsInventory - 1;
 		}
 	}
 	else if (Direction == EDirectionType::VE_RIGHT)
@@ -254,29 +232,15 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 		// Last element
 		if (CurrentSlotIndex >= numberObjectsInventory)
 		{
-			CurrentSlotIndex = numberObjectsInventory;
-
-			//UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] Hide item"));
-
-			SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
-
-			SelectedObjectID = "None";
+			CurrentSlotIndex = 0;
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] CurrentSlotIndex: %i - numberObjectsInventory: %i"), CurrentSlotIndex, numberObjectsInventory);
-
 	if ((CurrentSlotIndex >= 0) && (CurrentSlotIndex < numberObjectsInventory))
 	{
-		Slots[CurrentSlotIndex]->Highlight();
-
-		// Select object
-
 		SelectedItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
 		SelectedObjectID = Slots[CurrentSlotIndex]->GetObjectSlot().ID;
 		SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
-
-		UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NavigateInventory] Selected Item %s"), *SelectedObjectID.ToString());
 	}	
 }
 
@@ -310,7 +274,7 @@ void UInGamePlayer::ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, b
 	if ((ControlsBox == nullptr) || (InventoryIconBox == nullptr) || (UseIconBox == nullptr) || (InspectIconBox == nullptr)) return;
 
 	ControlsBox->SetVisibility(ESlateVisibility::Visible);
-
+	bControlsVisible = true;
 	if (ShowInventoryIcon)
 	{
 		InventoryIconBox->SetVisibility(ESlateVisibility::Visible);
@@ -341,10 +305,12 @@ void UInGamePlayer::ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, b
 void UInGamePlayer::HideControls()
 {
 	ControlsBox->SetVisibility(ESlateVisibility::Hidden);
+
+	bControlsVisible = false;
 }
 
 
-
+/*
 void UInGamePlayer::ShowInventoryIcon()
 {
 	if (InventoryIconBox == nullptr) return;
@@ -386,7 +352,7 @@ void UInGamePlayer::HideUseIcon()
 	if (UseIconBox == nullptr) return;
 
 	UseIconBox->SetVisibility(ESlateVisibility::Hidden);
-}
+}*/
 
 
 void UInGamePlayer::DebugLog(const FString& Text)

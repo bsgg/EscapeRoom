@@ -46,9 +46,9 @@ protected:
 
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerDoInteractAction();
+	void ServerDoUseAction();
 
-	void DoInteractAction();
+	void DoUseAction();
 
 public:
 

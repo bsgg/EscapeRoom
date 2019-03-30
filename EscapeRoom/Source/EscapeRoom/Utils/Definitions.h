@@ -29,6 +29,7 @@ enum class EGestureType : uint8
 {
 	VE_INTERACT		    UMETA(DisplayName = "Interact"),
 	VE_DISMISS		    UMETA(DisplayName = "Dismiss"),
+	VE_INSPECT		    UMETA(DisplayName = "Inspect"),
 	VE_NONE 		    UMETA(DisplayName = "None"),
 };
 

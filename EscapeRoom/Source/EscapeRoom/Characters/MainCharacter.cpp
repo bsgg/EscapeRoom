@@ -57,10 +57,6 @@ AMainCharacter::AMainCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Inventory Component
-	//InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
-	//InventoryComponent->OnInventoryChanged.AddDynamic(this, &AMainCharacter::OnInventoryChanged);
-
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -75,6 +71,33 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Unlock input
+	if (bInputLocked)
+	{
+		ElpasedLockedInput += DeltaTime;
+		if (ElpasedLockedInput >= WaitTimeToUnlockInput)
+		{
+			ElpasedLockedInput = 0.0f;
+
+			bInputLocked = false;
+		}
+	}
+
+	// Wait to set animation to default
+	if (bSetAnimationToDefault)
+	{
+		ElpasedAnimationToDefault += DeltaTime;
+		if (ElpasedAnimationToDefault >= WaitAnimationToDefault)
+		{
+			ElpasedAnimationToDefault = 0.0f;
+
+			bSetAnimationToDefault = false;
+
+			CurrentGesture = EGestureType::VE_NONE;
+		}
+	}
+
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -98,11 +121,12 @@ void AMainCharacter::LockInput()
 void AMainCharacter::UnLockInput()
 {
 	bInputLocked = false;
+
+	//GetWorld()->GetTimerManager().ClearTimer(LockInputTimerHandle);
 }
 
 void AMainCharacter::MoveForward(float Value)
-{	
-
+{
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
 	if ((Controller != NULL) && (Value != 0.0f))
@@ -118,8 +142,6 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
-	
-
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
 	if ((Controller != NULL) && (Value != 0.0f))
@@ -183,8 +205,6 @@ void AMainCharacter::HandleInspectInput()
 
 	if (IsLocallyControlled() && CurrentInteractive)
 	{
-		StartGesture(EGestureType::VE_INTERACT);
-
 		CurrentInteractive->Inspect(this);
 	}
 }
@@ -200,117 +220,60 @@ void AMainCharacter::HandleInteractInput()
 }
 
 //// INPUT IMPLEMENTATION ////////////////////
-
-void AMainCharacter::StartGesture_Implementation(EGestureType NewGesture)
+void AMainCharacter::StartGesture_Implementation(const EGestureType& NewGesture, float lockTime)
 {
 	bInputLocked = true;
 	CurrentGesture = NewGesture;
 
+	ElpasedLockedInput = 0.0f;
+	WaitTimeToUnlockInput = lockTime;
+
+	//GetWorld()->GetTimerManager().SetTimer(LockInputTimerHandle, this, &AMainCharacter::UnLockInput, lockTime, false);
+
+	// Set new animation
 	if (NewGesture != EGestureType::VE_NONE)
 	{
-		GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, InteractAnimationTime, false);
+		WaitAnimationToDefault = 1.0f;
+		switch (NewGesture)
+		{
+			case EGestureType::VE_DISMISS:
+				WaitAnimationToDefault = DismissAnimationTime;
+			break;
+			case EGestureType::VE_INSPECT:
+				WaitAnimationToDefault = InspectAnimationTime;
+			break;
+			case EGestureType::VE_INTERACT:
+				WaitAnimationToDefault = InteractAnimationTime;
+			break;
+		}
+		
+		ElpasedAnimationToDefault = 0.0f;
+		bSetAnimationToDefault = true;
+
+
+		//GetWorld()->GetTimerManager().SetTimer(InteractionTimerHandle, this, &AMainCharacter::SetGestureToDefault, animationTime, false);
 	}
 }
 
-bool AMainCharacter::StartGesture_Validate(EGestureType NewGesture)
+bool AMainCharacter::StartGesture_Validate(const EGestureType& NewGesture, float lockTime)
 {
 	return true;
 }
 
 void AMainCharacter::SetGestureToDefault()
 {
-	bInputLocked = false;
-
 	CurrentGesture = EGestureType::VE_NONE;
-	GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
+	//GetWorld()->GetTimerManager().ClearTimer(InteractionTimerHandle);
 }
 
 
 
-
-
-// REGION INSPECT ACTION
-/*void AMainCharacter::OnInspect()
-{
-	if (OverlappedInteractive == nullptr) return;
-
-	if (Role < ROLE_Authority)
-	{
-		ServerRPCInspectAction();
-	}else
-	{
-		DoInspectAction();
-	}
-}
-
-void AMainCharacter::ServerRPCInspectAction_Implementation()
-{
-	DoInspectAction();
-}
-
-bool AMainCharacter::ServerRPCInspectAction_Validate()
-{
-	return true;
-}
-
-void AMainCharacter::DoInspectAction()
-{
-	if (OverlappedInteractive == nullptr) return;
-
-	//FString desc = OverlappedInteractive->GetInspectDetail();
-
-	StartGesture(EGestureType::VE_DISMISS);
-
-	OverlappedInteractive->ForwardInspectDetail();
-
-	//OnUIMessageUpdated.Broadcast(this, desc, false);
-}*/
-// ENDREGION INSPECT ACTION
-
-
-// REGION INTERACT ACTION
 /*
-void AMainCharacter::OnInteract(FName SelectedObject)
-{	
 
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInteract] SelectedObject: %s"), *SelectedObject.ToString());
 
-	if (bInputLocked) return;
-
-	if (Role < ROLE_Authority)
-	{
-		ServerRPCInteractAction(SelectedObject);
-	}
-	else
-	{
-		DoInteractAction(SelectedObject);
-	}
-}
-
-bool AMainCharacter::TryToAddNewObject(FName ObjID)
-{
-	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-
-	FObjectInteraction* NewObject = GM->GetObjectByID(ObjID);
-
-	if (NewObject == nullptr) return false;
-
-	InventoryComponent->AddObject(ObjID, *NewObject);
-
-	TArray<FObjectInteraction> Objects;
-	Objects.Add(*NewObject);
-
-	OnAddItemToInventory.Broadcast(this, *NewObject);
-
-	return true;
-}
 
 void AMainCharacter::DoInteractAction(FName SelectedObject)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] SelectedObject: %s"), *SelectedObject.ToString());
-
-	//  Check type action
-	if (OverlappedInteractive == nullptr) return;
 
 	ASwitchInteractive* Switch = Cast<ASwitchInteractive>(OverlappedInteractive);
 	if (Switch != nullptr)

@@ -35,11 +35,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* InGameMessageText;
 
-
-
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UWidget* ControlsBox;
-
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UImage* SelectedItemIcon;
@@ -80,26 +77,26 @@ public:
 
 	void SetPortrait(ECharacterType Character);
 
-	void SetInGameMessage(FText Message);
+	//void SetInGameMessage(FText Message);
 
 	void ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, bool ShowUseIcon);
 	void HideControls();
 
-	void ShowInventoryIcon();
+	/*void ShowInventoryIcon();
 	void HideInventoryIcon();
 
 	void ShowInspectIcon();
 	void HideInspectIcon();
 
 	void ShowUseIcon();
-	void HideUseIcon();
+	void HideUseIcon();*/
 
-	void ShowMessage(const FString& Text);
+	void ShowMessage(const FString& Text, float time);
 	void HideMessage();
 
-	void ShowMessages();
+	//void ShowMessages();
 
-	void HideMessages();
+	//void HideMessages();
 
 
 
@@ -125,7 +122,13 @@ private:
 
 	FName SelectedObjectID;
 
-	
+	bool bControlsVisible = false;
 
 	bool bInventoryVisible = false;
+
+	bool bWaitingToHideMessage = false;
+
+	FTimerHandle MessageTimerHandle;
+
+
 };

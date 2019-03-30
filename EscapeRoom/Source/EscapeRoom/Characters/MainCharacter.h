@@ -10,12 +10,6 @@
 #include "MainCharacter.generated.h"
 
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnOverlappedInteractive, AMainCharacter*, Char, AInteractiveBase*, Interactive);
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUIMessageUpdated, AMainCharacter*, Char, FString, Text, bool, HideMessages);
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAddItemToInventory, AMainCharacter*, Char, FObjectInteraction, Object);
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRemoveItemInventory, AMainCharacter*, Char, FName, ObjectID);
-
 UCLASS()
 class ESCAPEROOM_API AMainCharacter : public ACharacter, public IInteract
 {
@@ -28,18 +22,9 @@ class ESCAPEROOM_API AMainCharacter : public ACharacter, public IInteract
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	//class UInventoryComponent* InventoryComponent;
 
 public:
 	AMainCharacter();
-
-	/** Returns TopDownCameraComponent subobject **/
-	//FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
-	/** Returns CameraBoom subobject **/
-	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-
-	//FORCEINLINE class UInventoryComponent* GetInventory() const { return InventoryComponent; }	
 
 	/** Returns Gesture **/
 	FORCEINLINE EGestureType GetCurrentGesture() const { return CurrentGesture; };
@@ -49,24 +34,7 @@ public:
 
 	virtual void NotifyLeaveInteractRange(AActor* Interactive) override;
 	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
-
-
-
-
-
-
-	//UPROPERTY(BlueprintAssignable, Category = "Events")
-	//FOnOverlappedInteractive OnOverlappedInteractive;
-
-	//UPROPERTY(BlueprintAssignable, Category = "Events")
-	//FOnUIMessageUpdated OnUIMessageUpdated;
-
-	//UPROPERTY(BlueprintAssignable, Category = "Events")
-	//FOnAddItemToInventory OnAddItemToInventory;
-
-	//UPROPERTY(BlueprintAssignable, Category = "Events")
-	//FOnRemoveItemInventory OnRemoveItemInventory;
-
+	   
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void LockInput();
 
@@ -79,70 +47,51 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveRight(float Value);
 
-	//UFUNCTION(BlueprintCallable, Category = "Input Actions")
-	//void OnInteract(FName SelectedObject);
-
-	//UFUNCTION(BlueprintCallable, Category = "Input Actions")
-	//void OnInspect();
-
-	//UFUNCTION(BlueprintCallable, Category = "Input Actions")
-	//FORCEINLINE class AInteractiveBase* GetInteractive() const { return OverlappedInteractive; }
-
 
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
-	
-
-	
-	
-
-	//void DoInspectAction();
-
-	//UFUNCTION(Server, Reliable, WithValidation)
-	//void ServerRPCInspectAction();
-	// Inspect Action
-
-	// Interact Action
-	//void DoInteractAction(FName SelectedObject);
-
-	//UFUNCTION(Server, Reliable, WithValidation)
-	//void ServerRPCInteractAction(const FName& SelectedObject);
-	// Interact Action
-
-	//bool TryToAddNewObject(FName ObjID);
-
-
-
 	void SetGestureToDefault();
 
 public:	
+
+	// Gesture animation, includes times to lock the character
 	UFUNCTION(Server, Reliable, WithValidation)
-	void StartGesture(EGestureType NewGesture);
+	void StartGesture(const EGestureType& NewGesture, float lockTime);
 	
 	virtual void Tick(float DeltaTime) override;
 
-	//void OnOverlapInteractive(class AInteractiveBase* Interactive);
-
-
-
 protected:
-
-	//UPROPERTY(Replicated)
-	//class AInteractiveBase* OverlappedInteractive;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Gestures")
 	EGestureType CurrentGesture = EGestureType::VE_NONE;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gestures")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	float InspectAnimationTime = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	float InteractAnimationTime = 1.0f;
 	
-	FTimerHandle InteractionTimerHandle;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	float DismissAnimationTime = 0.7f;
+	
+	//FTimerHandle InteractionTimerHandle;	
+
+	bool bSetAnimationToDefault = false;
+
+	float ElpasedAnimationToDefault = 0.0f;
+
+	float WaitAnimationToDefault = 1.0f;
+
+	//FTimerHandle LockInputTimerHandle;
 
 	bool bInputLocked = false;
 
+	float ElpasedLockedInput = 0.0f;
+
+	float WaitTimeToUnlockInput = 1.0f;
 
 private:
 

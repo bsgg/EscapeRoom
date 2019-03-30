@@ -51,7 +51,7 @@ public:
 	void ShowDebugLog(const FString& Text);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void ShowMessage(const FString& Text);
+	void ShowMessage(const FString& Text, float time);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void HideMessage();

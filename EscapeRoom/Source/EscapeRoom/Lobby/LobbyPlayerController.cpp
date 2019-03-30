@@ -195,7 +195,7 @@ void ALobbyPlayerController::Client_InitializeRoom_Implementation(TSubclassOf<AP
 		if (InGameUI != nullptr)
 		{
 			InGameUI->SetPortrait(ESPlayerScape->SelectedCharacter);
-			InGameUI->SetInGameMessage(FText::FromString(Message));
+			//InGameUI->SetInGameMessage(FText::FromString(Message));
 		}
 	}
 }
@@ -220,10 +220,10 @@ void  ALobbyPlayerController::ShowDebugLog_Implementation(const FString& Text)
 	InGameUI->DebugLog(Text);
 }
 
-void ALobbyPlayerController::ShowMessage_Implementation(const FString& Text)
+void ALobbyPlayerController::ShowMessage_Implementation(const FString& Text, float time)
 {
 	if (InGameUI == nullptr) return;
-	InGameUI->ShowMessage(Text);
+	InGameUI->ShowMessage(Text, time);
 }
 
 void ALobbyPlayerController::HideMessage_Implementation()

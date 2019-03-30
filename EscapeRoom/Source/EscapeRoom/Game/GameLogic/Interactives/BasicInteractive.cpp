@@ -51,8 +51,6 @@ void ABasicInteractive::BeginPlay()
 	HighlightMesh->SetVisibility(false, true);
 }
 
-
-
 void ABasicInteractive::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
 	if (CharacterOverlapping != nullptr) return;
@@ -118,13 +116,23 @@ void ABasicInteractive::Inspect(APawn* Instigator)
 		{
 			Text = Properties.DefaultInspectMessage.ToString();
 
-			PlayerController->ShowMessage(Text);
+			PlayerController->ShowMessage(Text, 2.0f);
+
+			if (CharacterOverlapping != nullptr)
+			{
+				CharacterOverlapping->StartGesture(EGestureType::VE_INSPECT, 2.0f);
+			}
 		}
 		else if ((Properties.InspectMessages.Num() > 0) && (Properties.IndexInspectMessage < Properties.InspectMessages.Num()))
 		{
 			Text = Properties.InspectMessages[Properties.IndexInspectMessage].ToString();
 
-			PlayerController->ShowMessage(Text);
+			PlayerController->ShowMessage(Text, 2.0f);
+
+			if (CharacterOverlapping != nullptr)
+			{
+				CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT, 2.0f);
+			}
 
 			Properties.IndexInspectMessage += 1;
 

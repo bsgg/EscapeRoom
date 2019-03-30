@@ -37,22 +37,22 @@ void APickupBI::StartInteract(APawn* Instigator)
 
 	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
 	{
-		CurrentController->ShowMessage(PickupAction.DetailDefaultAction.ToString());
+		CurrentController->ShowMessage(PickupAction.DetailDefaultAction.ToString(), 2.0f);
 
 		CurrentController->AddItemToInventory(PickupAction.ObjectID);
 
 		if (CharacterOverlapping != nullptr)
 		{
-			CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT);
+			CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT, 2.0f);
 		}
 	}
 	else
 	{
-		CurrentController->ShowMessage(PickupAction.DetailWrongAction.ToString());
+		CurrentController->ShowMessage(PickupAction.DetailWrongAction.ToString(), 2.0f);
 
 		if (CharacterOverlapping != nullptr)
 		{
-			CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS);
+			CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS, 2.0f);
 		}
 	}
 
