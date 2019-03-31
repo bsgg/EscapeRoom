@@ -14,7 +14,7 @@ AUseBI::AUseBI()
 
 void AUseBI::StartInteract(APawn* Instigator)
 {
-	Super::StartInteract(Instigator);
+	Super::StartInteract(Instigator); 
 
 	if (CurrentController == nullptr) return;
 
