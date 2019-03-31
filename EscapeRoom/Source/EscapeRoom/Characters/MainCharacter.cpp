@@ -8,19 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-
-
-#include "Game/Components/InventoryComponent.h"
-
-#include "Game/GameLogic/InteractiveBase.h"
-#include "Game/GameLogic/PickupInteractive.h"
-#include "Game/GameLogic/SwitchInteractive.h" 
-#include "Game/GameLogic/UseInteractive.h"
 #include "Lobby/LobbyPlayerController.h"
-
-//#include "Game/Pickup.h"
-#include "Game/RoomGameMode.h" 
-#include "Utils/Definitions.h"
 
 #include "Materials/Material.h"
 #include "Engine/World.h"
@@ -258,34 +246,6 @@ void AMainCharacter::SetGestureToDefault()
 {
 	CurrentGesture = EGestureType::VE_NONE;
 }
-
-
-
-/*
-
-
-
-void AMainCharacter::DoInteractAction(FName SelectedObject)
-{
-
-	ASwitchInteractive* Switch = Cast<ASwitchInteractive>(OverlappedInteractive);
-	if (Switch != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] It is an interactive  Switch %s"), *Switch->GetName());
-
-		Switch->Toggle();
-
-		StartGesture(EGestureType::VE_INTERACT);
-
-		return;
-	}
-
-
-}
-
-}*/
-
-
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

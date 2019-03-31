@@ -4,6 +4,7 @@
 #include "Lobby/LobbyPlayerController.h"
 #include "Characters/MainCharacter.h"
 #include "Game/RoomGameMode.h"
+#include "Game/GameLogic/Interactives/ToggleBI.h"
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 
@@ -74,14 +75,14 @@ void ASwitchBI::DoToggleAction()
 
 	if (interactive != nullptr)
 	{
-		//AToggleInteractive* ToggleInteractive = Cast<AToggleInteractive>(interactive);
+		AToggleBI * ToggleInteractive = Cast<AToggleBI>(interactive);
 
-		//if (ToggleInteractive)
-		//{
-			//UE_LOG(LogTemp, Warning, TEXT("[ASwitchInteractive::Toggle] Connected Interactive found %s "), *ToggleInteractive->GetData().ID.ToString());
+		if (ToggleInteractive)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[ASwitchBI::DoToggleAction] Connected Interactive found"));
 
-			//ToggleInteractive->Toggle();
-		//}
+			ToggleInteractive->Toggle();
+		}
 	}
 	else
 	{

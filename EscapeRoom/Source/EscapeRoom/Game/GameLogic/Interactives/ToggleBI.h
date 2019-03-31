@@ -3,21 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Game/GameLogic/InteractiveBase.h"
-#include "ToggleInteractive.generated.h"
+#include "Game/GameLogic/Interactives/BasicInteractive.h"
+#include "ToggleBI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ESCAPEROOM_API AToggleInteractive : public AInteractiveBase
+class ESCAPEROOM_API AToggleBI : public ABasicInteractive
 {
 	GENERATED_BODY()
 
 public:
-	AToggleInteractive();
-
-	void Toggle();
+	AToggleBI();
 
 protected:
 
@@ -25,13 +23,19 @@ protected:
 	class USceneComponent* ObjectToToggle;
 
 	UPROPERTY(ReplicatedUsing = OnRep_IsOnChanged, EditDefaultsOnly, Category = "Interactive Settings")
-	bool IsOn;
+		bool IsOn;
 
 protected:
 	virtual void BeginPlay() override;
 
-
-
 	UFUNCTION()
-	void OnRep_IsOnChanged();	
+	void OnRep_IsOnChanged();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerDoToggleAction();
+
+	void DoToggleAction();	
+
+public:
+	void Toggle();
 };
