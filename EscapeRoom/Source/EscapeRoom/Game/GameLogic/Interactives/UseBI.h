@@ -23,9 +23,7 @@ protected:
 	void OnUseEvent();
 
 public:
-
 	AUseBI();
-
 
 protected:
 	

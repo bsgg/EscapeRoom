@@ -30,11 +30,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "GamePlay Mode", meta = (DisplayName = "Room Completed"))
 	void OnRoomCompleted(APawn* InstigatorPawn, bool bSuccess);
 
-	FObjectInteraction* GetObjectByID(FName ID) const;
+	//FObjectInteraction* GetObjectByID(FName ID) const;
 
-	FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
+	//FObjectInteraction* FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const;
 
-	class AInteractiveBase* FindInteractiveById(FName ID) const;
+	class ABasicInteractive* FindInteractiveById(const FName& ID) const;
 
 protected:
 
@@ -61,12 +61,5 @@ private:
 	UPROPERTY(Replicated)
 	TArray<class ARoomPlayerStart*> SpawnPoints;
 
-	TArray<class AInteractiveBase*> InteractiveList;
-
-	UPROPERTY(EditDefaultsOnly)
-	class UDataTable* ObjectDB; // Objects database database
-
-	UPROPERTY(EditDefaultsOnly)
-	class UDataTable* ObjectCombinationDB; // Objects database database
-	
+	TArray<class ABasicInteractive*> InteractiveList;	
 };

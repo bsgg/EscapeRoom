@@ -76,16 +76,13 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	float DismissAnimationTime = 0.7f;
-	
-	//FTimerHandle InteractionTimerHandle;	
+
 
 	bool bSetAnimationToDefault = false;
 
 	float ElpasedAnimationToDefault = 0.0f;
 
 	float WaitAnimationToDefault = 1.0f;
-
-	//FTimerHandle LockInputTimerHandle;
 
 	bool bInputLocked = false;
 

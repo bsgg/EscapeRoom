@@ -47,6 +47,9 @@ public:
 	
 	ABasicInteractive();
 
+	FORCEINLINE FName GetInteractiveID() const { return Properties.ID; }
+
+
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive", meta = (AllowPrivateAccess = "true"))

@@ -6,7 +6,8 @@
 #include "Utils/Definitions.h"
 #include "Game/GameLogic/RoomPlayerStart.h"
 #include "Game/EscapeRoomGameState.h"
-#include "Game/GameLogic/InteractiveBase.h"
+#include "Game/GameLogic/Interactives/BasicInteractive.h"
+//#include "Game/GameLogic/InteractiveBase.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
@@ -112,7 +113,6 @@ void ARoomGameMode::HandleSeamlessTravelPlayer(AController *& PlayerController)
 
 				APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(CharT.Pawn, SpawnLocation, SpawnRotation, SpawnParamenters);
 				if (SpawnedPawn == nullptr) return;
-				UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_SpawnCharacter] Spawned!"));
 
 				IngamePC->Possess(SpawnedPawn);
 				IngamePC->Client_CreateInGameUI();
@@ -143,10 +143,10 @@ void ARoomGameMode::GetRespawnPoints()
 void ARoomGameMode::GetInteractivesInRoom()
 {
 	TArray<AActor*> Objects;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AInteractiveBase::StaticClass(), Objects);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicInteractive::StaticClass(), Objects);
 	for (int32 i = 0; i < Objects.Num(); i++)
 	{
-		AInteractiveBase* Interactive = Cast<AInteractiveBase>(Objects[i]);
+		ABasicInteractive* Interactive = Cast<ABasicInteractive>(Objects[i]);
 		if (Interactive != nullptr)
 		{ 
 
@@ -159,7 +159,7 @@ void ARoomGameMode::GetInteractivesInRoom()
 	UE_LOG(LogTemp, Warning, TEXT("[ARoomGameMode::GetInteractablesInRoom] InteractableList Num: %i "), InteractiveList.Num());
 }
 
-AInteractiveBase* ARoomGameMode::FindInteractiveById(FName ID) const
+ABasicInteractive* ARoomGameMode::FindInteractiveById(const FName& ID) const
 {
 	for (int32 i = 0; i < InteractiveList.Num(); i++)
 	{
@@ -171,48 +171,6 @@ AInteractiveBase* ARoomGameMode::FindInteractiveById(FName ID) const
 
 	return nullptr;
 }
-
-
-FObjectInteraction* ARoomGameMode::GetObjectByID(FName ID) const
-{
-	if (ObjectDB == nullptr) return nullptr;
-
-	return (ObjectDB->FindRow<FObjectInteraction>(ID, TEXT("Object"), true));
-}
-
-FObjectInteraction* ARoomGameMode::FindCombinedObject(FName ObjectID_A, FName ObjectID_B) const
-{
-	if (ObjectCombinationDB == nullptr) return nullptr;
-
-	FName CombinedObjectID;
-
-	TArray<FName> RowNames;
-	RowNames = ObjectCombinationDB->GetRowNames();
-	bool CombinationFound = false;
-	for (auto& Name : RowNames) // Iterate throught combinations
-	{
-		FObjectCombination* Row = ObjectCombinationDB->FindRow<FObjectCombination>(Name, TEXT("Object"));
-		if (Row)
-		{
-			// Check if both ID are contained
-			if ((Row->ObjectID_A == ObjectID_A) && (Row->ObjectID_B == ObjectID_B))
-			{
-				CombinedObjectID = Row->ObjectID_Result;
-				CombinationFound = true;
-				break;
-			}
-		}
-	}
-
-	if (CombinationFound)
-	{
-		return (ObjectDB->FindRow<FObjectInteraction>(CombinedObjectID, TEXT("Object"), true));
-	}
-
-	return nullptr;
-	
-}
-
 
 
 void ARoomGameMode::CompletedRoom(APawn* InstigatorPawn, bool bSuccess)

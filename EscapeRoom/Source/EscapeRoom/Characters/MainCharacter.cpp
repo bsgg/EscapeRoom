@@ -121,8 +121,6 @@ void AMainCharacter::LockInput()
 void AMainCharacter::UnLockInput()
 {
 	bInputLocked = false;
-
-	//GetWorld()->GetTimerManager().ClearTimer(LockInputTimerHandle);
 }
 
 void AMainCharacter::MoveForward(float Value)
@@ -166,7 +164,6 @@ void AMainCharacter::NotifyInInteractRange(AActor* Interactive)
 		if (CurrentInteractive)
 		{
 			auto PlayerController = CastChecked<ALobbyPlayerController>(GetController());
-			//PlayerController->ShowDebugLog(CurrentInteractive->GetInteractMessage());
 
 			FString Debug = "Enter in Interactive " + CurrentInteractive->GetInteractID();
 			PlayerController->ShowDebugLog(Debug);
@@ -220,6 +217,7 @@ void AMainCharacter::HandleInteractInput()
 }
 
 //// INPUT IMPLEMENTATION ////////////////////
+
 void AMainCharacter::StartGesture_Implementation(const EGestureType& NewGesture, float lockTime)
 {
 	bInputLocked = true;
@@ -283,129 +281,10 @@ void AMainCharacter::DoInteractAction(FName SelectedObject)
 	}
 
 
-	AUseInteractive* UseInteractive = Cast<AUseInteractive>(OverlappedInteractive);
-	if (UseInteractive != nullptr)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] %s is UseInteractive"), *UseInteractive->GetName());
-		if (UseInteractive->GetUseAction().IsActive)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive UseAction Active"));
-
-			if (UseInteractive->GetUseAction().HasObject())
-			{
-				// Check if the player has the object on the inventory
-				FName objectID = UseInteractive->GetUseAction().ObjectID;
-				if (SelectedObject == objectID)
-				//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Needs an object"));
-				//if (InventoryComponent->CheckIfObjectExists(UseInteractive->GetUseAction().ObjectID))
-				{
-
-					UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive I have the object: %s"),*UseInteractive->GetUseAction().ObjectID.ToString());
-
-					//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Object exists in inventory"));
-
-					// Remove object from inventory
-					
-					OnRemoveItemInventory.Broadcast(this, objectID);
-
-					InventoryComponent->RemoveObject(objectID);
-
-					UseInteractive->Use();
-
-					StartGesture(EGestureType::VE_INTERACT);
-
-					FString desc = UseInteractive->GetUseAction().DetailDefaultAction.ToString();
-
-					OnUIMessageUpdated.Broadcast(this, desc, false);
-
-				}
-				else
-				{
-					FString desc = UseInteractive->GetUseAction().DetailWrongAction.ToString();
-
-					OnUIMessageUpdated.Broadcast(this, desc, false);
-
-					StartGesture(EGestureType::VE_DISMISS);
-				}				
-			}
-			else
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, Doesn't need an object"));
-
-				UseInteractive->Use();
-
-				StartGesture(EGestureType::VE_INTERACT);
-
-				FString desc = UseInteractive->GetUseAction().DetailDefaultAction.ToString();
-
-				OnUIMessageUpdated.Broadcast(this, desc, false);
-			}
-
-		}
-		else if ((UseInteractive->GetPickupAction().IsActive) && (UseInteractive->GetPickupAction().HasObject()))
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::DoInteractAction] UseInteractive, PickupAction Is Active And Has Object"));
-
-			FName ObjectID = UseInteractive->GetPickupAction().ObjectID;
-
-			UseInteractive->Pickup();
-
-			if (TryToAddNewObject(ObjectID))
-			{
-				StartGesture(EGestureType::VE_INTERACT);
-
-				FString desc = UseInteractive->GetPickupAction().DetailDefaultAction.ToString();
-
-				OnUIMessageUpdated.Broadcast(this, desc, false);
-			}
-		}
-
-		return;
-	}
 }
 
-void AMainCharacter::ServerRPCInteractAction_Implementation(const FName& SelectedObject)
-{
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::ServerRPCInteractAction] SelectedObject: %s"), *SelectedObject.ToString());
-
-	DoInteractAction(SelectedObject);
-}
-
-bool AMainCharacter::ServerRPCInteractAction_Validate(const FName& SelectedObject)
-{
-	return true;
-}
-// ENDREGION INTERACT ACTION
-
-//void AMainCharacter::TryCombineObjects(const FObjectInteraction& ObjectA, const FObjectInteraction& ObjectB)
-//{
-
-//}
-
-
-void AMainCharacter::OnOverlapInteractive(class AInteractiveBase* Interactive)
-{
-	if (Role == ROLE_Authority)
-	{
-		OverlappedInteractive = Interactive;
-
-		if (OverlappedInteractive == nullptr)
-		{
-			OnUIMessageUpdated.Broadcast(this, "", true);
-		}
-		
-		OnOverlappedInteractive.Broadcast(this, OverlappedInteractive);
-	}
 }*/
 
-
-
-/*
-void AMainCharacter::OnInventoryChanged(class UInventoryComponent* InventoryComp, FName ObjectID, int32 NumberObjects)
-{
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::OnInventoryChanged] ObjectID: %s"), *ObjectID.ToString());
-}
-*/
 
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
@@ -413,10 +292,6 @@ void AMainCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMainCharacter, CurrentGesture);
-
-	//DOREPLIFETIME(AMainCharacter, SelectedObjectInventory);	
-
-	//DOREPLIFETIME(AMainCharacter, OverlappedInteractive);
 }
 
 

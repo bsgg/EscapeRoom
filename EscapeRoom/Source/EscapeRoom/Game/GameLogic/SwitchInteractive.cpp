@@ -13,7 +13,7 @@ void ASwitchInteractive::Toggle()
 	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 	if (GM == nullptr) return;
 
-	AInteractiveBase* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
+	/*AInteractiveBase* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
 
 	if (interactive != nullptr)
 	{
@@ -29,7 +29,7 @@ void ASwitchInteractive::Toggle()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ASwitchInteractive::Toggle] Connected Interactive not found "));
-	}
+	}*/
 
 }
 
