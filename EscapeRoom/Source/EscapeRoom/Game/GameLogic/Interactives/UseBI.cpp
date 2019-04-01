@@ -12,7 +12,7 @@ AUseBI::AUseBI()
 	SetReplicates(true);
 }
 
-void AUseBI::StartInteract(APawn* Instigator)
+void AUseBI::StartInteract(APawn* Instigator) 
 {
 	Super::StartInteract(Instigator); 
 
