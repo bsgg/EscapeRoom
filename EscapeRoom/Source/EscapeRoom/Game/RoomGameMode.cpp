@@ -4,10 +4,10 @@
 #include "Lobby/LobbyPlayerController.h"
 #include "EscapeRoomPlayerState.h"
 #include "Utils/Definitions.h"
+#include "EscapeRoomGameInstance.h"
 #include "Game/GameLogic/RoomPlayerStart.h"
 #include "Game/EscapeRoomGameState.h"
 #include "Game/GameLogic/Interactives/BasicInteractive.h"
-//#include "Game/GameLogic/InteractiveBase.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
@@ -21,6 +21,11 @@ void ARoomGameMode::BeginPlay()
 	GetRespawnPoints();
 
 	GetInteractivesInRoom();
+
+	// Load messhes in game instance
+	UEscapeRoomGameInstance* GameInstance = Cast<UEscapeRoomGameInstance>(GetGameInstance());
+	if (GameInstance == nullptr) return;
+	GameInstance->LoadObjectsResources();
 }
 
 

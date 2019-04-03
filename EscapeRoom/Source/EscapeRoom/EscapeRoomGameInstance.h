@@ -8,6 +8,7 @@
 #include "OnlineSessionInterface.h"
 #include "Utils/MenuInterface.h"
 #include "Utils/Definitions.h"
+#include "Engine/StreamableManager.h"
 #include "EscapeRoomGameInstance.generated.h"
 
 /**
@@ -41,6 +42,8 @@ public:
 
 	void LogPlayerState();
 
+	void LoadObjectsResources();
+
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Server Settings")
@@ -61,5 +64,12 @@ private:
 	void OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 	void CreateSession();
+
+
+	FStreamableManager AssetLoader;
+
+	
+
+	void LoadObjectsResourcesDeferred();
 	
 };

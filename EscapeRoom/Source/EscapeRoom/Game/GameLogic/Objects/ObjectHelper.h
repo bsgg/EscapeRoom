@@ -11,7 +11,7 @@
 
 static UDataTable* ObjectsTable;
 
-static const FString ContextString(TEXT("GENERAL"));
+static const FString ContextString(TEXT("Objects"));
 
 /**
  * 
@@ -24,6 +24,18 @@ class ESCAPEROOM_API UObjectHelper : public UObject
 public:
 	UObjectHelper(const FObjectInitializer& ObjectInitializer);
 
-	static FObjectInteraction* GetObjectByID(FName ID);
+	//static UObjectHelper& Get(); 	// Get method to access this object
+
+	//FStreamableManager AssetLoader;		// Your asset loader
+
+	static FObjectInteraction* GetObjectByID(const FName& ID);
+
+	static UStaticMesh* GetObjectMesh(const FName& ID);
+
+	//void LoadMeshes();
+
+
+	//void LoadMeshesDeferred();
+	
 	
 };

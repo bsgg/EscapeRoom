@@ -119,8 +119,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Thumbnail = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelUp)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UMeshComponent> Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TAssetSubclassOf<AActor> ObjectMesh;
+
+
 
 	// Override equal operator for this structure
 	bool operator==(const FObjectInteraction& object) const
