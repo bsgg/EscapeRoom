@@ -123,7 +123,7 @@ public:
 	TSoftObjectPtr<UMeshComponent> Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TAssetSubclassOf<AActor> ObjectMesh;
+	TSubclassOf<AActor> ObjectMesh;
 
 
 

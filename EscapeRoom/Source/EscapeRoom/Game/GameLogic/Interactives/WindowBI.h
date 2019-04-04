@@ -21,20 +21,14 @@ public:
 
 protected:
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Window Interactive", meta = (AllowPrivateAccess = "true"))
-	//class USceneComponent* ObjectSpawner;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Window Interactive", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* ObjectToShare;
+	class USceneComponent* SharedObjectPosition;
 
 	UPROPERTY(Replicated)
 	bool bObjectSpawned = false;
 
 	UPROPERTY(Replicated)
 	FName ObjectSpawnedID;
-
-	UPROPERTY(Replicated)
-	UStaticMesh* SpawnedObject;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName LendObjectMessage;
@@ -45,12 +39,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName NoObjectMessage;
 
+	UPROPERTY(Replicated)
+	AActor* SharedObject;
 
 protected:
 
 	virtual void BeginPlay() override;
-
-	//void LoadMeshesDeferred();
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerDoBorrowObject();

@@ -6,7 +6,6 @@
 #include "OnlineSubsystemTypes.h"
 #include "Blueprint/UserWidget.h"
 #include "MainMenu/UI/MainMenu.h"
-#include "Game/GameLogic/Objects/ObjectHelper.h"
 #include "Game/EscapeRoomPlayerState.h"
 
 const static FName SESSION_NAME = TEXT("EscapeRoomSession");
@@ -23,83 +22,6 @@ UEscapeRoomGameInstance::UEscapeRoomGameInstance(const FObjectInitializer & Obje
 	}
 }
 
-void UEscapeRoomGameInstance::LoadObjectsResources()
-{
-	TArray<FSoftObjectPath> ItemsToStream;
-	//FStreamableManager& Streamable = UGameGlobals::Get().StreamableManager;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::BeginPlay] "));
-
-	
-	for (auto it : ObjectsTable->GetRowMap())
-	{
-		// it.Key has the key from first column of the CSV file
-		// it.Value has a pointer to a struct of data. You can safely cast it to your actual type, e.g FMyStruct* data = (FMyStruct*)(it.Value);
-
-		FObjectInteraction* data = (FObjectInteraction*)(it.Value);
-
-		UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::BeginPlay] Data To Stream %s "), *data->ID.ToString());
-
-
-		//if ((data != nullptr) && (data->Mesh != nullptr))
-		//{
-			
-
-			ItemsToStream.AddUnique(data->Mesh.ToStringReference());
-		//}
-	}
-
-	AssetLoader.RequestAsyncLoad(ItemsToStream, FStreamableDelegate::CreateUObject(this, &UEscapeRoomGameInstance::LoadObjectsResourcesDeferred));
-
-}
-
-void UEscapeRoomGameInstance::LoadObjectsResourcesDeferred()
-{
-	UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred] All loaded"));
-
-	for (auto it : ObjectsTable->GetRowMap())
-	{
-		FObjectInteraction* data = (FObjectInteraction*)(it.Value);
-		//if ((data != nullptr) && (data->Mesh != nullptr))
-		{
-			
-
-			UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred]  Data To Get %s"), *data->ID.ToString());
-
-			if (data->Mesh.IsPending())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred]  %s Is Pending"), *data->ID.ToString());
-			}
-			else if (data->Mesh.IsNull())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred]  %s Is Null"), *data->ID.ToString());
-			}
-			else if (data->Mesh.IsValid())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred]  %s Is Valid"), *data->ID.ToString());
-			}
-
-			if (data->Mesh.Get())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred] MeshData not null"));
-			}
-
-
-			UMeshComponent* MeshData = data->Mesh.Get();
-			if (MeshData != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred] MeshData not null"));
-			}
-
-			//UStaticMesh* MeshData = Cast<UStaticMesh>(data->Mesh.Get());
-
-			//if (MeshData != nullptr)
-			//{
-				//UE_LOG(LogTemp, Warning, TEXT("[UEscapeRoomGameInstance::LoadMeshesDeferred] MeshData not null"));
-			//}
-		}		
-	}
-}
 
 void UEscapeRoomGameInstance::Init()
 {

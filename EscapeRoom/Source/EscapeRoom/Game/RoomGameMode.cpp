@@ -21,11 +21,6 @@ void ARoomGameMode::BeginPlay()
 	GetRespawnPoints();
 
 	GetInteractivesInRoom();
-
-	// Load messhes in game instance
-	UEscapeRoomGameInstance* GameInstance = Cast<UEscapeRoomGameInstance>(GetGameInstance());
-	if (GameInstance == nullptr) return;
-	GameInstance->LoadObjectsResources();
 }
 
 

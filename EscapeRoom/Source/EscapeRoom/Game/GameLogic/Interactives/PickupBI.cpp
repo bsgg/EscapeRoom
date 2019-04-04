@@ -15,7 +15,7 @@ APickupBI::APickupBI()
 
 void APickupBI::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay(); 
 
 	if (PickupAction.IsActive)
 	{

@@ -39,10 +39,7 @@ public:
 	UFUNCTION()
 	void OpenSessionListMenu() override;
 	void AddPersistentPlayerState(class AEscapeRoomPlayerState* RoomPlayerState);
-
 	void LogPlayerState();
-
-	void LoadObjectsResources();
 
 private:
 
@@ -64,12 +61,4 @@ private:
 	void OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 	void CreateSession();
-
-
-	FStreamableManager AssetLoader;
-
-	
-
-	void LoadObjectsResourcesDeferred();
-	
 };
