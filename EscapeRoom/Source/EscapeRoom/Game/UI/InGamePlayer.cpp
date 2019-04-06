@@ -68,16 +68,12 @@ void UInGamePlayer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::Tick(MyGeometry, InDeltaTime);
 
-	//UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NativeTick] NativeTick"));
-
 	if (bTypewriterMessage)
 	{
 		CurrentTimeBetweenLetters += InDeltaTime;
 
 		if (CurrentTimeBetweenLetters >= DelayBetweenLetters)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NativeTick] Show new letter "));
-
 			CurrentMessage += MessageToTypewrite[LetterIndex];
 
 			InGameMessageText->SetText(FText::FromString(CurrentMessage));

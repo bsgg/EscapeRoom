@@ -52,8 +52,8 @@ void AUseBI::StartInteract(APawn* Instigator)
 					CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS, 2.0f);
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] %s "), *CurrentController->GetSelectedItem().ToString());
-			
+
+			UE_LOG(LogTemp, Warning, TEXT("[APickupBI::StartInteract] %s "), *CurrentController->GetSelectedItem().ToString());			
 		}
 		
 
@@ -136,6 +136,8 @@ void AUseBI::DoUseAction()
 			OnRep_PickupActionChanged();
 		}
 	}
+
+	PlayInteractSound();
 }
 
 void AUseBI::OnEndAnimationTimer()
@@ -161,8 +163,6 @@ bool AUseBI::ServerDoPickupAction_Validate()
 		
 void AUseBI::DoPickupAction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::DoPickupAction]"));
-
 	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
 	{
 		PickupAction.ObjectID = "None";
@@ -172,6 +172,8 @@ void AUseBI::DoPickupAction()
 		Properties.EnableDefaultInspectMessage = true;
 
 		PickupMesh->SetVisibility(false, true);
+
+		PlayInteractSound();
 	}
 }
 

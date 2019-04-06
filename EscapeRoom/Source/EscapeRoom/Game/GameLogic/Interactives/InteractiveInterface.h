@@ -26,9 +26,5 @@ public:
 
 	virtual void StartInteract(APawn* Instigator) = 0;
 
-	virtual void FinishInteract(APawn* Instigator) = 0;
-
-	virtual FString GetInteractMessage() = 0;
-
 	virtual FString GetInteractID() = 0;
 };

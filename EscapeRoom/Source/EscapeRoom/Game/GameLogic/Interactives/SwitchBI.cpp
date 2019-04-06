@@ -53,10 +53,7 @@ bool ASwitchBI::ServerDoToggleAction_Validate()
 
 void ASwitchBI::DoToggleAction()
 {
-	if (OverlappedSound != nullptr)
-	{
-		UGameplayStatics::PlaySound2D(this, OverlappedSound);
-	}
+	PlayInteractSound();
 
 	if (IsSwitchOn)
 	{
@@ -70,7 +67,7 @@ void ASwitchBI::DoToggleAction()
 	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 	if (GM == nullptr) return;
 	
-	UE_LOG(LogTemp, Warning, TEXT("[ASwitchBI::DoToggleAction] ARoomGameMode NOT NULL "));
+	
 	ABasicInteractive* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
 
 	if (interactive != nullptr)

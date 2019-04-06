@@ -23,9 +23,6 @@ protected:
 	bool IsSwitchOn = true;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Switch Settings")
-	USoundBase* OverlappedSound;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Switch Settings")
 	FName SwitchOnDetail;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Switch Settings")

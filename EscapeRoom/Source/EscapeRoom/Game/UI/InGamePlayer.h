@@ -124,8 +124,6 @@ private:
 
 	FString CurrentMessage;
 
-	//int32 LettersMessageLeft;
-
 	int32 LetterIndex;
 
 	float CurrentTimeBetweenLetters = 0.0f;

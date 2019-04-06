@@ -4,6 +4,7 @@
 #include "Lobby/LobbyPlayerController.h"
 #include "Characters/MainCharacter.h"
 #include "Game/GameLogic/Objects/ObjectHelper.h"
+
 #include "UnrealNetwork.h"
 
 AWindowBI::AWindowBI()
@@ -74,13 +75,11 @@ void AWindowBI::StartInteract(APawn* Instigator)
 			
 		}
 	}
-
 }
 
 
 void AWindowBI::ServerDoBorrowObject_Implementation()
 {
-
 	DoBorrowObject();
 }
 
@@ -95,6 +94,8 @@ void AWindowBI::DoBorrowObject()
 	{
 		bObjectSpawned = false;
 		ObjectSpawnedID = "None";
+
+		PlayInteractSound();
 
 		if (SharedObject != nullptr)
 		{
@@ -139,8 +140,10 @@ void AWindowBI::DoLendObject(const FName& ObjectID)
 			{
 				SharedObject->SetReplicates(true);
 				bObjectSpawned = true;
+
+				PlayInteractSound();
 			}
-		}		
+		}
 	}
 }
 

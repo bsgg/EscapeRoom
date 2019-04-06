@@ -46,7 +46,7 @@ protected:
 
 public:	
 
-	virtual FString GetInteractMessage() override;
+	//virtual FString GetInteractMessage() override;
 
 	virtual void Inspect(APawn* Instigator)  override;
 
@@ -54,7 +54,7 @@ public:
 	virtual void StartInteract(APawn* Instigator) override;
 
 	// Finish execution of the interactive, closes UI, destroy objects, etc
-	virtual void FinishInteract(APawn* Instigator) override;
+	//virtual void FinishInteract(APawn* Instigator) override;
 
 	virtual FString GetInteractID() override;
 

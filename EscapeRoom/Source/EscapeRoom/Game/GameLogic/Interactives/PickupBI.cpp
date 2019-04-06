@@ -87,6 +87,8 @@ void APickupBI::DoInteractAction()
 		Properties.EnableDefaultInspectMessage = true;
 
 		PickupMesh->SetVisibility(false, true);
+
+		PlayInteractSound();
 	}
 }
 

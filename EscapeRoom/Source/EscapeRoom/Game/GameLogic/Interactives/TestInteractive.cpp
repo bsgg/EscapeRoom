@@ -100,11 +100,11 @@ void ATestInteractive::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 	}
 }
 
-
+/*
 FString ATestInteractive::GetInteractMessage()
 {
 	return FString(TEXT("Inspect"));
-}
+}*/
 
 void ATestInteractive::Inspect(APawn* Instigator)
 {
@@ -126,7 +126,7 @@ void ATestInteractive::StartInteract(APawn* Instigator)
 	}
 
 }
-
+/*
 // Finish execution of the interactive, closes UI, destroy objects, etc
 void ATestInteractive::FinishInteract(APawn* Instigator) 
 {
@@ -139,6 +139,7 @@ void ATestInteractive::FinishInteract(APawn* Instigator)
 		PlayerController->ShowDebugLog("Finish Interacting");
 	}
 }
+*/
 
 FString ATestInteractive::GetInteractID()
 {

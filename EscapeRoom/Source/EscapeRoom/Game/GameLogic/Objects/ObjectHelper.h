@@ -24,18 +24,8 @@ class ESCAPEROOM_API UObjectHelper : public UObject
 public:
 	UObjectHelper(const FObjectInitializer& ObjectInitializer);
 
-	//static UObjectHelper& Get(); 	// Get method to access this object
-
-	//FStreamableManager AssetLoader;		// Your asset loader
-
 	static FObjectInteraction* GetObjectByID(const FName& ID);
 
 	static UStaticMesh* GetObjectMesh(const FName& ID);
-
-	//void LoadMeshes();
-
-
-	//void LoadMeshesDeferred();
-	
 	
 };

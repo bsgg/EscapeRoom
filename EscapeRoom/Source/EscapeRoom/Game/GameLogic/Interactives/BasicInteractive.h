@@ -49,8 +49,6 @@ public:
 
 	FORCEINLINE FName GetInteractiveID() const { return Properties.ID; }
 
-
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive", meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* RootScene;
@@ -64,6 +62,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactive", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* Collision;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive")
+	USoundBase* InteractSound;
 
 protected:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Basic Interactive Properties")
@@ -83,16 +83,14 @@ protected:
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	void PlayInteractSound();
+
 public:
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 	virtual void Inspect(APawn* Instigator)  override;
 
 	virtual void StartInteract(APawn* Instigator) override;
-
-	virtual void FinishInteract(APawn* Instigator) override;
-
-	virtual FString GetInteractMessage() override;
 
 	virtual FString GetInteractID() override;
 	/////// IInteractiveInterface IMPLEMENTATION /////////

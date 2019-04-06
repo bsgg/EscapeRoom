@@ -3,6 +3,7 @@
 #include "BasicInteractive.h"
 #include "Characters/MainCharacter.h"
 #include "Lobby/LobbyPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 
 // Sets default values
@@ -100,6 +101,15 @@ void ABasicInteractive::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 	}
 }
 
+void ABasicInteractive::PlayInteractSound()
+{
+	if (InteractSound != nullptr)
+	{
+		UGameplayStatics::PlaySound2D(this, InteractSound);
+	}
+
+}
+
 
 /////// IInteractiveInterface IMPLEMENTATION /////////
 void ABasicInteractive::Inspect(APawn* Instigator)
@@ -144,12 +154,6 @@ void ABasicInteractive::Inspect(APawn* Instigator)
 	}
 }
 
-
-FString ABasicInteractive::GetInteractMessage()
-{
-	return FString(TEXT("Inspect"));
-}
-
 void ABasicInteractive::StartInteract(APawn* Instigator)
 {
 	CurrentController = Cast<ALobbyPlayerController>(Instigator->GetController());
@@ -158,11 +162,6 @@ void ABasicInteractive::StartInteract(APawn* Instigator)
 	{
 		CurrentController->ShowDebugLog("Interacting");
 	}
-}
-
-void ABasicInteractive::FinishInteract(APawn* Instigator)
-{
-
 }
 
 FString ABasicInteractive::GetInteractID()
