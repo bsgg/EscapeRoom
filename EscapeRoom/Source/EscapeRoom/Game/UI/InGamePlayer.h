@@ -73,32 +73,17 @@ protected:
 
 	class ALobbyPlayerController* PlayerController;
 
-public:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+public:	
 
 	void SetPortrait(ECharacterType Character);
-
-	//void SetInGameMessage(FText Message);
 
 	void ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, bool ShowUseIcon);
 	void HideControls();
 
-	/*void ShowInventoryIcon();
-	void HideInventoryIcon();
-
-	void ShowInspectIcon();
-	void HideInspectIcon();
-
-	void ShowUseIcon();
-	void HideUseIcon();*/
-
 	void ShowMessage(const FString& Text, float time);
 	void HideMessage();
-
-	//void ShowMessages();
-
-	//void HideMessages();
-
-
 
 	void NavigateInventory(EDirectionType Direction);
 
@@ -129,6 +114,25 @@ private:
 	bool bWaitingToHideMessage = false;
 
 	FTimerHandle MessageTimerHandle;
+
+
+private:
+
+	bool bTypewriterMessage = false;
+
+	FString MessageToTypewrite;
+
+	FString CurrentMessage;
+
+	//int32 LettersMessageLeft;
+
+	int32 LetterIndex;
+
+	float CurrentTimeBetweenLetters = 0.0f;
+
+	float DelayBetweenLetters = 0.5f;
+
+	float TotalTimeTypeWritting = 0.0f;
 
 
 };

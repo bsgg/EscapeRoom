@@ -22,8 +22,6 @@ bool UInGamePlayer::Initialize()
 	PlayerController = Cast<ALobbyPlayerController>(PC);
 	if (PlayerController == nullptr) return false;
 
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::Initialize] - Player Controller Not Null"));
-
 	SelectedObjectID = "NONE";
 
 	// Set Debug Messages
@@ -66,6 +64,51 @@ bool UInGamePlayer::Initialize()
 	return true;
 }
 
+void UInGamePlayer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::Tick(MyGeometry, InDeltaTime);
+
+	//UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NativeTick] NativeTick"));
+
+	if (bTypewriterMessage)
+	{
+		CurrentTimeBetweenLetters += InDeltaTime;
+
+		if (CurrentTimeBetweenLetters >= DelayBetweenLetters)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::NativeTick] Show new letter "));
+
+			CurrentMessage += MessageToTypewrite[LetterIndex];
+
+			InGameMessageText->SetText(FText::FromString(CurrentMessage));
+
+			LetterIndex += 1;
+
+			if (LetterIndex >= MessageToTypewrite.Len())
+			{
+				CurrentTimeBetweenLetters = 0.0f;
+				bTypewriterMessage = false;
+
+				bWaitingToHideMessage = true;
+			}
+		}
+	}
+
+	if (bWaitingToHideMessage)
+	{
+		CurrentTimeBetweenLetters += InDeltaTime;
+
+		if (CurrentTimeBetweenLetters >= 3.0f)
+		{
+			CurrentTimeBetweenLetters = 0.0f;
+
+			bWaitingToHideMessage = false;
+
+			InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
 void UInGamePlayer::SetPortrait(ECharacterType Character)
 {
 	switch (Character)
@@ -89,18 +132,42 @@ void UInGamePlayer::ShowMessage(const FString& Text, float time)
 {
 	if (InGameMessageText == nullptr) return;
 
-	if (bWaitingToHideMessage) return;
+	//if (bWaitingToHideMessage) return;
+
+	//UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowMessage] Text %s "), *Text);
+
+	InGameMessageText->SetText(FText::FromString(""));
 
 	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
 
-	InGameMessageText->SetText(FText::FromString(Text));
+	//InGameMessageText->SetText(FText::FromString(Text));
 
-	if (time > 0.0f)
-	{
-		GetWorld()->GetTimerManager().SetTimer(MessageTimerHandle, this, &UInGamePlayer::HideMessage, time, false);
-	}
+	LetterIndex = 0;
 
-	bWaitingToHideMessage = true;
+	CurrentMessage = "";
+
+	MessageToTypewrite = Text;
+	   	
+	
+
+	//LettersMessageLeft = MessageToTypewrite.Len();
+
+	
+
+	TotalTimeTypeWritting = DelayBetweenLetters * MessageToTypewrite.Len();
+
+	CurrentTimeBetweenLetters = 0.0f;
+
+	bTypewriterMessage = true;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowMessage] Text: %s -  TotalTimeTypeWritting: %i "), *Text, TotalTimeTypeWritting);
+
+	//if (time > 0.0f)
+	//{
+		//GetWorld()->GetTimerManager().SetTimer(MessageTimerHandle, this, &UInGamePlayer::HideMessage, time, false);
+	//}
+
+	//bWaitingToHideMessage = true;
 }
 
 
