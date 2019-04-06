@@ -12,7 +12,6 @@
 #include "Game/RoomGameMode.h"
 #include "Game/UI/InGamePlayer.h"
 #include "Game/UI/InventoryUI.h"
-#include "Game/GameLogic/InteractiveBase.h"
 
 
 #include "UObject/ConstructorHelpers.h"
