@@ -2,8 +2,8 @@
 
 Run a game with Steam
 
-"D:\Software\Unreal\Epic Games\UE_4.21\Engine\Binaries\Win64\UE4Editor.exe" "D:\Github\UE4\\EscapeRoom\EscapeRoom\EscapeRoom.uproject" -game -log
+"D:\Software\Unreal\Epic Games\UE_4.22\Engine\Binaries\Win64\UE4Editor.exe" "D:\Github\UE4\\EscapeRoom\EscapeRoom\EscapeRoom.uproject" -game -log
 
 Run a game with NULL only subsystem or not Steam
 
-"D:\Software\Unreal\Epic Games\UE_4.21\Engine\Binaries\Win64\UE4Editor.exe" "D:\Github\UE4\\EscapeRoom\EscapeRoom\EscapeRoom.uproject" -game -log -nosteam
+"D:\Software\Unreal\Epic Games\UE_4.22\Engine\Binaries\Win64\UE4Editor.exe" "D:\Github\UE4\\EscapeRoom\EscapeRoom\EscapeRoom.uproject" -game -log -nosteam
