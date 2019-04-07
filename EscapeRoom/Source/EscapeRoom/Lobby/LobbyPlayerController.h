@@ -63,54 +63,20 @@ public:
 	void HideControls();
 	///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 
+	///////////// PAUSE UI IMPLEMENTATION ////////////////
+	void UnPause();
+	///////////// PAUSE UI IMPLEMENTATION ////////////////
 
-
-
-
-
-
-	/*
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_UpdateInGameMessageUI(const FString& Text, bool hideMessages = false);
-
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_UpdateInGame(const AInteractiveBase* Interactive);
-
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_HideInGameMessage();
-
-
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_UpdateControlsUI(const AInteractiveBase* Interactive);
-
-	*/
-
-
-
-	///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
 protected:
 	void NavigateInventoryRight();
 	void NavigateInventoryLeft();
 	void ToggleInventory();
 
-
+	void TogglePauseMenu();
 public:
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_ToggleInventory();	
 
 	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_NavigateInventory(EDirectionType Direction);
-
-	
-
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_AddObjectToSlot(const FObjectInteraction& Object);
-
-	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void Client_RemoveObjectFromSlot(const FName& ObjectID);
-	
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_OnSelectItemInInventory(const FObjectInteraction& SelectedObject);
+	//void Client_RemoveObjectFromSlot(const FName& ObjectID);	
 
 	void AddItemToInventory(const FName& ObjID);
 
@@ -144,9 +110,12 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
 	class UInGamePlayer* InGameUI;
 
+	TSubclassOf<class UUserWidget> PauseMenuUIClass;
+
+	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
+	class UPauseMenu* PauseMenuUI;
+	bool bPauseGame = false;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UInventoryComponent* InventoryComponent;
-
-
-	
 };

@@ -13,6 +13,8 @@
 #include "Game/UI/InGamePlayer.h"
 #include "Game/UI/InventoryUI.h"
 
+#include "Utils/MenuWidget.h"
+#include "Game/UI/PauseMenu.h"
 
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
@@ -36,6 +38,16 @@ ALobbyPlayerController::ALobbyPlayerController()
 	{
 		InGameUIClass = InGameMenuBPClass.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/Game/UI/WBP_PauseMenu"));
+
+	if (PauseMenuBPClass.Class != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::ALobbyPlayerController] PauseMenuBPClass Found"));
+
+		PauseMenuUIClass = PauseMenuBPClass.Class;
+	}
+
 }
 
 void ALobbyPlayerController::BeginPlay()
@@ -61,6 +73,8 @@ void ALobbyPlayerController::BeginPlay()
 	FString TypeChar = GetEnumValueAsString<ECharacterType>("ECharacterType", ESPlayerState->SelectedCharacter);
 
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay] %s = ChararcerSelected %s"), *Authority, *TypeChar);
+
+	bPauseGame = false;
 }
 
 void ALobbyPlayerController::SetupInputComponent()
@@ -71,6 +85,8 @@ void ALobbyPlayerController::SetupInputComponent()
 	InputComponent->BindAction("NavigateInventoryLeft", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryLeft);
 	InputComponent->BindAction("NavigateInventoryRight", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryRight);
 	InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
+
+	InputComponent->BindAction("Pause", IE_Pressed, this, &ALobbyPlayerController::TogglePauseMenu);
 }
 
 
@@ -207,6 +223,27 @@ void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 
 	if (InGameUI == nullptr) return;
 	InGameUI->AddToViewport();
+	
+	// Create Pause UI
+	if (PauseMenuUIClass == nullptr) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] PauseMenuUIClass null"));
+
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] PauseMenuUIClass not null"));
+
+	PauseMenuUI = CreateWidget<UPauseMenu>(this, PauseMenuUIClass);
+
+	if (PauseMenuUI != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] Created"));
+	}
+
+	//if (PauseMenuUI == nullptr) return;
+	//PauseMenuUI->AddToViewport();
+
 }
 ///////////// GAMEPLAY ROOM IMPLEMENTATION ////////////////
 
@@ -262,8 +299,6 @@ void ALobbyPlayerController::NavigateInventoryRight()
 {
 	if (InGameUI == nullptr) return;
 
-	//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::NavigateInventoryRight] "));
-
 	InGameUI->NavigateInventory(EDirectionType::VE_RIGHT);
 }
 
@@ -285,14 +320,13 @@ FName ALobbyPlayerController::GetSelectedItem()
 	return InGameUI->GetSelectedItem();
 }
 
-void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FName& ObjectID)
+/*void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FName& ObjectID)
 {
 	if (InGameUI == nullptr) return;
 
 	InGameUI->RemoveObjectFromSlot(ObjectID);
-}
+}*/
 
-///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
 
 
 
@@ -327,8 +361,39 @@ void ALobbyPlayerController::RemoveItemFromInventory(const FName& ObjID)
 
 	InGameUI->RemoveObjectFromSlot(ObjID);
 }
+///////////// GAMEPLAY INVENTORY IMPLEMENTATION ////////////////
 
 
+///////////// PAUSE MENU IMPLEMENTATION ////////////////
+
+void ALobbyPlayerController::TogglePauseMenu()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::TogglePauseMenu]"));
+
+	if (PauseMenuUI == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::TogglePauseMenu] bPauseGame %i"), bPauseGame);
+
+	if (bPauseGame)
+	{
+		bPauseGame = false;
+		PauseMenuUI->Teardown();
+	}
+	else
+	{
+		bPauseGame = true;
+		PauseMenuUI->Setup();
+	}
+}
+
+void ALobbyPlayerController::UnPause()
+{
+	if (PauseMenuUI == nullptr) return;
+	bPauseGame = false;
+	PauseMenuUI->Teardown();
+}
+
+///////////// PAUSE MENU IMPLEMENTATION ////////////////
 
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
