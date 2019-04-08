@@ -41,6 +41,10 @@ public:
 	void AddPersistentPlayerState(class AEscapeRoomPlayerState* RoomPlayerState);
 	void LogPlayerState();
 
+	UFUNCTION()
+	void EndSession() override;
+
+
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Server Settings")

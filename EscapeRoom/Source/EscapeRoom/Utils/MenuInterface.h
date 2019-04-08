@@ -32,4 +32,6 @@ public:
 
 	virtual void OpenSessionListMenu() = 0;
 
+	virtual void EndSession() = 0;
+
 };

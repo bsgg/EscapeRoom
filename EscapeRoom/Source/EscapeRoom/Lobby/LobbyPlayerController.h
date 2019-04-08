@@ -75,9 +75,6 @@ protected:
 	void TogglePauseMenu();
 public:
 
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	//void Client_RemoveObjectFromSlot(const FName& ObjectID);	
-
 	void AddItemToInventory(const FName& ObjID);
 
 	void RemoveItemFromInventory(const FName& ObjID);
@@ -110,7 +107,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
 	class UInGamePlayer* InGameUI;
 
-	TSubclassOf<class UUserWidget> PauseMenuUIClass;
+	TSubclassOf<class UUserWidget> PauseMenuClass;
 
 	UPROPERTY(BlueprintReadWrite, Category = "UI Player")
 	class UPauseMenu* PauseMenuUI;

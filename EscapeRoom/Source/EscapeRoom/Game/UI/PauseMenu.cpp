@@ -12,8 +12,6 @@ bool UPauseMenu::Initialize()
 
 	if (ExitGameButton == nullptr) return false;
 	ExitGameButton->OnClicked.AddDynamic(this, &UPauseMenu::OnExitGamePressed);
-
-
 	return true;
 
 }
@@ -32,6 +30,6 @@ void UPauseMenu::OnResumeGamePressed()
 void UPauseMenu::OnExitGamePressed()
 {
 	// TODO: EXIT SESSION
-	//if (MenuInterface == nullptr) return;
-	//MenuInterface->Host("BSGG SERVER");
+	if (MenuInterface == nullptr) return;
+	MenuInterface->EndSession();
 }

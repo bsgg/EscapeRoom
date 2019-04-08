@@ -15,7 +15,7 @@
 
 #include "Utils/MenuWidget.h"
 #include "Game/UI/PauseMenu.h"
-
+#include "EscapeRoomGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 
@@ -23,7 +23,6 @@ ALobbyPlayerController::ALobbyPlayerController()
 {
 	// Inventory Component
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
-
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> LobbyMenuBPClass(TEXT("/Game/Lobby/LobbyMenu_WBP"));
 
@@ -45,7 +44,7 @@ ALobbyPlayerController::ALobbyPlayerController()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::ALobbyPlayerController] PauseMenuBPClass Found"));
 
-		PauseMenuUIClass = PauseMenuBPClass.Class;
+		PauseMenuClass = PauseMenuBPClass.Class;
 	}
 
 }
@@ -93,7 +92,6 @@ void ALobbyPlayerController::SetupInputComponent()
 ///////////// LOBBY IMPLEMENTATION ////////////////
 void ALobbyPlayerController::Client_Initialize_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_Initialize]"));
 
 	// Create menu lobby
 	if (LobbyMenuClass == nullptr) return;
@@ -121,7 +119,6 @@ void ALobbyPlayerController::Server_SelectCharacter_Implementation(ECharacterTyp
 	if (PlayerState == nullptr) return;
 
 	AEscapeRoomPlayerState* GamePlayerState = Cast<AEscapeRoomPlayerState>(PlayerState);
-
 	if (GamePlayerState != nullptr)
 	{
 		FString SelectedChar = GetEnumValueAsString< ECharacterType>("ECharacterType", GamePlayerState->SelectedCharacter);
@@ -135,9 +132,7 @@ void ALobbyPlayerController::Server_SelectCharacter_Implementation(ECharacterTyp
 		else
 		{
 			GM->ChangeCharacterStatus(GamePlayerState->SelectedCharacter);
-
 			GamePlayerState->SelectedCharacter = NewCharacter;
-
 			GM->ChangeCharacterStatus(NewCharacter);
 		}
 	}
@@ -225,24 +220,17 @@ void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 	InGameUI->AddToViewport();
 	
 	// Create Pause UI
-	if (PauseMenuUIClass == nullptr) 
+	if (PauseMenuClass == nullptr) return;	
+	PauseMenuUI = CreateWidget<UPauseMenu>(this, PauseMenuClass);
+
+	if (PauseMenuUI == nullptr) return;
+	UEscapeRoomGameInstance* GameInstance = Cast<UEscapeRoomGameInstance>(GetGameInstance());
+	if (GameInstance != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] PauseMenuUIClass null"));
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] GameInstance not null "));
 
-		return;
+		PauseMenuUI->SetMenuInteraface(GameInstance);
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] PauseMenuUIClass not null"));
-
-	PauseMenuUI = CreateWidget<UPauseMenu>(this, PauseMenuUIClass);
-
-	if (PauseMenuUI != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] Created"));
-	}
-
-	//if (PauseMenuUI == nullptr) return;
-	//PauseMenuUI->AddToViewport();
 
 }
 ///////////// GAMEPLAY ROOM IMPLEMENTATION ////////////////
@@ -289,9 +277,6 @@ void ALobbyPlayerController::HideControls_Implementation()
 void ALobbyPlayerController::NavigateInventoryLeft()
 {
 	if (InGameUI == nullptr) return;
-
-	//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::NavigateInventoryLeft] "));
-
 	InGameUI->NavigateInventory(EDirectionType::VE_LEFT);
 }
 
@@ -319,15 +304,6 @@ FName ALobbyPlayerController::GetSelectedItem()
 
 	return InGameUI->GetSelectedItem();
 }
-
-/*void ALobbyPlayerController::Client_RemoveObjectFromSlot_Implementation(const FName& ObjectID)
-{
-	if (InGameUI == nullptr) return;
-
-	InGameUI->RemoveObjectFromSlot(ObjectID);
-}*/
-
-
 
 
 void ALobbyPlayerController::AddItemToInventory(const FName& ObjID)

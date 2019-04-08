@@ -241,6 +241,14 @@ void UEscapeRoomGameInstance::StartSession()
 	}
 }
 
+void UEscapeRoomGameInstance::EndSession()
+{
+	if (SessionInterface.IsValid())
+	{
+		SessionInterface->EndSession(SESSION_NAME);
+	}
+}
+
 void UEscapeRoomGameInstance::LoadMainMenu()
 {
 	if (MenuClass == nullptr) return;
