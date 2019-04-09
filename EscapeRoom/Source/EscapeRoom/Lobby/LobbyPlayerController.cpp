@@ -42,8 +42,6 @@ ALobbyPlayerController::ALobbyPlayerController()
 
 	if (PauseMenuBPClass.Class != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::ALobbyPlayerController] PauseMenuBPClass Found"));
-
 		PauseMenuClass = PauseMenuBPClass.Class;
 	}
 
@@ -227,8 +225,6 @@ void ALobbyPlayerController::Client_CreateInGameUI_Implementation()
 	UEscapeRoomGameInstance* GameInstance = Cast<UEscapeRoomGameInstance>(GetGameInstance());
 	if (GameInstance != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::Client_CreateInGameUI] GameInstance not null "));
-
 		PauseMenuUI->SetMenuInteraface(GameInstance);
 	}
 
@@ -253,7 +249,7 @@ void ALobbyPlayerController::ShowMessage_Implementation(const FString& Text, flo
 void ALobbyPlayerController::HideMessage_Implementation()
 {
 	if (InGameUI == nullptr) return;
-	InGameUI->HideMessage();
+	//InGameUI->HideMessage();
 }
 
 

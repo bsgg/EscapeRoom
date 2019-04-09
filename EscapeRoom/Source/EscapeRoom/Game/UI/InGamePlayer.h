@@ -50,6 +50,16 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UWidget* UseIconBox;
 
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidget* HighlightItemBox;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UImage* HighlightItemIcon;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HighlightItemDescriptionText;
+
 protected:
 
 	// Inventory Grid
@@ -83,7 +93,7 @@ public:
 	void HideControls();
 
 	void ShowMessage(const FString& Text, float time);
-	void HideMessage();
+	//void HideMessage();
 
 	void NavigateInventory(EDirectionType Direction);
 

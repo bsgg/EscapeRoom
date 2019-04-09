@@ -38,7 +38,7 @@ bool UInGamePlayer::Initialize()
 
 		}
 	}
-	HideMessage();
+	//HideMessage();
 	HideControls();
 	
 	Slots.Add(Slot_0);
@@ -128,26 +128,15 @@ void UInGamePlayer::ShowMessage(const FString& Text, float time)
 {
 	if (InGameMessageText == nullptr) return;
 
-	//if (bWaitingToHideMessage) return;
-
-	//UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowMessage] Text %s "), *Text);
-
 	InGameMessageText->SetText(FText::FromString(""));
 
 	InGameMessagesBox->SetVisibility(ESlateVisibility::Visible);
-
-	//InGameMessageText->SetText(FText::FromString(Text));
 
 	LetterIndex = 0;
 
 	CurrentMessage = "";
 
 	MessageToTypewrite = Text;
-	   	
-	
-
-	//LettersMessageLeft = MessageToTypewrite.Len();
-
 	
 
 	TotalTimeTypeWritting = DelayBetweenLetters * MessageToTypewrite.Len();
@@ -157,17 +146,10 @@ void UInGamePlayer::ShowMessage(const FString& Text, float time)
 	bTypewriterMessage = true;
 
 	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowMessage] Text: %s -  TotalTimeTypeWritting: %i "), *Text, TotalTimeTypeWritting);
-
-	//if (time > 0.0f)
-	//{
-		//GetWorld()->GetTimerManager().SetTimer(MessageTimerHandle, this, &UInGamePlayer::HideMessage, time, false);
-	//}
-
-	//bWaitingToHideMessage = true;
+	
 }
 
-
-
+/*
 void UInGamePlayer::HideMessage()
 {
 	if (InGameMessageText == nullptr) return;
@@ -180,6 +162,7 @@ void UInGamePlayer::HideMessage()
 		GetWorld()->GetTimerManager().ClearTimer(MessageTimerHandle);
 	}
 }
+*/
 
 void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 {
@@ -197,6 +180,13 @@ void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 
 			SelectedItemIcon->SetBrushFromTexture(Object.Thumbnail);
 			SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
+
+			// Show Highligh
+			HighlightItemIcon->SetBrushFromTexture(Object.Thumbnail);
+			HighlightItemBox->SetVisibility(ESlateVisibility::Visible);
+
+			HighlightItemDescriptionText->SetText(FText::FromString(Object.ID.ToString()));
+			
 
 			break;
 		}
@@ -307,7 +297,6 @@ void UInGamePlayer::ToggleInventory()
 		bInventoryVisible = false;
 	}
 }
-
 
 
 void UInGamePlayer::ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, bool ShowUseIcon)
