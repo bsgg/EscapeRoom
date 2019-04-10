@@ -16,7 +16,7 @@ bool UInGamePlayer::Initialize()
 	if (!Success) return false;
 
 	// Get Hold Player Controller
-	APlayerController* PC = GetOwningPlayer();
+	APlayerController* PC = GetOwningPlayer(); 
 	if (PC == nullptr) return false;
 
 	PlayerController = Cast<ALobbyPlayerController>(PC);
@@ -103,6 +103,19 @@ void UInGamePlayer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 			InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
+
+	if (HideHighlightItem)
+	{
+		CurrentTimeHighlightItem += InDeltaTime;
+		if (CurrentTimeHighlightItem >= 1.0f)
+		{
+			CurrentTimeHighlightItem = 0.0f;
+			HideHighlightItem = false;
+			HighlightItemBox->SetVisibility(ESlateVisibility::Hidden);
+
+		}
+	}
+
 }
 
 void UInGamePlayer::SetPortrait(ECharacterType Character)
@@ -182,11 +195,14 @@ void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 			SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
 
 			// Show Highligh
+			
 			HighlightItemIcon->SetBrushFromTexture(Object.Thumbnail);
-			HighlightItemBox->SetVisibility(ESlateVisibility::Visible);
 
 			HighlightItemDescriptionText->SetText(FText::FromString(Object.ID.ToString()));
-			
+			HighlightItemBox->SetVisibility(ESlateVisibility::Visible);
+
+			HideHighlightItem = true;
+			CurrentTimeHighlightItem = 0.0f;
 
 			break;
 		}

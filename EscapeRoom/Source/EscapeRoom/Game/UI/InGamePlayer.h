@@ -143,4 +143,9 @@ private:
 	float TotalTimeTypeWritting = 0.0f;
 
 
+	bool HideHighlightItem = false;
+	float CurrentTimeHighlightItem = 0.0f;
+	float TotalTimeTimeHighlightItem = 1.0f;
+
+
 };
