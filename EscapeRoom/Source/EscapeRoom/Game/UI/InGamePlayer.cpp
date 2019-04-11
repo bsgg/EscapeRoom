@@ -184,7 +184,7 @@ void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 			
 			HighlightItemIcon->SetBrushFromTexture(Object.Thumbnail);
 
-			HighlightItemDescriptionText->SetText(FText::FromString(Object.ID.ToString()));
+			HighlightItemDescriptionText->SetText(FText::FromString(Object.Name.ToString()));
 			HighlightItemBox->SetVisibility(ESlateVisibility::Visible);
 
 			HideHighlightItem = true;
@@ -278,7 +278,7 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 		SelectedObjectID = Slots[CurrentSlotIndex]->GetObjectSlot().ID;		
 
 		HighlightItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
-		HighlightItemDescriptionText->SetText(FText::FromString(Slots[CurrentSlotIndex]->GetObjectSlot().ID.ToString()));
+		HighlightItemDescriptionText->SetText(FText::FromString(Slots[CurrentSlotIndex]->GetObjectSlot().Name.ToString()));
 		HighlightItemBox->SetVisibility(ESlateVisibility::Visible);
 
 		HideHighlightItem = true;

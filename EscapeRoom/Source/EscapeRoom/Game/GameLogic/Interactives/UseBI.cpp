@@ -98,7 +98,6 @@ void AUseBI::StartInteract(APawn* Instigator)
 			DoPickupAction();
 		}
 	}
-
 }
 
 
@@ -159,7 +158,6 @@ bool AUseBI::ServerDoPickupAction_Validate()
 {
 	return true;
 }
-
 		
 void AUseBI::DoPickupAction()
 {

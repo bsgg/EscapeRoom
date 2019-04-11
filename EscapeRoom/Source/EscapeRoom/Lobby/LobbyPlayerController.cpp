@@ -17,6 +17,8 @@
 #include "Game/UI/PauseMenu.h"
 #include "EscapeRoomGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Game/GameLogic/Interactives/UI/UIBasicInteractive.h"
+
 #include "UnrealNetwork.h"
 
 ALobbyPlayerController::ALobbyPlayerController() 
@@ -266,6 +268,50 @@ void ALobbyPlayerController::HideControls_Implementation()
 
 	InGameUI->HideControls();
 }
+
+
+void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& UIObjectID)
+{
+	
+	FObjectInteraction* Object = UObjectHelper::GetObjectByID(UIObjectID);
+	if ((Object != nullptr) && (Object->UI != nullptr))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI]Object null "));
+
+		InteractiveUI = CreateWidget<UUIBasicInteractive>(this, Object->UI);
+
+		if (InteractiveUI != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI] InteractiveUI added to viewport"));
+
+			InteractiveUI->AddToViewport();
+
+			//InteractiveUI->SetInteraface();
+
+			FInputModeUIOnly InputModeData;
+			InputModeData.SetWidgetToFocus(InteractiveUI->TakeWidget());
+			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+			SetInputMode(InputModeData);
+			bShowMouseCursor = true;
+		}
+	}
+}
+
+void ALobbyPlayerController::RemoveInteractiveUI_Implementation()
+{
+	if (InteractiveUI != nullptr)
+	{
+		InteractiveUI->RemoveFromViewport();
+
+		FInputModeGameOnly InputModeData;
+		SetInputMode(InputModeData);
+
+		bShowMouseCursor = false;
+	}
+
+}
+
 ///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 
 

@@ -61,6 +61,17 @@ public:
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void HideControls();
+
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void CreateInteractiveUI(const FName& UIObjectID);
+
+	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
+	void RemoveInteractiveUI();
+
+	FORCEINLINE class UUIBasicInteractive* GetInteractiveUI() const { return InteractiveUI; };
+
+
 	///////////// GAMEPLAY UI IMPLEMENTATION ////////////////
 
 	///////////// PAUSE UI IMPLEMENTATION ////////////////
@@ -115,4 +126,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UInventoryComponent* InventoryComponent;
+
+
+	class UUIBasicInteractive* InteractiveUI;
 };
