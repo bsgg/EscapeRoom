@@ -162,20 +162,6 @@ void UInGamePlayer::ShowMessage(const FString& Text, float time)
 	
 }
 
-/*
-void UInGamePlayer::HideMessage()
-{
-	if (InGameMessageText == nullptr) return;
-
-	if (bWaitingToHideMessage)
-	{
-		InGameMessagesBox->SetVisibility(ESlateVisibility::Hidden);
-
-		bWaitingToHideMessage = false;
-		GetWorld()->GetTimerManager().ClearTimer(MessageTimerHandle);
-	}
-}
-*/
 
 void UInGamePlayer::AddObjectToSlot(FObjectInteraction Object)
 {
@@ -259,7 +245,9 @@ void UInGamePlayer::RemoveObjectFromSlot(const FName& ObjID)
 
 void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 {
-	if ((!bControlsVisible) || (numberObjectsInventory == 0)) return;
+	if (numberObjectsInventory == 0) return;
+
+	//if ((!bControlsVisible) || (numberObjectsInventory == 0)) return;
 	
 
 	if (Direction == EDirectionType::VE_LEFT)
@@ -288,6 +276,13 @@ void UInGamePlayer::NavigateInventory(EDirectionType Direction)
 		SelectedItemIcon->SetVisibility(ESlateVisibility::Visible);
 		SelectedItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
 		SelectedObjectID = Slots[CurrentSlotIndex]->GetObjectSlot().ID;		
+
+		HighlightItemIcon->SetBrushFromTexture(Slots[CurrentSlotIndex]->GetObjectSlot().Thumbnail);
+		HighlightItemDescriptionText->SetText(FText::FromString(Slots[CurrentSlotIndex]->GetObjectSlot().ID.ToString()));
+		HighlightItemBox->SetVisibility(ESlateVisibility::Visible);
+
+		HideHighlightItem = true;
+		CurrentTimeHighlightItem = 0.0f;
 	}	
 }
 
