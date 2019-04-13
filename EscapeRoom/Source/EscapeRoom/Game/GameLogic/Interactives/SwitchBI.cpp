@@ -8,9 +8,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 
-void ASwitchBI::StartInteract(APawn* Instigator)
+void ASwitchBI::StartInteract(APawn* PawnInstigator)
 {
-	Super::StartInteract(Instigator);
+	Super::StartInteract(PawnInstigator);
 
 	if (CurrentController == nullptr) return;
 

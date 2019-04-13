@@ -41,7 +41,7 @@ public:
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 
-	virtual void StartInteract(APawn* Instigator) override;
+	virtual void StartInteract(APawn* PawnInstigator) override;
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////	
 };

@@ -18,9 +18,9 @@ void AUseWithUIBI::BeginPlay()
 
 }
 
-void AUseWithUIBI::StartInteract(APawn* Instigator)
+void AUseWithUIBI::StartInteract(APawn* PawnInstigator)
 {
-	Super::StartInteract(Instigator);
+	Super::StartInteract(PawnInstigator);
 
 	if (CurrentController == nullptr) return;
 

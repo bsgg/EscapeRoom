@@ -4,9 +4,9 @@
 #include "UIBasicInteractive.h"
 #include "Components/Button.h"
 
-void UUIBasicInteractive::SetInteraface(IUIBasicInteractiveInterface* UIInterface)
+void UUIBasicInteractive::SetInteraface(IUIBasicInteractiveInterface* UIBasicInteractiveInterface)
 {
-	this->UIInterface = UIInterface;
+	this->UIBasicInteractiveInterface = UIBasicInteractiveInterface;
 }
 
 bool UUIBasicInteractive::Initialize()
@@ -23,9 +23,9 @@ bool UUIBasicInteractive::Initialize()
 
 void UUIBasicInteractive::OnExitPressed()
 {
-	if (UIInterface != nullptr)
+	if (UIBasicInteractiveInterface != nullptr)
 	{
-		UIInterface->ExitUI();
+		UIBasicInteractiveInterface->ExitUI();
 	}
 }
 

@@ -88,9 +88,9 @@ protected:
 public:
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
-	virtual void Inspect(APawn* Instigator)  override;
+	virtual void Inspect(APawn* PawnInstigator)  override;
 
-	virtual void StartInteract(APawn* Instigator) override;
+	virtual void StartInteract(APawn* PawnInstigator) override;
 
 	virtual FString GetInteractID() override;
 	/////// IInteractiveInterface IMPLEMENTATION /////////

@@ -48,10 +48,10 @@ public:
 
 	//virtual FString GetInteractMessage() override;
 
-	virtual void Inspect(APawn* Instigator)  override;
+	virtual void Inspect(APawn* PawnInstigator)  override;
 
 	// Start execution of the interactive, Add items to inventory, bring up UI
-	virtual void StartInteract(APawn* Instigator) override;
+	virtual void StartInteract(APawn* PawnInstigator) override;
 
 	// Finish execution of the interactive, closes UI, destroy objects, etc
 	//virtual void FinishInteract(APawn* Instigator) override;

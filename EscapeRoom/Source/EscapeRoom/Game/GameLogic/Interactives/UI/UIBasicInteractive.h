@@ -17,12 +17,12 @@ class ESCAPEROOM_API UUIBasicInteractive : public UUserWidget
 
 public:
 
-	void SetInteraface(IUIBasicInteractiveInterface* UIInterface);
+	void SetInteraface(IUIBasicInteractiveInterface* UIBasicInteractiveInterface);
 
 protected:
 	virtual bool Initialize() override;
 
-	IUIBasicInteractiveInterface* UIInterface;
+	IUIBasicInteractiveInterface* UIBasicInteractiveInterface;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ExitButton;

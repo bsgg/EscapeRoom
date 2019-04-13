@@ -21,9 +21,9 @@ void AWindowBI::BeginPlay()
 }
 
 
-void AWindowBI::StartInteract(APawn* Instigator)
+void AWindowBI::StartInteract(APawn* PawnInstigator)
 {
-	Super::StartInteract(Instigator);
+	Super::StartInteract(PawnInstigator);
 
 	if ((CurrentController == nullptr) || (CharacterOverlapping == nullptr)) return;
 

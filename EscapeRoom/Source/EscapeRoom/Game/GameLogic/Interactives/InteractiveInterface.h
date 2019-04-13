@@ -22,9 +22,9 @@ class ESCAPEROOM_API IInteractiveInterface
 
 public:
 
-	virtual void Inspect(APawn* Instigator) = 0;
+	virtual void Inspect(APawn* PawnInstigator) = 0;
 
-	virtual void StartInteract(APawn* Instigator) = 0;
+	virtual void StartInteract(APawn* PawnInstigator) = 0;
 
 	virtual FString GetInteractID() = 0;
 };

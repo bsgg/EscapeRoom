@@ -23,4 +23,6 @@ public:
 
 	virtual void ExitUI() = 0;
 
+	//virtual bool OnNavigate() = 0;
+
 };

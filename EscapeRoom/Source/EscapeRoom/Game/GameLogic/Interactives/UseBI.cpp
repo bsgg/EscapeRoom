@@ -12,9 +12,9 @@ AUseBI::AUseBI()
 	SetReplicates(true);
 }
 
-void AUseBI::StartInteract(APawn* Instigator) 
+void AUseBI::StartInteract(APawn* PawnInstigator)
 {
-	Super::StartInteract(Instigator); 
+	Super::StartInteract(PawnInstigator);
 
 	if (CurrentController == nullptr) return;
 

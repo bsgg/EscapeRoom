@@ -100,21 +100,15 @@ void ATestInteractive::EndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 	}
 }
 
-/*
-FString ATestInteractive::GetInteractMessage()
-{
-	return FString(TEXT("Inspect"));
-}*/
-
-void ATestInteractive::Inspect(APawn* Instigator)
+void ATestInteractive::Inspect(APawn* PawnInstigator)
 {
 
 }
 
 // Start execution of the interactive, Add items to inventory, bring up UI
-void ATestInteractive::StartInteract(APawn* Instigator)
+void ATestInteractive::StartInteract(APawn* PawnInstigator)
 {
-	auto PlayerController = Cast<ALobbyPlayerController>(Instigator->GetController());
+	auto PlayerController = Cast<ALobbyPlayerController>(PawnInstigator->GetController());
 
 	if (PlayerController)
 	{
@@ -126,20 +120,7 @@ void ATestInteractive::StartInteract(APawn* Instigator)
 	}
 
 }
-/*
-// Finish execution of the interactive, closes UI, destroy objects, etc
-void ATestInteractive::FinishInteract(APawn* Instigator) 
-{
-	auto PlayerController = Cast<ALobbyPlayerController>(Instigator->GetController());
 
-	if (PlayerController)
-	{
-		// HIDE DEBUG WITH A TEXT
-
-		PlayerController->ShowDebugLog("Finish Interacting");
-	}
-}
-*/
 
 FString ATestInteractive::GetInteractID()
 {

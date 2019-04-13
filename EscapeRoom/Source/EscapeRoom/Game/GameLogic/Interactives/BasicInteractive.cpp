@@ -112,9 +112,9 @@ void ABasicInteractive::PlayInteractSound()
 
 
 /////// IInteractiveInterface IMPLEMENTATION /////////
-void ABasicInteractive::Inspect(APawn* Instigator)
+void ABasicInteractive::Inspect(APawn* PawnInstigator)
 {
-	auto PlayerController = Cast<ALobbyPlayerController>(Instigator->GetController());
+	auto PlayerController = Cast<ALobbyPlayerController>(PawnInstigator->GetController());
 
 	if (PlayerController)
 	{
@@ -154,9 +154,9 @@ void ABasicInteractive::Inspect(APawn* Instigator)
 	}
 }
 
-void ABasicInteractive::StartInteract(APawn* Instigator)
+void ABasicInteractive::StartInteract(APawn* PawnInstigator)
 {
-	CurrentController = Cast<ALobbyPlayerController>(Instigator->GetController());
+	CurrentController = Cast<ALobbyPlayerController>(PawnInstigator->GetController());
 
 	if (CurrentController)
 	{

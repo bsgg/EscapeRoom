@@ -27,9 +27,9 @@ void APickupBI::BeginPlay()
 	}
 }
 
-void APickupBI::StartInteract(APawn* Instigator)
+void APickupBI::StartInteract(APawn* PawnInstigator)
 {
-	Super::StartInteract(Instigator);
+	Super::StartInteract(PawnInstigator);
 
 	if (CurrentController == nullptr) return;
 
