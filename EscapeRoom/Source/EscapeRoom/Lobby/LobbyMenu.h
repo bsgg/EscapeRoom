@@ -66,5 +66,5 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* MessageBlockerText;
 
-	class ALobbyPlayerController* PlayerController;	
+	class ALobbyPlayerController* LobbyPlayerController;	
 };

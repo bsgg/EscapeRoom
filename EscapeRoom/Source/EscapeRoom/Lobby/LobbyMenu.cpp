@@ -34,11 +34,11 @@ bool ULobbyMenu::Initialize()
 	APlayerController* PC = GetOwningPlayer();
 	if (PC == nullptr) return false;
 
-	PlayerController = Cast<ALobbyPlayerController>(PC);
-	if (PlayerController == nullptr) return false;
+	LobbyPlayerController = Cast<ALobbyPlayerController>(PC);
+	if (LobbyPlayerController == nullptr) return false;
 
 	// Set Debug Messages
-	if (PlayerController->HasAuthority())
+	if (LobbyPlayerController->HasAuthority())
 	{
 		DebugText->SetText(FText::FromString("Server"));
 	}
@@ -69,10 +69,10 @@ void ULobbyMenu::OnRacoonCharacterClicked()
 
 void ULobbyMenu::OnCharacterClicked(ECharacterType CharacterType)
 {
-	if (PlayerController == nullptr) return;
+	if (LobbyPlayerController == nullptr) return;
 
 	FString CharSelected = "Char Selected: " + GetEnumValueAsString<ECharacterType>("ECharacterType", CharacterType);
-	if (PlayerController->HasAuthority())
+	if (LobbyPlayerController->HasAuthority())
 	{
 		DebugText->SetText(FText::FromString("Server: " + CharSelected));
 	}
@@ -81,7 +81,7 @@ void ULobbyMenu::OnCharacterClicked(ECharacterType CharacterType)
 		DebugText->SetText(FText::FromString("Client: " + CharSelected));
 	}
 
-	PlayerController->Server_SelectCharacter(CharacterType);
+	LobbyPlayerController->Server_SelectCharacter(CharacterType);
 
 }
 
@@ -120,9 +120,9 @@ void ULobbyMenu::SetActiveCharacterButton(ECharacterType CharacterType, bool Ena
 
 void ULobbyMenu::UpdateReadyState()
 {
-	if (PlayerController == nullptr) return;
+	if (LobbyPlayerController == nullptr) return;
 
-	if (PlayerController->HasAuthority())
+	if (LobbyPlayerController->HasAuthority())
 	{
 		DebugText->SetText(FText::FromString("Server Ready to Start Session: "));
 		ReadyButton->SetVisibility(ESlateVisibility::Visible);
@@ -142,10 +142,10 @@ void ULobbyMenu::OnExitButtonClicked()
 	UWorld*	World = GetWorld();
 	if (World == nullptr) return;
 
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	if (PlayerController == nullptr) return;
+	APlayerController* PC = World->GetFirstPlayerController();
+	if (PC == nullptr) return;
 
-	PlayerController->ConsoleCommand("quit");
+	PC->ConsoleCommand("quit");
 }
 
 
