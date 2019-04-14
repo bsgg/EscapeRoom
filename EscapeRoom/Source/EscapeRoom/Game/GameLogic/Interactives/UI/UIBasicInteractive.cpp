@@ -3,10 +3,11 @@
 
 #include "UIBasicInteractive.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 
 void UUIBasicInteractive::SetInteraface(IUIBasicInteractiveInterface* UIBasicInteractiveInterface)
 {
-	this->UIBasicInteractiveInterface = UIBasicInteractiveInterface;
+	this->UIInterface = UIBasicInteractiveInterface;
 }
 
 bool UUIBasicInteractive::Initialize()
@@ -15,17 +16,28 @@ bool UUIBasicInteractive::Initialize()
 
 	if (!Success) return false;
 
+	if (EnterCombinationButton == nullptr) return false;
+	EnterCombinationButton->OnClicked.AddDynamic(this, &UUIBasicInteractive::OnEnterCombinationPressed);
+
 	if (ExitButton == nullptr) return false;
 	ExitButton->OnClicked.AddDynamic(this, &UUIBasicInteractive::OnExitPressed);
+
+	if (MessageText == nullptr) return false;
+	MessageText->SetText(FText::FromString(""));
 
 	return true;
 }
 
+void UUIBasicInteractive::OnEnterCombinationPressed()
+{
+	// TODO CHECK COMBINATION
+}
+
 void UUIBasicInteractive::OnExitPressed()
 {
-	if (UIBasicInteractiveInterface != nullptr)
+	if (UIInterface != nullptr)
 	{
-		UIBasicInteractiveInterface->ExitUI();
+		UIInterface->ExitUI();
 	}
 }
 

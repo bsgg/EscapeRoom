@@ -32,8 +32,10 @@ protected:
 protected:
 	virtual bool Initialize() override;
 
+	UFUNCTION()
 	void OnUpButtonPressed();
 
+	UFUNCTION()
 	void OnDownButtonPressed();
 
 public:

@@ -22,12 +22,33 @@ public:
 protected:
 	virtual bool Initialize() override;
 
-	IUIBasicInteractiveInterface* UIBasicInteractiveInterface;
+	IUIBasicInteractiveInterface* UIInterface;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* EnterCombinationButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ExitButton;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* MessageText;
+
+	UPROPERTY(meta = (BindWidget))
+	class UCombinationUI* Combination_0;
+
+	UPROPERTY(meta = (BindWidget))
+	class UCombinationUI* Combination_1;
+
+	UPROPERTY(meta = (BindWidget))
+	class UCombinationUI* Combination_2;
+
+	UPROPERTY(meta = (BindWidget))
+	class UCombinationUI* Combination_3;
+
 	UFUNCTION()
 	void OnExitPressed();
+
+	UFUNCTION()
+	void OnEnterCombinationPressed();
 	
 };

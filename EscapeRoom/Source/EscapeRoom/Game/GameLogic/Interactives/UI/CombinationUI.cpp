@@ -6,6 +6,8 @@
 
 bool UCombinationUI::Initialize()
 {
+
+
 	bool Success = Super::Initialize();
 
 	ABCArray = { "0", "1", "2", "3","4","5","6","7","8","9", "A",  "B",  "C",  "D",  "E",  "G",  "H", "I", "J", "K", "L", "M", "O", "P", "Q", "R", "S", "T", "U", "V", "W",  "X",  "Y", "Z" };
@@ -32,6 +34,8 @@ void UCombinationUI::OnUpButtonPressed()
 		ChainIndex = 0;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("[UCombinationUI::OnUpButtonPressed] ChainIndex %i"), ChainIndex);
+
 	if (CharacterText == nullptr) return;
 	CharacterText->SetText(FText::FromString(ABCArray[ChainIndex]));
 }
@@ -44,6 +48,8 @@ void UCombinationUI::OnDownButtonPressed()
 	{
 		ChainIndex = ABCArray.Num() -1;
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("[UCombinationUI::OnUpButtonPressed] ChainIndex %i"), ChainIndex);
 
 	if (CharacterText == nullptr) return;
 	CharacterText->SetText(FText::FromString(ABCArray[ChainIndex]));
