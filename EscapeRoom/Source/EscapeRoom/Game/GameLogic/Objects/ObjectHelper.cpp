@@ -14,6 +14,13 @@ UObjectHelper::UObjectHelper(const FObjectInitializer& ObjectInitializer)
 
 		ObjectsTable = TableAsset.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> UITableAsset(TEXT("/Game/Game/Data/InteractiveUITable"));
+
+	if (UITableAsset.Object)
+	{
+		InteractiveUITable = TableAsset.Object;
+	}
 }
 
 
@@ -48,4 +55,12 @@ UStaticMesh* UObjectHelper::GetObjectMesh(const FName& ID)
 
 
 	return nullptr;
+}
+
+
+FInteractiveUI* UObjectHelper::GetInteractiveUIByID(const FName& ID)
+{
+	FInteractiveUI* Row = InteractiveUITable->FindRow<FInteractiveUI>(ID, ContextString);
+
+	return Row;
 }

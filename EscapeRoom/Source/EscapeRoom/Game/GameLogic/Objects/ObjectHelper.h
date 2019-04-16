@@ -9,7 +9,39 @@
 #include "ObjectHelper.generated.h"
 
 
+USTRUCT(BlueprintType)
+struct FInteractiveUI : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FInteractiveUI()
+	{		
+		ID = "Obj_";
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ExtraInformation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UUserWidget> UI;
+
+	bool operator==(const FInteractiveUI& object) const
+	{
+		return (ID == object.ID);
+	}
+};
+
+
 static UDataTable* ObjectsTable;
+
+static UDataTable* InteractiveUITable;
 
 static const FString ContextString(TEXT("Objects"));
 
@@ -27,5 +59,8 @@ public:
 	static FObjectInteraction* GetObjectByID(const FName& ID);
 
 	static UStaticMesh* GetObjectMesh(const FName& ID);
+
+
+	static FInteractiveUI* GetInteractiveUIByID(const FName& ID);
 	
 };
