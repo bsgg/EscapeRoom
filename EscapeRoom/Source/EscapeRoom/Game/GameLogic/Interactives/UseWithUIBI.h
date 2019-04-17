@@ -23,7 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
-	FName ObjectID = "NONE";
+	FName WidgetID = "NONE";
 
 public:
 

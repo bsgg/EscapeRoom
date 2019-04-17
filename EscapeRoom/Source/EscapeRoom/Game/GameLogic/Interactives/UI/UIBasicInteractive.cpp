@@ -28,6 +28,11 @@ bool UUIBasicInteractive::Initialize()
 	return true;
 }
 
+void UUIBasicInteractive::InitializeWidget(const FName& Combination)
+{
+	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::InitializeWidget] Combination: %s"), *Combination.ToString());
+}
+
 void UUIBasicInteractive::OnEnterCombinationPressed()
 {
 	// TODO CHECK COMBINATION

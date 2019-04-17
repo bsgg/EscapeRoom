@@ -24,7 +24,7 @@ void AUseWithUIBI::StartInteract(APawn* PawnInstigator)
 
 	if (CurrentController == nullptr) return;
 
-	CurrentController->CreateInteractiveUI(ObjectID);
+	CurrentController->CreateInteractiveUI(WidgetID);
 
 	if (CurrentController->GetInteractiveUI() != nullptr)
 	{

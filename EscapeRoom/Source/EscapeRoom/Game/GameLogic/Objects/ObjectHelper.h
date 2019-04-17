@@ -41,7 +41,7 @@ public:
 
 static UDataTable* ObjectsTable;
 
-static UDataTable* InteractiveUITable;
+static UDataTable* WidgetDataTable;
 
 static const FString ContextString(TEXT("Objects"));
 
@@ -61,6 +61,6 @@ public:
 	static UStaticMesh* GetObjectMesh(const FName& ID);
 
 
-	static FInteractiveUI* GetInteractiveUIByID(const FName& ID);
+	static FInteractiveUI* GetWidgetByID(const FName& ID);
 	
 };

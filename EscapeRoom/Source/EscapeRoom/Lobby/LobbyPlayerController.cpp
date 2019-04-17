@@ -270,19 +270,24 @@ void ALobbyPlayerController::HideControls_Implementation()
 }
 
 
-void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& UIObjectID)
+void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& WidgetID)
 {
-	
-	FObjectInteraction* Object = UObjectHelper::GetObjectByID(UIObjectID);
-	if ((Object != nullptr) && (Object->UI != nullptr))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI]Object null "));
+	FInteractiveUI* WidgetData = UObjectHelper::GetWidgetByID(WidgetID);
+	if ((WidgetData != nullptr) && (WidgetData->UI != nullptr))
 
-		InteractiveUI = CreateWidget<UUIBasicInteractive>(this, Object->UI);
+	//FObjectInteraction* Object = UObjectHelper::GetObjectByID(UIObjectID);
+	//if ((Object != nullptr) && (Object->UI != nullptr))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI] WidgetData UI NOT NUL "));
+
+		//InteractiveUI = CreateWidget<UUIBasicInteractive>(this, Object->UI);
+		InteractiveUI = CreateWidget<UUIBasicInteractive>(this, WidgetData->UI);
 
 		if (InteractiveUI != nullptr)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI] InteractiveUI added to viewport"));
+
+			InteractiveUI->InitializeWidget(WidgetData->ExtraInformation);
 
 			InteractiveUI->AddToViewport();
 

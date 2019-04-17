@@ -19,6 +19,8 @@ public:
 
 	void SetInteraface(IUIBasicInteractiveInterface* UIBasicInteractiveInterface);
 
+	void InitializeWidget(const FName& Combination);
+
 protected:
 	virtual bool Initialize() override;
 

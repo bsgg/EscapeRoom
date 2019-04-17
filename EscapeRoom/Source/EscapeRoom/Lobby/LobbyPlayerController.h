@@ -64,7 +64,7 @@ public:
 
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
-	void CreateInteractiveUI(const FName& UIObjectID);
+	void CreateInteractiveUI(const FName& WidgetID);
 
 	UFUNCTION(Client, Reliable, BLueprintCallable, Category = "UI")
 	void RemoveInteractiveUI();
