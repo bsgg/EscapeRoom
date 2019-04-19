@@ -24,6 +24,15 @@ public:
 protected:
 	virtual bool Initialize() override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	FText InitialMessages;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	TArray<FText> CorrectAnswerMessages;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	TArray<FText> IncorrectAnswerMessages;
+
 	IUIBasicInteractiveInterface* UIInterface;
 
 	UPROPERTY(meta = (BindWidget))
@@ -52,5 +61,15 @@ protected:
 
 	UFUNCTION()
 	void OnEnterCombinationPressed();
+
+private:
+
+	FString Combination;
+
+	bool bIsLocked = false;
+
+	FTimerHandle CompleteWidgetTimerHandler;
+
+	void CompleteWidget();
 	
 };

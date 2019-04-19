@@ -25,6 +25,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	FName WidgetID = "NONE";
 
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Switch Settings")
+	FName ConnectedInteractiveID;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
+	FString CompletedActionMessage;
+
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
+	bool IsCompleted = false;
+
 public:
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
@@ -34,8 +43,18 @@ public:
 	/////// IInteractiveInterface IMPLEMENTATION /////////	
 
 	/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
+
 	virtual void ExitUI() override;
 
+	virtual void OnComplete() override;
+
 	/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
+
+protected:
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerDoAction();
+
+	void DoAction();
 	
 };

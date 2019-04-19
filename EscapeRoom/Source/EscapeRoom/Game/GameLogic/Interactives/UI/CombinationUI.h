@@ -43,5 +43,12 @@ public:
 	void ResetCombination();
 
 	FString GetCharacter() const;	
+
+	bool bIsLocked = false;
+
+	void Locked();
+
+	void Unlocked();
+
 	
 };
