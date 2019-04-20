@@ -22,10 +22,16 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCompleteActionEvent();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
+	bool bDoActionOnThisInteractive = false;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	FName WidgetID = "NONE";
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Switch Settings")
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	FName ConnectedInteractiveID;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
@@ -33,6 +39,8 @@ protected:
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	bool IsCompleted = false;
+
+	
 
 public:
 

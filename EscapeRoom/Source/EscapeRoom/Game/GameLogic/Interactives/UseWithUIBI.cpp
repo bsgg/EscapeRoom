@@ -64,8 +64,6 @@ void AUseWithUIBI::OnComplete()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Called"));
 
-	
-
 	if (CurrentController == nullptr) return;
 
 	CurrentController->RemoveInteractiveUI();
@@ -100,6 +98,15 @@ void AUseWithUIBI::DoAction()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction]"));
 
+	if (bDoActionOnThisInteractive)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction] Acting over this interactive "));
+
+		OnCompleteActionEvent();
+	}
+
+	return;
+
 	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
 	if (GM == nullptr) return;
 
@@ -109,15 +116,16 @@ void AUseWithUIBI::DoAction()
 	{
 		IsCompleted = true;
 
-		//AToggleBI * ToggleInteractive = Cast<AToggleBI>(interactive);
-
-		//if (ToggleInteractive)
-		//{
 		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction] Connected Interactive found "));
-			//UE_LOG(LogTemp, Warning, TEXT("[ASwitchBI::DoToggleAction] Connected Interactive found"));
+		// TODO: Call interactive type door
+		// ADoorBI * DoorInteractive = = Cast<ADoorBI>(interactive);
+		// if (DoorInteractive)
+		//{
+			//UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction] Calling open door "));
 
-			//ToggleInteractive->Toggle();
+			//DoorInteractive->Open();
 		//}
+		
 	}
 	else
 	{

@@ -22,6 +22,9 @@ class ESCAPEROOM_API AMainCharacter : public ACharacter, public IInteract
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UDecalComponent* CursorToWorld;
+
 
 public:
 	AMainCharacter();
