@@ -20,20 +20,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-protected:
-
-	uint32 bMoveToMouseCursor : 1;
-
-	virtual void PlayerTick(float DeltaTime) override;
-
-	void MoveToMouseCursor();
-
-	void SetNewMoveDestination(const FVector DestLocation);
-
-	void OnSetDestinationPressed();
-
-	void OnSetDestinationReleased();
-
 public:
 
 	///////////// LOBBY IMPLEMENTATION ////////////////

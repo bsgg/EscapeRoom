@@ -58,9 +58,6 @@ public:
 
 	static FObjectInteraction* GetObjectByID(const FName& ID);
 
-	static UStaticMesh* GetObjectMesh(const FName& ID);
-
-
 	static FInteractiveUI* GetWidgetByID(const FName& ID);
 	
 };

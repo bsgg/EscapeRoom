@@ -50,11 +50,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveRight(float Value);
 
+	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "Input Actions")
+	//void MoveToLocation(const FVector DestLocation);
 
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	// Mouse Movement
+
+	uint32 bMoveToMouseCursor : 1;
+
+	void MoveToMouseCursor();
+
+	void OnSetDestinationPressed();
+
+	void OnSetDestinationReleased();
+
+	// Mouse Movement
+
 
 	void SetGestureToDefault();
 

@@ -31,33 +31,6 @@ FObjectInteraction* UObjectHelper::GetObjectByID(const FName& ID)
 	return Row;
 }
 
-UStaticMesh* UObjectHelper::GetObjectMesh(const FName& ID)
-{
-	FObjectInteraction* Row = ObjectsTable->FindRow<FObjectInteraction>(ID, ContextString);
-
-	if (Row != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[UObjectHelper::GetObjectMesh]Row not  null"));
-
-		return (Cast<UStaticMesh>(Row->Mesh.Get()));
-
-		//Row->Mesh.ToStringReference()
-
-		/*if (Row->Mesh.IsPending())
-		{
-			Row->Mesh.LoadSynchronous()
-
-			const FSoftObjectPath& AssetRef = Row->Mesh.ToStringReference();
-			Row->Mesh = Cast<UStaticMesh>(Streamable.SynchronousLoad(AssetRef));
-		}
-		return Row->Mesh.Get();*/
-	}
-
-
-	return nullptr;
-}
-
-
 FInteractiveUI* UObjectHelper::GetWidgetByID(const FName& ID)
 {
 	FInteractiveUI* Row = WidgetDataTable->FindRow<FInteractiveUI>(ID, ContextString);

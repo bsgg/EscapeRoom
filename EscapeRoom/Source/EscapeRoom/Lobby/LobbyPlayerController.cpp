@@ -8,6 +8,7 @@
 #include "LobbyMenu.h"
 #include "LobbyGameMode.h"
 #include "Game/EscapeRoomPlayerState.h"
+#include "Characters/MainCharacter.h"
 
 #include "Game/Components/InventoryComponent.h"
 #include "Game/GameLogic/Objects/ObjectHelper.h"
@@ -83,8 +84,6 @@ void ALobbyPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ALobbyPlayerController::OnSetDestinationPressed);
-	InputComponent->BindAction("SetDestination", IE_Released, this, &ALobbyPlayerController::OnSetDestinationReleased);
 
 	// Bind inventory
 	InputComponent->BindAction("NavigateInventoryLeft", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryLeft);
@@ -93,63 +92,6 @@ void ALobbyPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Pause", IE_Pressed, this, &ALobbyPlayerController::TogglePauseMenu);
 }
-
-
-void ALobbyPlayerController::PlayerTick(float DeltaTime)
-{
-	Super::PlayerTick(DeltaTime);
-
-	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
-	{
-		MoveToMouseCursor();
-	}
-}
-
-///////////// MOUSE CONTROL IMPLEMENTATION ////////////////
-
-void ALobbyPlayerController::MoveToMouseCursor()
-{
-	// Trace to see what is under the mouse cursor
-	FHitResult Hit;
-	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-
-	if (Hit.bBlockingHit)
-	{
-		// We hit something, move there
-		SetNewMoveDestination(Hit.ImpactPoint);
-	}
-
-}
-
-void ALobbyPlayerController::SetNewMoveDestination(const FVector DestLocation)
-{
-	APawn* const MyPawn = GetPawn();
-	if (MyPawn)
-	{
-		float const Distance = FVector::Dist(DestLocation, MyPawn->GetActorLocation());
-
-		// We need to issue move command only if far enough in order for walk animation to play correctly
-		if ((Distance > 120.0f))
-		{
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
-		}
-	}
-}
-
-void ALobbyPlayerController::OnSetDestinationPressed()
-{
-	// set flag to keep updating destination until released
-	bMoveToMouseCursor = true;
-}
-
-void ALobbyPlayerController::OnSetDestinationReleased()
-{
-	// clear flag to indicate we should stop updating the destination
-	bMoveToMouseCursor = false;
-}
-
-///////////// MOUSE CONTROL IMPLEMENTATION ////////////////
 
 
 ///////////// LOBBY IMPLEMENTATION ////////////////
