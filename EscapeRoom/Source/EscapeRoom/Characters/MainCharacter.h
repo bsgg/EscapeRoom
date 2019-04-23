@@ -50,9 +50,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveRight(float Value);
 
-	//UFUNCTION(Client, Reliable, BLueprintCallable, Category = "Input Actions")
-	//void MoveToLocation(const FVector DestLocation);
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -108,6 +105,12 @@ protected:
 
 	float WaitTimeToUnlockInput = 1.0f;
 
+protected:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerMoveToLocation();
+
+	void MoveToLocation();
+
 private:
 
 	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
@@ -119,4 +122,7 @@ private:
 	void HandleInteractInput();	
 
 	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
+
+
+	
 };
