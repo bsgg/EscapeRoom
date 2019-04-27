@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class ESCAPEROOM_API AUseWithUIBI : public ABasicInteractive, public IUIBasicInteractiveInterface
+class ESCAPEROOM_API AUseWithUIBI : public ABasicInteractive/*, public IUIBasicInteractiveInterface*/
 {
 	GENERATED_BODY()
 
@@ -22,14 +22,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnCompleteActionEvent();
-
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	bool bDoActionOnThisInteractive = false;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
-	FName WidgetID = "NONE";
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	FName ConnectedInteractiveID;
@@ -40,8 +34,6 @@ protected:
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	bool IsCompleted = false;
 
-	
-
 public:
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
@@ -51,8 +43,6 @@ public:
 	/////// IInteractiveInterface IMPLEMENTATION /////////	
 
 	/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
-
-	virtual void ExitUI() override;
 
 	virtual void OnComplete() override;
 

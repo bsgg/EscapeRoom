@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "InteractiveInterface.h"
+#include "Game/GameLogic/Interactives/UI/UIBasicInteractiveInterface.h"
 #include "BasicInteractive.generated.h"
 
 USTRUCT(BlueprintType)
@@ -39,7 +40,7 @@ public:
 
 
 UCLASS()
-class ESCAPEROOM_API ABasicInteractive : public AActor, public IInteractiveInterface
+class ESCAPEROOM_API ABasicInteractive : public AActor, public IInteractiveInterface, public IUIBasicInteractiveInterface
 {
 	GENERATED_BODY()
 	
@@ -64,6 +65,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive")
 	USoundBase* InteractSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive")
+	FName WidgetID = "NONE";
+
 
 protected:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Basic Interactive Properties")
@@ -96,5 +101,20 @@ public:
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 
 protected:
+
+	/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
+
+	virtual bool HasWidget();
+
+	virtual void ShowWidget();
+
+	virtual void ExitUI() override;
+
+	virtual void OnComplete() override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCompleteActionEvent();
+
+	/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
 	
 };

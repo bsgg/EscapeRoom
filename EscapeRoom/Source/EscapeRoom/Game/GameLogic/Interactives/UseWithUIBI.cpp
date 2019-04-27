@@ -39,12 +39,7 @@ void AUseWithUIBI::StartInteract(APawn* PawnInstigator)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::StartInteract] Incompleted"));
 
-		CurrentController->CreateInteractiveUI(WidgetID);
-
-		if (CurrentController->GetInteractiveUI() != nullptr)
-		{
-			CurrentController->GetInteractiveUI()->SetInteraface(this);
-		}
+		ShowWidget();
 
 		if (CharacterOverlapping != nullptr)
 		{
@@ -53,20 +48,11 @@ void AUseWithUIBI::StartInteract(APawn* PawnInstigator)
 	}
 }
 
-void AUseWithUIBI::ExitUI()
-{
-	if (CurrentController == nullptr) return;
-
-	CurrentController->RemoveInteractiveUI();
-}
-
 void AUseWithUIBI::OnComplete()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Called"));
 
-	if (CurrentController == nullptr) return;
-
-	CurrentController->RemoveInteractiveUI();
+	Super::OnComplete();
 
 	if (Role < ROLE_Authority)
 	{

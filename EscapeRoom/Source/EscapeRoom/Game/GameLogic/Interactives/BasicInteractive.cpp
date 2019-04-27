@@ -3,13 +3,14 @@
 #include "BasicInteractive.h"
 #include "Characters/MainCharacter.h"
 #include "Lobby/LobbyPlayerController.h"
+#include "Game/GameLogic/Interactives/UI/UIBasicInteractive.h"
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 
 // Sets default values
 ABasicInteractive::ABasicInteractive()
 {
-	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root")); 
 	RootComponent = RootScene;
 
 	// Mesh
@@ -170,6 +171,47 @@ FString ABasicInteractive::GetInteractID()
 }
 
 /////// IInteractiveInterface IMPLEMENTATION /////////
+
+
+/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
+bool ABasicInteractive::HasWidget()
+{
+	if (WidgetID != "NONE") return true;
+
+	return false;
+}
+
+void ABasicInteractive::ShowWidget()
+{
+	if (CurrentController == nullptr) return;
+
+	CurrentController->CreateInteractiveUI(WidgetID);
+
+	if (CurrentController->GetInteractiveUI() != nullptr)
+	{
+		CurrentController->GetInteractiveUI()->SetInteraface(this);
+	}
+}
+
+void ABasicInteractive::ExitUI()
+{
+	if (CurrentController == nullptr) return;
+
+	CurrentController->RemoveInteractiveUI();
+}
+
+void ABasicInteractive::OnComplete()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[ABasicInteractive::OnComplete] Called"));
+
+	if (CurrentController == nullptr) return;
+
+	CurrentController->RemoveInteractiveUI();
+
+}
+
+
+/////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
 
 
 void ABasicInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
