@@ -5,7 +5,7 @@
 #include "Lobby/LobbyPlayerController.h"
 #include "Characters/MainCharacter.h"
 #include "Game/GameLogic/Interactives/UI/UIBasicInteractive.h"
-#include "Game/RoomGameMode.h"
+
 
 AUseWithUIBI::AUseWithUIBI()
 {
@@ -93,16 +93,15 @@ void AUseWithUIBI::DoAction()
 
 	return;
 
-	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-	if (GM == nullptr) return;
-
-	ABasicInteractive* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
+	ABasicInteractive* interactive = FindConnectedInteractive();
 
 	if (interactive != nullptr)
 	{
 		IsCompleted = true;
 
 		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction] Connected Interactive found "));
+
+		interactive->InteractOnConnectedInteractive();
 		// TODO: Call interactive type door
 		// ADoorBI * DoorInteractive = = Cast<ADoorBI>(interactive);
 		// if (DoorInteractive)
@@ -126,8 +125,7 @@ void AUseWithUIBI::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 
 	DOREPLIFETIME(AUseWithUIBI, IsCompleted);
 
-	DOREPLIFETIME(AUseWithUIBI, ConnectedInteractiveID);
-
+	//DOREPLIFETIME(AUseWithUIBI, ConnectedInteractiveID);
 	
 }
 

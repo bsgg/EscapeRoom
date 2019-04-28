@@ -4,13 +4,14 @@
 #include "Characters/MainCharacter.h"
 #include "Lobby/LobbyPlayerController.h"
 #include "Game/GameLogic/Interactives/UI/UIBasicInteractive.h"
+#include "Game/RoomGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 
 // Sets default values
 ABasicInteractive::ABasicInteractive()
 {
-	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root")); 
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));  
 	RootComponent = RootScene;
 
 	// Mesh
@@ -210,6 +211,22 @@ void ABasicInteractive::OnComplete()
 
 }
 
+/////// Connected Interactive /////////
+
+ABasicInteractive* ABasicInteractive::FindConnectedInteractive()
+{
+	if (ConnectedInteractiveID == "NONE") return nullptr;
+
+	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM == nullptr) return  nullptr;
+
+	return GM->FindInteractiveById(ConnectedInteractiveID);
+}
+
+void ABasicInteractive::InteractOnConnectedInteractive() {}
+
+/////// Connected Interactive /////////
+
 
 /////// IUIBasicInteractiveInterface IMPLEMENTATION /////////
 
@@ -217,6 +234,8 @@ void ABasicInteractive::OnComplete()
 void ABasicInteractive::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABasicInteractive, ConnectedInteractiveID);
 
 	DOREPLIFETIME(ABasicInteractive, Properties);
 }

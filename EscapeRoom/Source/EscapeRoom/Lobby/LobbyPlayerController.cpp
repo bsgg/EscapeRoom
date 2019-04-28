@@ -210,7 +210,6 @@ void ALobbyPlayerController::Client_InitializeRoom_Implementation(TSubclassOf<AP
 		if (InGameUI != nullptr)
 		{
 			InGameUI->SetPortrait(ESPlayerScape->SelectedCharacter);
-			//InGameUI->SetInGameMessage(FText::FromString(Message));
 		}
 	}
 }
@@ -280,32 +279,22 @@ void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& Wid
 	FInteractiveUI* WidgetData = UObjectHelper::GetWidgetByID(WidgetID);
 	if ((WidgetData != nullptr) && (WidgetData->UI != nullptr))
 
-	//FObjectInteraction* Object = UObjectHelper::GetObjectByID(UIObjectID);
-	//if ((Object != nullptr) && (Object->UI != nullptr))
+	InteractiveUI = CreateWidget<UUIBasicInteractive>(this, WidgetData->UI);
+
+	if (InteractiveUI != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI] WidgetData UI NOT NUL "));
+		InteractiveUI->InitializeWidget(WidgetData->ExtraInformation);
 
-		//InteractiveUI = CreateWidget<UUIBasicInteractive>(this, Object->UI);
-		InteractiveUI = CreateWidget<UUIBasicInteractive>(this, WidgetData->UI);
+		InteractiveUI->AddToViewport();
 
-		if (InteractiveUI != nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::CreateInteractiveUI] InteractiveUI added to viewport"));
+		FInputModeUIOnly InputModeData;
+		InputModeData.SetWidgetToFocus(InteractiveUI->TakeWidget());
+		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
-			InteractiveUI->InitializeWidget(WidgetData->ExtraInformation);
-
-			InteractiveUI->AddToViewport();
-
-			//InteractiveUI->SetInteraface();
-
-			FInputModeUIOnly InputModeData;
-			InputModeData.SetWidgetToFocus(InteractiveUI->TakeWidget());
-			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-
-			SetInputMode(InputModeData);
-			bShowMouseCursor = true;
-		}
+		SetInputMode(InputModeData);
+		bShowMouseCursor = true;
 	}
+	
 }
 
 void ALobbyPlayerController::RemoveInteractiveUI_Implementation()
@@ -348,12 +337,8 @@ void ALobbyPlayerController::ToggleInventory()
 
 FName ALobbyPlayerController::GetSelectedItem()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::GetSelectedItem] "));
-
 	if (InGameUI == nullptr) return "NONE";
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::GetSelectedItem] %s "), *InGameUI->GetSelectedItem().ToString());
-
+	
 	return InGameUI->GetSelectedItem();
 }
 
@@ -362,13 +347,9 @@ void ALobbyPlayerController::AddItemToInventory(const FName& ObjID)
 {
 	if (InventoryComponent == nullptr) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::AddItemToInventory] ObjID %s"), *ObjID.ToString());
-
 	FObjectInteraction* NewObject = UObjectHelper::GetObjectByID(ObjID);
 	
 	if (NewObject == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::AddItemToInventory] New Object added %s"), *NewObject->ID.ToString());
 
 	InventoryComponent->AddObject(ObjID, *NewObject);
 
@@ -383,8 +364,6 @@ void ALobbyPlayerController::RemoveItemFromInventory(const FName& ObjID)
 
 	InventoryComponent->RemoveObject(ObjID);
 
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::RemoveItemFromInventory] ObjID to remove %s"), *ObjID.ToString());
-
 	if (InGameUI == nullptr) return;
 
 	InGameUI->RemoveObjectFromSlot(ObjID);
@@ -396,11 +375,7 @@ void ALobbyPlayerController::RemoveItemFromInventory(const FName& ObjID)
 
 void ALobbyPlayerController::TogglePauseMenu()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::TogglePauseMenu]"));
-
 	if (PauseMenuUI == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::TogglePauseMenu] bPauseGame %i"), bPauseGame);
 
 	if (bPauseGame)
 	{

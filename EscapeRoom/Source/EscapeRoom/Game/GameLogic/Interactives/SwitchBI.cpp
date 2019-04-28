@@ -3,8 +3,6 @@
 #include "SwitchBI.h"
 #include "Lobby/LobbyPlayerController.h"
 #include "Characters/MainCharacter.h"
-#include "Game/RoomGameMode.h"
-#include "Game/GameLogic/Interactives/ToggleBI.h"
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 
@@ -16,11 +14,12 @@ void ASwitchBI::StartInteract(APawn* PawnInstigator)
 
 	if (IsSwitchOn)
 	{
-		CurrentController->ShowMessage(SwitchOnDetail.ToString(), 2.0f);
+		CurrentController->ShowMessage(SwitchOffDetail.ToString(), 2.0f);
 	}
 	else
 	{
-		CurrentController->ShowMessage(SwitchOffDetail.ToString(), 2.0f);
+		
+		CurrentController->ShowMessage(SwitchOnDetail.ToString(), 2.0f);
 	}
 
 	if (CharacterOverlapping != nullptr)
@@ -62,24 +61,14 @@ void ASwitchBI::DoToggleAction()
 	else
 	{
 		IsSwitchOn = true;
-	}
-
-	ARoomGameMode* GM = Cast<ARoomGameMode>(GetWorld()->GetAuthGameMode());
-	if (GM == nullptr) return;
+	}	
 	
-	
-	ABasicInteractive* interactive = GM->FindInteractiveById(ConnectedInteractiveID);
+	ABasicInteractive* interactive = FindConnectedInteractive();
 
 	if (interactive != nullptr)
 	{
-		AToggleBI * ToggleInteractive = Cast<AToggleBI>(interactive);
-
-		if (ToggleInteractive)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ASwitchBI::DoToggleAction] Connected Interactive found"));
-
-			ToggleInteractive->Toggle();
-		}
+		interactive->InteractOnConnectedInteractive();
+		UE_LOG(LogTemp, Warning, TEXT("[ASwitchBI::DoToggleAction] Connected Interactive found"));
 	}
 	else
 	{
@@ -90,9 +79,7 @@ void ASwitchBI::DoToggleAction()
 
 void ASwitchBI::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ASwitchBI, ConnectedInteractiveID);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);	
 
 	DOREPLIFETIME(ASwitchBI, IsSwitchOn);
 }

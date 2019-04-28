@@ -23,7 +23,13 @@ protected:
 	class USceneComponent* ObjectToToggle;
 
 	UPROPERTY(ReplicatedUsing = OnRep_IsOnChanged, EditDefaultsOnly, Category = "Interactive Settings")
-		bool IsOn;
+	bool IsOn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Switch Settings")
+	FName ToggleOnDetail;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Switch Settings")
+	FName ToggleOffDetail;
 
 protected:
 	virtual void BeginPlay() override;
@@ -37,5 +43,12 @@ protected:
 	void DoToggleAction();	
 
 public:
-	void Toggle();
+
+	virtual void InteractOnConnectedInteractive() override;
+
+	/////// IInteractiveInterface IMPLEMENTATION /////////
+
+	virtual void StartInteract(APawn* PawnInstigator) override;
+
+	/////// IInteractiveInterface IMPLEMENTATION /////////	
 };

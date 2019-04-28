@@ -17,9 +17,6 @@ class ESCAPEROOM_API ASwitchBI : public ABasicInteractive
 protected:
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Switch Settings")
-	FName ConnectedInteractiveID;	
-
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Switch Settings")
 	bool IsSwitchOn = true;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Switch Settings")

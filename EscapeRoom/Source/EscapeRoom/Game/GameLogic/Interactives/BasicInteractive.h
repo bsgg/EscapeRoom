@@ -69,6 +69,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive")
 	FName WidgetID = "NONE";
 
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Connected Interactive Settings")
+	FName ConnectedInteractiveID = "NONE";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Connected Interactive Settings")
+	bool bDoActionOnThisInteractive = false;
+
 
 protected:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Basic Interactive Properties")
@@ -99,6 +105,13 @@ public:
 
 	virtual FString GetInteractID() override;
 	/////// IInteractiveInterface IMPLEMENTATION /////////
+
+	/////// Connected Interactive /////////
+	virtual ABasicInteractive* FindConnectedInteractive();
+
+	virtual void InteractOnConnectedInteractive();
+
+	/////// Connected Interactive /////////
 
 protected:
 

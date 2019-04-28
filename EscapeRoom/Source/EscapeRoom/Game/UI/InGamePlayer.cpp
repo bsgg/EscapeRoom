@@ -38,7 +38,7 @@ bool UInGamePlayer::Initialize()
 
 		}
 	}
-	//HideMessage();
+
 	HideControls();
 	
 	Slots.Add(Slot_0);
@@ -156,10 +156,7 @@ void UInGamePlayer::ShowMessage(const FString& Text, float time)
 
 	CurrentTimeBetweenLetters = 0.0f;
 
-	bTypewriterMessage = true;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UInGamePlayer::ShowMessage] Text: %s -  TotalTimeTypeWritting: %i "), *Text, TotalTimeTypeWritting);
-	
+	bTypewriterMessage = true;	
 }
 
 
