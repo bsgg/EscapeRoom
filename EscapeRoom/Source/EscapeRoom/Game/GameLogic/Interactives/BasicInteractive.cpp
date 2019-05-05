@@ -186,6 +186,8 @@ void ABasicInteractive::ShowWidget()
 {
 	if (CurrentController == nullptr) return;
 
+	if (!HasWidget()) return;
+
 	CurrentController->CreateInteractiveUI(WidgetID);
 
 	if (CurrentController->GetInteractiveUI() != nullptr)

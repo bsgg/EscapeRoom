@@ -34,6 +34,9 @@ void AUseBI::StartInteract(APawn* PawnInstigator)
 					CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT, 2.0f);
 				}
 
+				// Show widget if exists				
+				ShowWidget();
+
 				if (Role < ROLE_Authority)
 				{
 					ServerDoUseAction();

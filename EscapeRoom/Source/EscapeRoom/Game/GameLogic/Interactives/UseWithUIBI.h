@@ -22,11 +22,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	//UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
-	//bool bDoActionOnThisInteractive = false;
-
-	//UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
-	//FName ConnectedInteractiveID;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	FString CompletedActionMessage;
