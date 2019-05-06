@@ -22,12 +22,27 @@ protected:
 
 	virtual void BeginPlay() override;
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Use Settings", meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* PickupMesh;
+
+	UPROPERTY(ReplicatedUsing = OnRep_PickupActionChanged, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
+	FActionDefinition PickupAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	FString CompletedActionMessage;
 
 	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Use With UI Interactive Settings")
 	bool IsCompleted = false;
+
+
+	UFUNCTION()
+	void OnRep_PickupActionChanged();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerDoPickupAction();
+
+	void DoPickupAction();
 
 public:
 

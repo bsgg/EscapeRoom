@@ -37,6 +37,11 @@ void UUIBasicInteractive::InitializeWidget(const FName& InCombination)
 	Combination = InCombination.ToString();
 }
 
+void UUIBasicInteractive::OnShowWidget()
+{
+
+}
+
 void UUIBasicInteractive::OnEnterCombinationPressed()
 {	
 	if (bIsLocked) return;

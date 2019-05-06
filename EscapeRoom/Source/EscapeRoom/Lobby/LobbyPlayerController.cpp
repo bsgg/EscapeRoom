@@ -287,12 +287,16 @@ void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& Wid
 
 		InteractiveUI->AddToViewport();
 
+		InteractiveUI->OnShowWidget();
+
 		FInputModeUIOnly InputModeData;
 		InputModeData.SetWidgetToFocus(InteractiveUI->TakeWidget());
 		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 		SetInputMode(InputModeData);
 		bShowMouseCursor = true;
+
+		
 	}
 	
 }

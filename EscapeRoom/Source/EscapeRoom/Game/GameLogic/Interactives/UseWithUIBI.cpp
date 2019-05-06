@@ -9,7 +9,10 @@
 
 AUseWithUIBI::AUseWithUIBI()
 {
-	
+	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pickup Mesh"));
+	PickupMesh->SetupAttachment(RootComponent);
+
+	SetReplicates(true);
 }
 
 void AUseWithUIBI::BeginPlay()
@@ -54,15 +57,33 @@ void AUseWithUIBI::OnComplete()
 
 	Super::OnComplete();
 
-	if (Role < ROLE_Authority)
+	// Check if it has pickup
+	if (PickupAction.IsActive && PickupAction.HasObject())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] ServerDoAction"));
-		ServerDoAction();
+		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Has Pikcup"));
+
+		if (Role < ROLE_Authority)
+		{
+			ServerDoPickupAction();
+		}
+		else
+		{
+			DoPickupAction();
+		}
+
 	}
-	else
+	else // No Pickup
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Do Action"));
-		DoAction();
+		if (Role < ROLE_Authority)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] ServerDoAction"));
+			ServerDoAction();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Do Action"));
+			DoAction();
+		}
 	}
 }
 
@@ -101,16 +122,7 @@ void AUseWithUIBI::DoAction()
 
 		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction] Connected Interactive found "));
 
-		interactive->InteractOnConnectedInteractive();
-		// TODO: Call interactive type door
-		// ADoorBI * DoorInteractive = = Cast<ADoorBI>(interactive);
-		// if (DoorInteractive)
-		//{
-			//UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::DoAction] Calling open door "));
-
-			//DoorInteractive->Open();
-		//}
-		
+		interactive->InteractOnConnectedInteractive();		
 	}
 	else
 	{
@@ -119,13 +131,59 @@ void AUseWithUIBI::DoAction()
 
 }
 
+
+void AUseWithUIBI::ServerDoPickupAction_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::ServerDoPickupAction]"));
+
+	DoPickupAction();
+}
+bool AUseWithUIBI::ServerDoPickupAction_Validate()
+{
+	return true;
+}
+
+void AUseWithUIBI::DoPickupAction()
+{
+	// Set this object as a completed
+	IsCompleted = true;
+
+	if ((PickupAction.HasObject()) && (PickupAction.IsActive))
+	{
+		PickupAction.ObjectID = "None";
+
+		PickupAction.IsActive = false;
+
+		Properties.EnableDefaultInspectMessage = true;
+
+		PickupMesh->SetVisibility(false, true);
+
+		PlayInteractSound();
+	}
+}
+
+
+void AUseWithUIBI::OnRep_PickupActionChanged()
+{
+	if (PickupAction.HasObject())
+	{
+		PickupMesh->SetVisibility(true, true);
+	}
+	else
+	{
+		PickupMesh->SetVisibility(false, true);
+	}
+}
+
+
 void AUseWithUIBI::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AUseWithUIBI, IsCompleted);
 
-	//DOREPLIFETIME(AUseWithUIBI, ConnectedInteractiveID);
+	DOREPLIFETIME(AUseWithUIBI, PickupAction);
+
 	
 }
 
