@@ -55,102 +55,126 @@ void USimonUI::OnShowWidget()
 		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnShowWidget] randomC: %d"), randomC);
 	}
 
-	bLockInput = true;
+	bWait = true;
 
-	//PreIndexSequence = -1;
+	ElpasedWait = 0.0f;
+	WaitTime = 1.0f;
 
+	NextGamePhase = 0;
+	
+	   
 	IndexSequence = 0;
-
 	IndexEndSequence = 1;
 
-	bWaitToSetColor = true;
-
-	bWaitToSetDefaultColor = false;
-
 	bPlayerTurn = false;
+	bLockInput = true;
 
+	   	 
+}
+
+void USimonUI::HandleNextPhase()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] NextGamePhase: %d"), NextGamePhase);
+
+
+	if (NextGamePhase == 0) // AI Set Color
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] AI Phase Change To Color"));
+
+		int indexColor = ColorSequence[IndexSequence];
+
+		SetButtonToColor(indexColor, ButtonColors[indexColor]);
+
+		// Set Next Phase to 1 (Set same button to default color) 
+		NextGamePhase = 1;
+
+		bWait = true;
+
+		ElpasedWait = 0.0f;
+
+		WaitTime = 0.2f;
+
+	}
+
+	else if (NextGamePhase == 1) // AI Set same color to default
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] AI Phase Change Current Button to default"));
+
+		SetButtonToColor(ColorSequence[IndexSequence], DefaultButtonColor);
+
+		// Add  1 to sequence, and unlock players turn
+
+		// Change Index Sequence
+		IndexSequence += 1;
+
+		if (IndexSequence >= IndexEndSequence)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] Player Turn %d/%d"), IndexSequence, IndexEndSequence);
+
+			MessageText->SetText(FText::FromString("Your turn!"));
+
+			IndexSequence = 0;
+
+			NextGamePhase = -1;
+
+			bPlayerTurn = true;
+			bLockInput = false;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] KEEP AI TURN %d/%d"), IndexSequence, IndexEndSequence);
+
+			// Back to wait and set color
+			NextGamePhase = 0;
+
+			bWait = true;
+
+			ElpasedWait = 0.0f;
+
+			WaitTime = 1.0f;
+
+			bPlayerTurn = false;
+
+			bLockInput = true;
+		}
+		
+	}
+
+	else if (NextGamePhase == 2) // Player Turn change button color to default and check current answer
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] Player change button pressed to default %i - %i "), ButtonPressedIndex, ColorSequence[IndexSequence]);
+
+		SetButtonToColor(ButtonPressedIndex, DefaultButtonColor);
+
+		if (ButtonPressedIndex == ColorSequence[IndexSequence])
+		{
+			MessageText->SetText(FText::FromString("GOOD! KEEP GOING"));
+
+			// TODO: Add 1 to index sequence
+		}
+		else
+		{
+			MessageText->SetText(FText::FromString("INCORRECT, TRY AGAIN"));
+
+			// TODO: RESET SEQUENCE AND START OVER
+		}
+
+	}
 }
 
 void USimonUI::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
 	Super::NativeTick(MyGeometry, DeltaTime);
 
-	// Set to different color
-	if (bWaitToSetColor)
+	if (bWait)
 	{
-		ElpasedToSetColor += DeltaTime;
-
-		if (ElpasedToSetColor >= WaitTimeToSetColor)
+		ElpasedWait += DeltaTime;
+		if (ElpasedWait >= WaitTime)
 		{
-			ElpasedToSetColor = 0.0f;
-
-			bWaitToSetColor = false;
-
-			int indexColor = ColorSequence[IndexSequence];
-
-			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::NativeTick] indexColor: %d IndexSequence: %d"), indexColor, IndexSequence);
-
-			SetButtonToColor(indexColor, ButtonColors[indexColor]);
-
-			// Wait to set button to default color
-			bWaitToSetDefaultColor = true;
+			bWait = false;
+			HandleNextPhase();
 		}
 	}
-
-	if (bWaitToSetDefaultColor)
-	{
-		ElpasedToSetColor += DeltaTime;
-
-		if (ElpasedToSetColor >= WaitTimeToSetColor)
-		{
-			ElpasedToSetColor = 0.0f;
-
-			bWaitToSetDefaultColor = false;
-
-			
-
-			// Check if player Turn
-			if (bPlayerTurn)
-			{
-				SetButtonToColor(ButtonPressedIndex, DefaultButtonColor);
-
-				// Check if button pressed correct
-				if (ButtonPressedIndex == ColorSequence[IndexSequence])
-				{
-					MessageText->SetText(FText::FromString("GOOD!"));
-
-					// TODO: Add 1 to index sequence
-				}
-				else
-				{
-					MessageText->SetText(FText::FromString("INCORRECT!!"));
-
-					// TODO: RESET SEQUENCE AND START OVER
-				}
-			}
-			else
-			{
-				SetButtonToColor(IndexSequence, DefaultButtonColor);
-
-				// Change Index Sequence
-				IndexSequence += 1;
-
-				if (IndexSequence >= IndexEndSequence)
-				{
-					// Wait for user to answer
-
-					bLockInput = false;
-
-					MessageText->SetText(FText::FromString("Answer now"));
-
-					IndexSequence = 0;
-
-					bPlayerTurn = true;
-				}
-			}
-		}
-	}
-
 }
 
 void USimonUI::SetButtonToColor(int indexButton, FLinearColor Color)
@@ -166,15 +190,19 @@ void USimonUI::OnButtonPressed(int indexButton)
 {
 	SetButtonToColor(indexButton, ButtonColors[indexButton]);
 
+	ButtonPressedIndex = indexButton;
+
 	bLockInput = true;
 
-	ElpasedToSetColor = 0.0f;
+	// Set wait
+	bWait = true;
 
-	// CHECK ANSWER
-	ButtonPressedIndex = indexButton;
-	
-	bWaitToSetDefaultColor = true;
+	ElpasedWait = 0.0f;
 
+	WaitTime = 0.2f;
+
+	// Phase Change color to default
+	NextGamePhase = 2;
 }
 
 

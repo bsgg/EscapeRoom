@@ -62,25 +62,39 @@ protected:
 
 	int IndexEndSequence;
 
+	
 	bool bLockInput;
-
-	bool bWaitToSetColor;
-
-	bool bWaitToSetDefaultColor;
-
-	float ElpasedToSetColor = 0.0f;
-
-	float WaitTimeToSetColor = 0.6f;
-
 
 	bool bPlayerTurn = false;
 
+
+
+
+
+
+	
+
 	int ButtonPressedIndex = -1;
+
+
+
+
+
+
+	int NextGamePhase;
+
+	bool bWait;
+
+	float ElpasedWait = 0.0f;
+
+	float WaitTime;
 
 private:
 	void SetButtonToColor(int indexButton, FLinearColor Color);
 
 	void OnButtonPressed(int indexButton);
+
+	void HandleNextPhase();
 
 public:
 
