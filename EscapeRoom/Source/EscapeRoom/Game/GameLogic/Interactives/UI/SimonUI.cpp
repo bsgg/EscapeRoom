@@ -46,13 +46,16 @@ void USimonUI::OnShowWidget()
 
 	MessageText->SetText(FText::FromString("Follow the sequence"));
 
-	// Set a random sequence of colors
-	for (int i = 0; i < 8; i++)
+	if (bRandomSequence)
 	{
-		int randomC = FMath::RandRange(0, 3);
-		ColorSequence.Add(randomC);
+		// Set a random sequence of colors
+		for (int i = 0; i < 8; i++)
+		{
+			int randomC = FMath::RandRange(0, 3);
+			ColorSequence.Add(randomC);
 
-		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnShowWidget] randomC: %d"), randomC);
+			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnShowWidget] randomC: %d"), randomC);
+		}
 	}
 
 	bWait = true;
@@ -63,8 +66,9 @@ void USimonUI::OnShowWidget()
 	NextGamePhase = 0;
 	
 	   
+	// Index and end starts the same
 	IndexSequence = 0;
-	IndexEndSequence = 1;
+	IndexEndSequence = 0;
 
 	bPlayerTurn = false;
 	bLockInput = true;
@@ -107,7 +111,7 @@ void USimonUI::HandleNextPhase()
 		// Change Index Sequence
 		IndexSequence += 1;
 
-		if (IndexSequence >= IndexEndSequence)
+		if (IndexSequence > IndexEndSequence)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] Player Turn %d/%d"), IndexSequence, IndexEndSequence);
 
@@ -118,6 +122,7 @@ void USimonUI::HandleNextPhase()
 			NextGamePhase = -1;
 
 			bPlayerTurn = true;
+
 			bLockInput = false;
 		}
 		else
@@ -146,19 +151,82 @@ void USimonUI::HandleNextPhase()
 
 		SetButtonToColor(ButtonPressedIndex, DefaultButtonColor);
 
-		if (ButtonPressedIndex == ColorSequence[IndexSequence])
-		{
-			MessageText->SetText(FText::FromString("GOOD! KEEP GOING"));
+		NextGamePhase = -1;
 
-			// TODO: Add 1 to index sequence
+		bPlayerTurn = false;
+
+		bLockInput = true;
+
+		if (ButtonPressedIndex == ColorSequence[IndexSequence]) // GOOD
+		{
+			//MessageText->SetText(FText::FromString("GOOD! KEEP GOING"));
+
+			// Check if reach end of current sequence, Check if change to AI is possible
+			if (IndexSequence >= IndexEndSequence)
+			{
+				if (IndexEndSequence >= ColorSequence.Num() - 1) // Game completed
+				{
+					MessageText->SetText(FText::FromString("GOOD! YOU WIN CONGRATULATIONS!"));
+
+					NextGamePhase = 3; // Set to completed
+					bWait = true;
+					WaitTime = 1.0f;
+					ElpasedWait = 0.0f;
+					bWait = true;
+				}
+				else
+				{
+					// Add 1 to IndexEndSequence
+					MessageText->SetText(FText::FromString("GOOD! YOU FINISED YOUR TURN, LET ME CONTINUE"));
+
+					IndexEndSequence += 1;
+					IndexSequence = 0; // Resets sequence
+
+					NextGamePhase = 0; // Set turn to AI
+					bWait = true;
+					ElpasedWait = 0.0f;
+					WaitTime = 0.3f;
+
+				}
+			}
+			else
+			{
+				// Add 1 to next sequence
+				MessageText->SetText(FText::FromString("GOOD! KEEP GOING "));
+				IndexSequence++;
+
+				bPlayerTurn = true;
+				bLockInput = false;
+			}
 		}
 		else
 		{
 			MessageText->SetText(FText::FromString("INCORRECT, TRY AGAIN"));
 
 			// TODO: RESET SEQUENCE AND START OVER
+			IndexSequence = 0;
+			IndexEndSequence = 0;
+
+			bWait = true;
+
+			ElpasedWait = 0.0f;
+			WaitTime = 1.0f;
+
+			NextGamePhase = 0;
 		}
 
+	}
+
+	else if (NextGamePhase == 3) // Player Turn change button color to default and check current answer
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] END OF SIMON "));
+
+		MessageText->SetText(FText::FromString("ALL GOOD YOU CAN CONTINUE"));
+
+		if (UIInterface != nullptr)
+		{
+			UIInterface->OnComplete();
+		}
 	}
 }
 

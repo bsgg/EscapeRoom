@@ -22,7 +22,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
 	TArray<FLinearColor> ButtonColors;
 
-	//UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	bool bRandomSequence = false;
 	
 
 	UPROPERTY(meta = (BindWidget))
@@ -54,8 +55,10 @@ protected:
 	UFUNCTION()
 	void OnColorButton_4Pressed();
 
+	
 	TArray<class UButton*> ColorButtons;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
 	TArray<int> ColorSequence;
 
 	int IndexSequence;
