@@ -22,8 +22,24 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
 	TArray<FLinearColor> ButtonColors;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
 	bool bRandomSequence = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
+	float WaitStartSimon = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
+	float WaitButtonToDefaultColor = 0.2f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
+	float WaitButtonNextColor = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
+	float WaitSwitchTurn = 0.3f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
+	float WaitGameCompleted = 2.0f;
+
 	
 
 	UPROPERTY(meta = (BindWidget))
@@ -68,20 +84,9 @@ protected:
 	
 	bool bLockInput;
 
-	bool bPlayerTurn = false;
-
-
-
-
-
-
-	
+	bool bPlayerTurn = false;	
 
 	int ButtonPressedIndex = -1;
-
-
-
-
 
 
 	int NextGamePhase;

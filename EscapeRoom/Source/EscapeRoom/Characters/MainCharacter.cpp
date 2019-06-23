@@ -19,7 +19,7 @@
 
 // Sets default values
 AMainCharacter::AMainCharacter()
-{
+{  
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);   
 

@@ -10,7 +10,7 @@ void UCharacterAnimator::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	//Cache the owning pawn for use in Tick
-	OwningPawn = TryGetPawnOwner();
+	OwningPawn = TryGetPawnOwner(); 
 
 	
 }

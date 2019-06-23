@@ -61,10 +61,9 @@ void USimonUI::OnShowWidget()
 	bWait = true;
 
 	ElpasedWait = 0.0f;
-	WaitTime = 1.0f;
+	WaitTime = WaitStartSimon;
 
 	NextGamePhase = 0;
-	
 	   
 	// Index and end starts the same
 	IndexSequence = 0;
@@ -72,7 +71,6 @@ void USimonUI::OnShowWidget()
 
 	bPlayerTurn = false;
 	bLockInput = true;
-
 	   	 
 }
 
@@ -80,11 +78,8 @@ void USimonUI::HandleNextPhase()
 {
 	UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] NextGamePhase: %d"), NextGamePhase);
 
-
 	if (NextGamePhase == 0) // AI Set Color
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] AI Phase Change To Color"));
-
 		int indexColor = ColorSequence[IndexSequence];
 
 		SetButtonToColor(indexColor, ButtonColors[indexColor]);
@@ -96,8 +91,7 @@ void USimonUI::HandleNextPhase()
 
 		ElpasedWait = 0.0f;
 
-		WaitTime = 0.2f;
-
+		WaitTime = WaitButtonToDefaultColor; // Wait time to set button to default color
 	}
 
 	else if (NextGamePhase == 1) // AI Set same color to default
@@ -111,7 +105,7 @@ void USimonUI::HandleNextPhase()
 		// Change Index Sequence
 		IndexSequence += 1;
 
-		if (IndexSequence > IndexEndSequence)
+		if (IndexSequence > IndexEndSequence) // End Sequence
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] Player Turn %d/%d"), IndexSequence, IndexEndSequence);
 
@@ -125,7 +119,7 @@ void USimonUI::HandleNextPhase()
 
 			bLockInput = false;
 		}
-		else
+		else // Not End Sequence
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] KEEP AI TURN %d/%d"), IndexSequence, IndexEndSequence);
 
@@ -136,7 +130,7 @@ void USimonUI::HandleNextPhase()
 
 			ElpasedWait = 0.0f;
 
-			WaitTime = 1.0f;
+			WaitTime = WaitButtonNextColor; // Wait time to set a new color
 
 			bPlayerTurn = false;
 
@@ -159,8 +153,6 @@ void USimonUI::HandleNextPhase()
 
 		if (ButtonPressedIndex == ColorSequence[IndexSequence]) // GOOD
 		{
-			//MessageText->SetText(FText::FromString("GOOD! KEEP GOING"));
-
 			// Check if reach end of current sequence, Check if change to AI is possible
 			if (IndexSequence >= IndexEndSequence)
 			{
@@ -168,10 +160,14 @@ void USimonUI::HandleNextPhase()
 				{
 					MessageText->SetText(FText::FromString("GOOD! YOU WIN CONGRATULATIONS!"));
 
-					NextGamePhase = 3; // Set to completed
+					NextGamePhase = 3; // Set to completed the game
+
 					bWait = true;
-					WaitTime = 1.0f;
+
+					WaitTime = WaitGameCompleted;
+
 					ElpasedWait = 0.0f;
+
 					bWait = true;
 				}
 				else
@@ -180,12 +176,16 @@ void USimonUI::HandleNextPhase()
 					MessageText->SetText(FText::FromString("GOOD! YOU FINISED YOUR TURN, LET ME CONTINUE"));
 
 					IndexEndSequence += 1;
+
 					IndexSequence = 0; // Resets sequence
 
 					NextGamePhase = 0; // Set turn to AI
+
 					bWait = true;
+
 					ElpasedWait = 0.0f;
-					WaitTime = 0.3f;
+
+					WaitTime = WaitSwitchTurn;
 
 				}
 			}
@@ -210,7 +210,7 @@ void USimonUI::HandleNextPhase()
 			bWait = true;
 
 			ElpasedWait = 0.0f;
-			WaitTime = 1.0f;
+			WaitTime = WaitStartSimon;
 
 			NextGamePhase = 0;
 		}
@@ -267,7 +267,7 @@ void USimonUI::OnButtonPressed(int indexButton)
 
 	ElpasedWait = 0.0f;
 
-	WaitTime = 0.2f;
+	WaitTime = WaitButtonToDefaultColor; // Set button to default
 
 	// Phase Change color to default
 	NextGamePhase = 2;
