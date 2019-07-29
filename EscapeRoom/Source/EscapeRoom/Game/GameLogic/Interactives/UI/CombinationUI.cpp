@@ -18,7 +18,7 @@ bool UCombinationUI::Initialize()
 
 	ResetCombination();	
 
-	CharacterText->SetText(FText::FromString(ABCArray[ChainIndex]));
+	CharacterText->SetText(FText::FromString(ABCArray[ChainIndex])); 
 
 	return true;
 }
