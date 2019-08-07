@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Game/GameLogic/Interactives/UI/UIBasicInteractive.h"
 #include "Components/UniformGridPanel.h"
+#include "Game/GameLogic/Interactives/UI/SlotMaze.h"
 #include "ConsoleGameUI.generated.h"
 
 /**
@@ -28,17 +29,35 @@ private:
 		{1, 0, 0, 0} ,   /*  initializers for row indexed by 1 */
 		{1, 1, 0, 0} ,
 		{1, 1, 1, 0}	/*  initializers for row indexed by 2 */
+
 	};
+
+	
 
 protected:
 
 	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
 	UUniformGridPanel* MazeGrid;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	int32 GridRows = 5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	int32 GridColumns = 5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	FLinearColor DefaultSlotColor;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	TSubclassOf<USlotMaze> SlotMazeClass;
+
 public:
 
 	virtual void InitializeWidget(const FName& Combination) override;
 
 	virtual void OnShowWidget() override;
+
+
 	
 };
