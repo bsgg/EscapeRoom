@@ -23,12 +23,12 @@ protected:
 
 private:
 
-	int maze[4][4] = 
+	int maze[5][5] = 
 	{
-		{0, 1, 1, 1} ,   /*  initializers for row indexed by 0 */
-		{1, 0, 0, 0} ,   /*  initializers for row indexed by 1 */
-		{1, 1, 0, 0} ,
-		{1, 1, 1, 0}	/*  initializers for row indexed by 2 */
+		{0, 1, 2, 1, 0} ,   /*  initializers for row indexed by 0 */
+		{1, 0, 3, 0, 3} ,   /*  initializers for row indexed by 1 */
+		{0, 2, 0, 4, 1} ,   /*  initializers for row indexed by 2 */
+		{1, 1, 1, 2, 1}	    /*  initializers for row indexed by 3 */
 
 	};
 
@@ -39,14 +39,17 @@ protected:
 	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
 	UUniformGridPanel* MazeGrid;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings") 
 	int32 GridRows = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
 	int32 GridColumns = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
-	FLinearColor DefaultSlotColor;
+	FLinearColor DefaultColor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	TArray<FLinearColor> SlotColors;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")

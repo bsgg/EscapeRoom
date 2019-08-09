@@ -3,6 +3,8 @@
 
 #include "ConsoleGameUI.h"
 #include "Components/SizeBox.h"
+#include "EscapeRoomGameModeBase.h"
+#include "EscapeRoomGameInstance.h"
 
 bool UConsoleGameUI::Initialize()
 {
@@ -17,9 +19,31 @@ void UConsoleGameUI::InitializeWidget(const FName& Combination)
 {
 	Super::InitializeWidget(Combination);
 
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Combination: %s"), *Combination.ToString());
 
-	
-	
+	TArray<FString> Rows;
+	Combination.ToString().ParseIntoArray(Rows, TEXT("|"), true);
+
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Number Rows %i"), Rows.Num());
+
+	for (int y = 0; y < Rows.Num(); y++)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Rows [%i] = %s"), y, *Rows[y]);
+
+		TArray<FString> Columns;
+		Rows[y].ParseIntoArray(Columns, TEXT(","), true);
+
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Number Columns %i"), Columns.Num());
+		for (int x = 0; x < Columns.Num(); x++)
+		{
+			int32 value = FCString::Atoi(*Columns[x]);
+
+			UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Columns [%i] = %s -> %i"), x, *Columns[x], value);
+
+			maze[x][y] = value;
+		}
+
+	}
 }
 
 void UConsoleGameUI::OnShowWidget()
@@ -30,21 +54,55 @@ void UConsoleGameUI::OnShowWidget()
 
 	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] SlotMazeClass and Maze grid ok"));
 
-	USlotMaze* NewSlot = CreateWidget<USlotMaze>(GetWorld(), SlotMazeClass);
-	if (!NewSlot) return;
+	int i = 0;
+	for (int x = 0; x < GridColumns; x++)
+	{
+		for (int y = 0; y < GridRows; y++)
+		{
+			USlotMaze* NewSlot = CreateWidget<USlotMaze>(GetWorld(), SlotMazeClass);
 
-	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget]  New slot created"));
+			USizeBox* SlotContainer = Cast<USizeBox>(MazeGrid->GetChildAt(i));
 
-	NewSlot->SetSlotColor(DefaultSlotColor);
+			i++;
 
-	// Get first child in grid
-	USizeBox* SlotContainer = Cast<USizeBox>(MazeGrid->GetChildAt(0));
-	if (!SlotContainer) return;
+			if ((!NewSlot)|| (!SlotContainer)) continue;
 
-	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] SlotContainer created"));
+			// Pull value
+			int value = maze[x][y];
 
-	SlotContainer->AddChild(NewSlot);
-	
+			if (value < SlotColors.Num())
+			{
+				NewSlot->SetSlotColor(SlotColors[value]);
+			}
+			else
+			{
+				NewSlot->SetSlotColor(DefaultColor);
+			}
+				
+			SlotContainer->AddChild(NewSlot);
+			
+		}
+	}
+
+	/*AEscapeRoomGameModeBase* GameMode = (AEscapeRoomGameModeBase*)GetWorld()->GetAuthGameMode();
+	if (GameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] GameMode Exits"));
+
+		UEscapeRoomGameInstance* GameInstance = Cast<UEscapeRoomGameInstance>(GameMode->GetGameInstance());
+		if (GameInstance)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] GameInstance Exitsts"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] GameInstance NO Exitsts"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] GameMode NO Exits"));
+	}*/
 }
 
 void UConsoleGameUI::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
