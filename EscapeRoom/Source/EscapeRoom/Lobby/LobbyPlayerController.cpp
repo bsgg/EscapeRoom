@@ -294,9 +294,7 @@ void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& Wid
 		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 		SetInputMode(InputModeData);
-		bShowMouseCursor = true;
-
-		
+		bShowMouseCursor = true;		
 	}
 	
 }

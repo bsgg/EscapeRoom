@@ -17,7 +17,7 @@ void USessionRow::OnClicked()
 {
 	if (Parent == nullptr) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("[USessionRow::OnClicked] Index %i"), Index);
+	UE_LOG(LogTemp, Warning, TEXT("[USessionRow::OnClicked] Index %i"), Index); 
 
 	Parent->SelectIndexSessionList(Index);
 }

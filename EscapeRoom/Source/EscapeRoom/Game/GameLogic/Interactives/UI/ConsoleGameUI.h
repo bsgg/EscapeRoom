@@ -36,6 +36,9 @@ private:
 
 protected:
 
+	UPROPERTY(BlueprintReadonly, EditDefaultsOnly)
+	bool IsPlayable;
+
 	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
 	UUniformGridPanel* MazeGrid;
 

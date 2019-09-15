@@ -25,7 +25,7 @@ void UConsoleGameUI::InitializeWidget(const FName& Combination)
 	Combination.ToString().ParseIntoArray(Rows, TEXT("|"), true);
 
 	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Number Rows %i"), Rows.Num());
-
+	
 	for (int y = 0; y < Rows.Num(); y++)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::InitializeWidget] Rows [%i] = %s"), y, *Rows[y]);
@@ -70,13 +70,21 @@ void UConsoleGameUI::OnShowWidget()
 			// Pull value
 			int value = maze[x][y];
 
-			if (value < SlotColors.Num())
+			if (IsPlayable) // if it's playable, shows only default color
 			{
-				NewSlot->SetSlotColor(SlotColors[value]);
+				
+				NewSlot->SetSlotColor(DefaultColor);
 			}
 			else
 			{
-				NewSlot->SetSlotColor(DefaultColor);
+				if (value < SlotColors.Num())
+				{
+					NewSlot->SetSlotColor(SlotColors[value]);
+				}
+				else
+				{
+					NewSlot->SetSlotColor(DefaultColor);
+				}
 			}
 				
 			SlotContainer->AddChild(NewSlot);
