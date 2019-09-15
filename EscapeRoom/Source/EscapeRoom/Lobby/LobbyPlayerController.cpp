@@ -119,6 +119,10 @@ void ALobbyPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Inspect", IE_Pressed, this, &ALobbyPlayerController::Inspect);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALobbyPlayerController::Interact);
+
+
+	InputComponent->BindAction("ExitInteractiveUI", IE_Pressed, this, &ALobbyPlayerController::ExitInteractiveUI);
+	
 }
 
 
@@ -522,35 +526,41 @@ void ALobbyPlayerController::MoveForward(float Value)
 		{
 			myCharacter->MoveForward(Value);
 		}
-
-
-		/*if (((myCharacter == nullptr)) ||(myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
-
-		if (Value != 0.0f)
-		{
-			const FRotator Rotation = GetControlRotation();
-			const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-			// get forward vector
-			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			myCharacter->AddMovementInput(Direction, Value);
-		}*/
 	}
+
 }
 
 void ALobbyPlayerController::Inspect()
 {
 	if (myCharacter == nullptr) return;
 
-	myCharacter->HandleInspectInput();
+	if (!bIsInteractiveUIOpened)
+	{
+		myCharacter->HandleInspectInput();
+	}
 }
 
 void ALobbyPlayerController::Interact()
 {
 	if (myCharacter == nullptr) return;
 
+	if (!bIsInteractiveUIOpened)
+	{
+		myCharacter->HandleInteractInput();
+	}
 
-	myCharacter->HandleInteractInput();
+	if (bIsInteractiveUIOpened)
+	{
+		InteractiveUI->Interact();
+	}
+}
+
+void ALobbyPlayerController::ExitInteractiveUI()
+{
+	if (bIsInteractiveUIOpened)
+	{
+		InteractiveUI->OnExitPressed();
+	}
 }
 
 ///////////// CHARACTER INPUT ////////////////

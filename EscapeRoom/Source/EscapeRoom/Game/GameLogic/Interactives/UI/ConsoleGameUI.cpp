@@ -44,6 +44,8 @@ void UConsoleGameUI::InitializeWidget(const FName& Combination)
 		}
 
 	}
+
+	
 }
 
 void UConsoleGameUI::OnShowWidget()
@@ -88,9 +90,17 @@ void UConsoleGameUI::OnShowWidget()
 			}
 				
 			SlotContainer->AddChild(NewSlot);
+
+			SlotMazeList.Add(NewSlot);
 			
 		}
 	}
+
+	selectedRowButton = 0;
+
+	selectedColumnButton = 0;
+
+	selectedIndex = -1;
 
 	/*AEscapeRoomGameModeBase* GameMode = (AEscapeRoomGameModeBase*)GetWorld()->GetAuthGameMode();
 	if (GameMode)
@@ -117,6 +127,83 @@ void UConsoleGameUI::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
 	Super::NativeTick(MyGeometry, DeltaTime);
 
+}
+
+void UConsoleGameUI::Navigate(EDirectionType Direction)
+{
+	Super::Interact();
+
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Navigate] %d"), Direction);
+
+	switch (Direction)
+	{
+		case EDirectionType::VE_DOWN:
+			selectedRowButton += 1;
+
+			if (selectedRowButton >= GridRows)
+			{
+				selectedRowButton = selectedRowButton - 1;
+			}
+		break;
+		case EDirectionType::VE_UP:
+			selectedRowButton -= 1;
+
+			if (selectedRowButton < 0)
+			{
+				selectedRowButton = 0;
+			}
+		break;
+		case EDirectionType::VE_LEFT:
+			selectedColumnButton -= 1;
+
+			if (selectedColumnButton < 0)
+			{
+				selectedColumnButton = 0;
+			}
+		break;
+		case EDirectionType::VE_RIGHT:
+			selectedColumnButton += 1;
+
+			if (selectedColumnButton >= GridColumns)
+			{
+				selectedColumnButton = GridColumns - 1;
+			}
+		break;
+
+	}
+
+	int32 currentIndex = selectedRowButton * GridRows + selectedColumnButton;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Navigate] SelectedIndex %d/ %d"), currentIndex, SlotMazeList.Num());
+	if (currentIndex < SlotMazeList.Num())
+	{
+		// TODO:: HIGHLIGHT
+		SlotMazeList[currentIndex]->SetSlotColor(SlotColors[2]);
+
+		if (selectedIndex > -1)
+		{
+			// TODO:: UNHIGHLIGHT
+			SlotMazeList[selectedIndex]->SetSlotColor(DefaultColor);			
+		}
+	
+		selectedIndex = currentIndex;
+	}
+}
+
+void UConsoleGameUI::Interact()
+{
+	Super::Interact();
+
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Interact] Exit"));
+
+	if (selectedIndex > -1)
+	{
+		// TODO:: PRESS BUTTON
+
+		// GET CURRENT VALUE IN SLOT AND ADD 1
+
+		
+	}
 }
 
 

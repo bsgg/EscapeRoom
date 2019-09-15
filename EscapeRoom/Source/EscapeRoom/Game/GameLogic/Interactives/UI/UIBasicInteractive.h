@@ -32,6 +32,10 @@ public:
 	virtual void Interact();
 
 
+	UFUNCTION()
+	virtual void OnExitPressed();
+
+
 protected:
 	virtual bool Initialize() override;
 
@@ -67,8 +71,6 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UCombinationUI* Combination_3;
 
-	UFUNCTION()
-	void OnExitPressed();
 
 	UFUNCTION()
 	void OnEnterCombinationPressed();

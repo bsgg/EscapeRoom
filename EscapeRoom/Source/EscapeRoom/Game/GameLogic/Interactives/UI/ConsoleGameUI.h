@@ -58,12 +58,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
 	TSubclassOf<USlotMaze> SlotMazeClass;
 
+	TArray<class USlotMaze*> SlotMazeList;
+
 public:
 
 	virtual void InitializeWidget(const FName& Combination) override;
 
 	virtual void OnShowWidget() override;
 
+	virtual void Navigate(EDirectionType Direction) override;
 
-	
+	virtual void Interact() override;
+
+
+private:
+
+	int32 selectedRowButton = 0;
+	int32 selectedColumnButton = 0;
+	int32 selectedIndex = -1;
 };

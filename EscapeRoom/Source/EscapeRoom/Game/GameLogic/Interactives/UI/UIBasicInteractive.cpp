@@ -46,12 +46,12 @@ void UUIBasicInteractive::Navigate(EDirectionType Direction)
 {
 
 
-	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Navigate]"));
+	//UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Navigate]"));
 }
 
 void UUIBasicInteractive::Interact()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Interact]"));
+	//UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Interact]"));
 }
 
 

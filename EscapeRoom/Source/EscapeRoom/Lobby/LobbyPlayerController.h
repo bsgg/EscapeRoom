@@ -149,6 +149,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void Interact();
 
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void ExitInteractiveUI();
+
 	AMainCharacter* myCharacter;
 
 

@@ -138,7 +138,6 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::MoveRight]"));
 
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
