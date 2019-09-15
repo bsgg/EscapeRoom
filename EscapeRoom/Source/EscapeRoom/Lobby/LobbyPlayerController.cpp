@@ -116,6 +116,9 @@ void ALobbyPlayerController::SetupInputComponent()
 
 	InputComponent->BindAxis("MoveForward", this, &ALobbyPlayerController::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ALobbyPlayerController::MoveRight);
+
+	InputComponent->BindAction("Inspect", IE_Pressed, this, &ALobbyPlayerController::Inspect);
+	InputComponent->BindAction("Interact", IE_Pressed, this, &ALobbyPlayerController::Interact);
 }
 
 
@@ -463,7 +466,12 @@ void ALobbyPlayerController::MoveRight(float Value)
 
 	if (!bIsInteractiveUIOpened)
 	{
-		if (((myCharacter == nullptr)) || (myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
+		if (myCharacter != nullptr)
+		{
+			myCharacter->MoveRight(Value);
+		}
+
+		/*if (((myCharacter == nullptr)) || (myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
 
 		if (Value != 0.0f)
 		{
@@ -475,7 +483,7 @@ void ALobbyPlayerController::MoveRight(float Value)
 
 			// add movement in that direction
 			myCharacter->AddMovementInput(Direction, Value);
-		}
+		}*/
 	}
 
 }
@@ -510,7 +518,13 @@ void ALobbyPlayerController::MoveForward(float Value)
 
 	if (!bIsInteractiveUIOpened)
 	{
-		if (((myCharacter == nullptr)) ||(myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
+		if (myCharacter != nullptr)
+		{
+			myCharacter->MoveForward(Value);
+		}
+
+
+		/*if (((myCharacter == nullptr)) ||(myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
 
 		if (Value != 0.0f)
 		{
@@ -520,8 +534,23 @@ void ALobbyPlayerController::MoveForward(float Value)
 			// get forward vector
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 			myCharacter->AddMovementInput(Direction, Value);
-		}
+		}*/
 	}
+}
+
+void ALobbyPlayerController::Inspect()
+{
+	if (myCharacter == nullptr) return;
+
+	myCharacter->HandleInspectInput();
+}
+
+void ALobbyPlayerController::Interact()
+{
+	if (myCharacter == nullptr) return;
+
+
+	myCharacter->HandleInteractInput();
 }
 
 ///////////// CHARACTER INPUT ////////////////

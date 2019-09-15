@@ -143,6 +143,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveRight(float Value);	
 
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void Inspect();
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void Interact();
+
 	AMainCharacter* myCharacter;
 
 

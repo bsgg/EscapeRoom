@@ -44,28 +44,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void UnLockInput();
 
-	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveForward(float Value);
 
-	UFUNCTION(BlueprintCallable, Category = "Input Actions")
 	void MoveRight(float Value);
 
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-
-	// Mouse Movement
-
-	uint32 bMoveToMouseCursor : 1;
-
-	void MoveToMouseCursor();
-
-	void OnSetDestinationPressed();
-
-	void OnSetDestinationReleased();
-
-	// Mouse Movement
 
 
 	void SetGestureToDefault();
@@ -105,18 +91,15 @@ protected:
 
 	float WaitTimeToUnlockInput = 1.0f;
 
-protected:
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerMoveToLocation();
-
-	void MoveToLocation();
-
 private:
 
 	//// INTERFACE IInteract IMPLEMENTATION ////////////////////
 
 	IInteractiveInterface* CurrentInteractive = nullptr;
 
+
+public:
+	
 	void HandleInspectInput();
 
 	void HandleInteractInput();	

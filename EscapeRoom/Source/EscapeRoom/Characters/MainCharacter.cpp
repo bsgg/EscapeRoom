@@ -75,22 +75,6 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*if (ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(GetController()))
-	{
-		FHitResult TraceHitResult;
-		PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
-		FVector CursorFV = TraceHitResult.ImpactNormal;
-		FRotator CursorR = CursorFV.Rotation();
-		CursorToWorld->SetWorldLocation(TraceHitResult.Location);
-		CursorToWorld->SetWorldRotation(CursorR);
-	}*/
-
-	if (bMoveToMouseCursor)
-	{
-		MoveToMouseCursor();
-	}
-
-
 	// Unlock input
 	if (bInputLocked)
 	{
@@ -125,14 +109,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
-	//PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
-
-	//PlayerInputComponent->BindAction("SetDestination", IE_Pressed, this, &AMainCharacter::OnSetDestinationPressed);
-	//PlayerInputComponent->BindAction("SetDestination", IE_Released, this, &AMainCharacter::OnSetDestinationReleased);
-
-	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMainCharacter::HandleInspectInput);
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::HandleInteractInput);
 }
 
 void AMainCharacter::LockInput()
@@ -177,76 +153,6 @@ void AMainCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
-
-
-
-void AMainCharacter::OnSetDestinationPressed()
-{
-	// set flag to keep updating destination until released
-	bMoveToMouseCursor = true;
-}
-
-void AMainCharacter::OnSetDestinationReleased()
-{
-	// clear flag to indicate we should stop updating the destination
-	bMoveToMouseCursor = false;
-}
-
-
-void AMainCharacter::MoveToMouseCursor()
-{
-	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
-
-	//if (Controller == nullptr) return;
-
-
-	if (Role < ROLE_Authority)
-	{
-		ServerMoveToLocation();
-	}
-	else
-	{
-		MoveToLocation();
-	}
-
-	
-}
-
-
-void AMainCharacter::ServerMoveToLocation_Implementation()
-{
-	MoveToLocation();
-}
-
-bool AMainCharacter::ServerMoveToLocation_Validate()
-{
-	return true;
-}
-
-void AMainCharacter::MoveToLocation()
-{
-	ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(GetController());
-
-	if (PC == nullptr) return;
-
-	// Trace to see what is under the mouse cursor
-	FHitResult Hit;
-	PC->GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-
-	if (Hit.bBlockingHit)
-	{
-
-		float const Distance = FVector::Dist(Hit.ImpactPoint, GetActorLocation());
-
-		if ((Distance > 120.0f))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::MoveToMouseCursor] UAIBlueprintHelperLibrary::SimpleMoveToLocation Distance: %f Dest( %f, %f, %f)"), Distance, Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Hit.ImpactPoint);
-
-		}
-	}
-}
-
 
 
 //// INTERFACE IInteract IMPLEMENTATION ////////////////////
