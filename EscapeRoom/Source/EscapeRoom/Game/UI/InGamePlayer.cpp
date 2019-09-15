@@ -314,8 +314,8 @@ void UInGamePlayer::ShowControls(bool ShowInventoryIcon, bool ShowInspectIcon, b
 	ControlsBox->SetVisibility(ESlateVisibility::Visible);
 	bControlsVisible = true;
 
-	SelectedObjectID = "NONE";
-	SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
+	//SelectedObjectID = "NONE";
+	//SelectedItemIcon->SetVisibility(ESlateVisibility::Hidden);
 
 	if (ShowInventoryIcon)
 	{

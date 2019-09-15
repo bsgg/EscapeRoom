@@ -125,8 +125,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
+	//PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
+	//PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	//PlayerInputComponent->BindAction("SetDestination", IE_Pressed, this, &AMainCharacter::OnSetDestinationPressed);
 	//PlayerInputComponent->BindAction("SetDestination", IE_Released, this, &AMainCharacter::OnSetDestinationReleased);
@@ -162,6 +162,8 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[AMainCharacter::MoveRight]"));
+
 	if ((CurrentGesture != EGestureType::VE_NONE) || (bInputLocked)) return;
 
 	if ((Controller != NULL) && (Value != 0.0f))

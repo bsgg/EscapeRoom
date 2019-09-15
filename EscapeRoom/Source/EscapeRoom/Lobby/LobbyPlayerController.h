@@ -20,6 +20,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 public:
 
 	///////////// LOBBY IMPLEMENTATION ////////////////
@@ -130,5 +132,27 @@ protected:
 	class UInventoryComponent* InventoryComponent;
 
 
+	
+
+protected:
+
+///////////// Character input////////////////
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void MoveForward(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Input Actions")
+	void MoveRight(float Value);	
+
+	AMainCharacter* myCharacter;
+
+
+	bool bIsInteractiveUIOpened = false;
+
 	class UUIBasicInteractive* InteractiveUI;
+
+	bool lockNavigateInteractiveUI = false;
+
+	float lockNavigateInteractiveUIElapsed = 0.0f;
+///////////// Character input////////////////
+
 };

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Game/GameLogic/Interactives/UI/UIBasicInteractiveInterface.h"
+#include "Utils/Definitions.h"
+
 #include "UIBasicInteractive.generated.h"
 
 /**
@@ -22,6 +24,13 @@ public:
 	virtual void InitializeWidget(const FName& Combination);
 
 	virtual void OnShowWidget();
+
+public:
+
+	virtual void Navigate(EDirectionType Direction);
+
+	virtual void Interact();
+
 
 protected:
 	virtual bool Initialize() override;

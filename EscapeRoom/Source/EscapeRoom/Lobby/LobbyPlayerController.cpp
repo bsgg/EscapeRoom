@@ -78,6 +78,28 @@ void ALobbyPlayerController::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay] %s = ChararcerSelected %s"), *Authority, *TypeChar);
 
 	bPauseGame = false;
+
+	APawn* const pawn = GetPawn();
+
+	if (pawn != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::BeginPlay] APawn not null"));
+		myCharacter = Cast<AMainCharacter>(pawn);
+	}
+
+}
+
+void ALobbyPlayerController::Tick(float DeltaTime)
+{
+	if (lockNavigateInteractiveUI)
+	{
+		lockNavigateInteractiveUIElapsed += DeltaTime;
+
+		if (lockNavigateInteractiveUIElapsed >= 0.3f)
+		{
+			lockNavigateInteractiveUI = false;
+		}
+	}
 }
 
 void ALobbyPlayerController::SetupInputComponent()
@@ -91,6 +113,9 @@ void ALobbyPlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
 
 	InputComponent->BindAction("Pause", IE_Pressed, this, &ALobbyPlayerController::TogglePauseMenu);
+
+	InputComponent->BindAxis("MoveForward", this, &ALobbyPlayerController::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &ALobbyPlayerController::MoveRight);
 }
 
 
@@ -289,12 +314,15 @@ void ALobbyPlayerController::CreateInteractiveUI_Implementation(const FName& Wid
 
 		InteractiveUI->OnShowWidget();
 
-		FInputModeUIOnly InputModeData;
+
+		bIsInteractiveUIOpened = true;
+
+		/*FInputModeUIOnly InputModeData;
 		InputModeData.SetWidgetToFocus(InteractiveUI->TakeWidget());
 		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
-		SetInputMode(InputModeData);
-		bShowMouseCursor = true;		
+		SetInputMode(InputModeData);*/
+		//bShowMouseCursor = true;		
 	}
 	
 }
@@ -305,10 +333,12 @@ void ALobbyPlayerController::RemoveInteractiveUI_Implementation()
 	{
 		InteractiveUI->RemoveFromViewport();
 
-		FInputModeGameOnly InputModeData;
+		/*FInputModeGameOnly InputModeData;
 		SetInputMode(InputModeData);
 
-		bShowMouseCursor = false;
+		//bShowMouseCursor = false;
+
+		bIsInteractiveUIOpened = false;*/
 	}
 
 }
@@ -399,6 +429,103 @@ void ALobbyPlayerController::UnPause()
 }
 
 ///////////// PAUSE MENU IMPLEMENTATION ////////////////
+
+
+
+///////////// CHARACTER INPUT ////////////////
+
+void ALobbyPlayerController::MoveRight(float Value)
+{
+	if (Value == 0.0f) return;
+
+	if (bIsInteractiveUIOpened)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::MoveRight] bIsInteractiveUIOpened %f"), Value);
+
+		if (InteractiveUI != nullptr)
+		{
+			if (lockNavigateInteractiveUI) return;
+
+			if (Value >= 0.2f)
+			{
+				lockNavigateInteractiveUI = true;
+				lockNavigateInteractiveUIElapsed = 0.0f;
+				InteractiveUI->Navigate(EDirectionType::VE_RIGHT);
+			}
+			else if (Value < -0.2f)
+			{
+				lockNavigateInteractiveUI = true;
+				lockNavigateInteractiveUIElapsed = 0.0f;
+				InteractiveUI->Navigate(EDirectionType::VE_LEFT);
+			}
+		}
+	}
+
+	if (!bIsInteractiveUIOpened)
+	{
+		if (((myCharacter == nullptr)) || (myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
+
+		if (Value != 0.0f)
+		{
+			const FRotator Rotation = GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get right vector 
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+			// add movement in that direction
+			myCharacter->AddMovementInput(Direction, Value);
+		}
+	}
+
+}
+
+
+void ALobbyPlayerController::MoveForward(float Value)
+{
+	if (Value == 0.0f) return;
+
+	if (bIsInteractiveUIOpened)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("[ALobbyPlayerController::MoveRight] bIsInteractiveUIOpened %f"), Value);
+
+		if (InteractiveUI != nullptr)
+		{
+			if (lockNavigateInteractiveUI) return;
+
+			if (Value >= 0.2f)
+			{
+				lockNavigateInteractiveUI = true;
+				lockNavigateInteractiveUIElapsed = 0.0f;
+				InteractiveUI->Navigate(EDirectionType::VE_UP);
+			}
+			else if (Value < -0.2f)
+			{
+				lockNavigateInteractiveUI = true;
+				lockNavigateInteractiveUIElapsed = 0.0f;
+				InteractiveUI->Navigate(EDirectionType::VE_DOWN);
+			}
+		}
+	}
+
+	if (!bIsInteractiveUIOpened)
+	{
+		if (((myCharacter == nullptr)) ||(myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
+
+		if (Value != 0.0f)
+		{
+			const FRotator Rotation = GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get forward vector
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			myCharacter->AddMovementInput(Direction, Value);
+		}
+	}
+}
+
+///////////// CHARACTER INPUT ////////////////
+
 
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const

@@ -42,6 +42,20 @@ void UUIBasicInteractive::OnShowWidget()
 
 }
 
+void UUIBasicInteractive::Navigate(EDirectionType Direction)
+{
+
+
+	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Navigate]"));
+}
+
+void UUIBasicInteractive::Interact()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Interact]"));
+}
+
+
+
 void UUIBasicInteractive::OnEnterCombinationPressed()
 {	
 	if (bIsLocked) return;
