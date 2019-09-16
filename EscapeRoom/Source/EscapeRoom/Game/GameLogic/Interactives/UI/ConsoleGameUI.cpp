@@ -72,15 +72,17 @@ void UConsoleGameUI::OnShowWidget()
 			// Pull value
 			int value = maze[x][y];
 
+			NewSlot->SetSlotHighlightColor(UnHighlightColor);
+
 			if (IsPlayable) // if it's playable, shows only default color
-			{
-				
+			{				
 				NewSlot->SetSlotColor(DefaultColor);
 			}
 			else
 			{
 				if (value < SlotColors.Num())
 				{
+					
 					NewSlot->SetSlotColor(SlotColors[value]);
 				}
 				else
@@ -100,7 +102,12 @@ void UConsoleGameUI::OnShowWidget()
 
 	selectedColumnButton = 0;
 
-	selectedIndex = -1;
+	selectedIndex = 0;
+
+	if (SlotMazeList.Num() > 0)
+	{
+		SlotMazeList[selectedIndex]->SetSlotHighlightColor(HighlightColor);
+	}
 
 	/*AEscapeRoomGameModeBase* GameMode = (AEscapeRoomGameModeBase*)GetWorld()->GetAuthGameMode();
 	if (GameMode)
@@ -174,16 +181,18 @@ void UConsoleGameUI::Navigate(EDirectionType Direction)
 
 	int32 currentIndex = selectedRowButton * GridRows + selectedColumnButton;
 
-	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Navigate] SelectedIndex %d/ %d"), currentIndex, SlotMazeList.Num());
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Navigate] selectedIndex: %d -  currentIndex %d/ %d"), selectedIndex,  currentIndex , SlotMazeList.Num());
 	if (currentIndex < SlotMazeList.Num())
 	{
 		// TODO:: HIGHLIGHT
-		SlotMazeList[currentIndex]->SetSlotColor(SlotColors[2]);
+		SlotMazeList[currentIndex]->SetSlotHighlightColor(HighlightColor);
+		//SlotMazeList[currentIndex]->SetSlotColor(SlotColors[2]);
 
 		if (selectedIndex > -1)
 		{
 			// TODO:: UNHIGHLIGHT
-			SlotMazeList[selectedIndex]->SetSlotColor(DefaultColor);			
+			//SlotMazeList[selectedIndex]->SetSlotColor(DefaultColor);		
+			SlotMazeList[selectedIndex]->SetSlotHighlightColor(UnHighlightColor);
 		}
 	
 		selectedIndex = currentIndex;

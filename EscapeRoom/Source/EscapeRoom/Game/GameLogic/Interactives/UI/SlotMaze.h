@@ -18,11 +18,14 @@ class ESCAPEROOM_API USlotMaze : public UUserWidget
 public:
 	void SetSlotColor(FLinearColor Color);
 
-
+	void SetSlotHighlightColor(FLinearColor Color);
 
 protected:
 
 	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
 	UImage* ImageSlot;
 	
+
+	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
+	UImage* ImageSlotHighlight;
 };

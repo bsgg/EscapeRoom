@@ -52,6 +52,13 @@ protected:
 	FLinearColor DefaultColor;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	FLinearColor HighlightColor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
+	FLinearColor UnHighlightColor;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
 	TArray<FLinearColor> SlotColors;
 
 

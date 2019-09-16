@@ -9,3 +9,10 @@ void USlotMaze::SetSlotColor(FLinearColor Color)
 
 	ImageSlot->SetColorAndOpacity(Color);
 }
+
+void  USlotMaze::SetSlotHighlightColor(FLinearColor Color)
+{
+	if (ImageSlotHighlight == nullptr) return;
+
+	ImageSlotHighlight->SetColorAndOpacity(Color);
+}
