@@ -44,9 +44,15 @@ private:
 
 	void CheckCombination();
 
+	int selectedCombinationSlot;
+
+	
+
 public:
 
 	virtual void InitializeWidget(const FName& InCombination) override;
+
+	virtual void OnShowWidget() override;
 
 	virtual void Navigate(EDirectionType Direction) override;
 

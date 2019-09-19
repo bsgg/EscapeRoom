@@ -4,6 +4,7 @@
 #include "Components/TextBlock.h"
 
 
+
 bool UCombinationUI::Initialize()
 {
 	bool Success = Super::Initialize();
@@ -55,22 +56,6 @@ void UCombinationUI::OnChangeCharacterPress()
 	if (CharacterText == nullptr) return;
 	CharacterText->SetText(FText::FromString(ABCArray[ChainIndex]));
 }
-
-/*void UCombinationUI::OnDownButtonPressed()
-{
-	if (bIsLocked) return;
-
-	ChainIndex -= 1;
-
-	if (ChainIndex < 0)
-	{
-		ChainIndex = ABCArray.Num() -1;
-	}
-
-	if (CharacterText == nullptr) return;
-	CharacterText->SetText(FText::FromString(ABCArray[ChainIndex]));
-}*/
-
 
 void UCombinationUI::ResetCombination()
 {

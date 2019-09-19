@@ -2,6 +2,7 @@
 
 
 #include "PasswordPadlockUI.h"
+#include "Game/GameLogic/Interactives/UI/CombinationUI.h"
 
 bool UPasswordPadlockUI::Initialize()
 {
@@ -13,6 +14,22 @@ bool UPasswordPadlockUI::Initialize()
 void UPasswordPadlockUI::InitializeWidget(const FName& InCombination)
 {
 	Combination = InCombination.ToString();
+	bIsLocked = true;
+}
+
+void UPasswordPadlockUI::OnShowWidget()
+{
+	Super::OnShowWidget();
+
+	Combination_0->ResetCombination();
+	Combination_1->ResetCombination();
+	Combination_2->ResetCombination();
+	Combination_3->ResetCombination();
+
+	selectedCombinationSlot = 0;
+
+	Combination_0->OnSelect();
+
 	bIsLocked = false;
 }
 
@@ -20,20 +37,59 @@ void UPasswordPadlockUI::Navigate(EDirectionType Direction)
 {
 	Super::Navigate(Direction);
 
-	switch (Direction)
+	if ((Direction == EDirectionType::VE_DOWN) || (Direction == EDirectionType::VE_UP)) return;
+
+	switch (selectedCombinationSlot)
 	{
-	case EDirectionType::VE_DOWN:
-		
-	break;
-	case EDirectionType::VE_UP:
-		
+		case 0:
+			Combination_0->OnDeselect();
+		break;
+		case 1:
+			Combination_1->OnDeselect();
+			break;
+		case 2:
+			Combination_2->OnDeselect();
+			break;
+		case 3:
+			Combination_3->OnDeselect();
+			break;
+	}
+
+
+	switch (Direction)
+	{		
 		break;
 	case EDirectionType::VE_LEFT:
-		
+		selectedCombinationSlot--;
+		if (selectedCombinationSlot < 0)
+		{
+			selectedCombinationSlot = 3;
+		}
 	break;
 	case EDirectionType::VE_RIGHT:
-		
+		selectedCombinationSlot++;
+
+		if (selectedCombinationSlot > 3)
+		{
+			selectedCombinationSlot = 0;
+		}
 	break;
+	}
+
+	switch (selectedCombinationSlot)
+	{
+	case 0:
+		Combination_0->OnSelect();
+		break;
+	case 1:
+		Combination_1->OnSelect();
+		break;
+	case 2:
+		Combination_2->OnSelect();
+		break;
+	case 3:
+		Combination_3->OnSelect();
+		break;
 	}
 
 }
@@ -43,9 +99,28 @@ void UPasswordPadlockUI::OnFaceButtonPress(EFaceButtonType Button)
 	// Test current password
 	if (Button == EFaceButtonType::VE_BOTTOM) 
 	{
-		CheckCombination();
+		//CheckCombination();
+		switch (selectedCombinationSlot)
+		{
+		case 0:
+			Combination_0->OnChangeCharacterPress();
+			break;
+		case 1:
+			Combination_1->OnChangeCharacterPress();
+			break;
+		case 2:
+			Combination_2->OnChangeCharacterPress();
+			break;
+		case 3:
+			Combination_3->OnChangeCharacterPress();
+			break;
+		}
 	}
 
+	if (Button == EFaceButtonType::VE_RIGHT)
+	{
+		CheckCombination();
+	}
 
 	Super::OnFaceButtonPress(Button);
 }
