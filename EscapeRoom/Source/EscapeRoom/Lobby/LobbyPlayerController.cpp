@@ -117,11 +117,16 @@ void ALobbyPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveForward", this, &ALobbyPlayerController::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ALobbyPlayerController::MoveRight);
 
-	InputComponent->BindAction("Inspect", IE_Pressed, this, &ALobbyPlayerController::Inspect);
-	InputComponent->BindAction("Interact", IE_Pressed, this, &ALobbyPlayerController::Interact);
+
+	// Face buutton	
+	InputComponent->BindAction("FaceButtonBottom", IE_Pressed, this, &ALobbyPlayerController::FaceButtonBottom);
+	InputComponent->BindAction("FaceButtonRight", IE_Pressed, this, &ALobbyPlayerController::FaceButtonRight);
+
+	InputComponent->BindAction("FaceButtonTop", IE_Pressed, this, &ALobbyPlayerController::FaceButtonTop);
+	InputComponent->BindAction("FaceButtonLeft", IE_Pressed, this, &ALobbyPlayerController::FaceButtonLeft);
 
 
-	InputComponent->BindAction("ExitInteractiveUI", IE_Pressed, this, &ALobbyPlayerController::ExitInteractiveUI);
+	//InputComponent->BindAction("ExitInteractiveUI", IE_Pressed, this, &ALobbyPlayerController::ExitInteractiveUI);
 	
 }
 
@@ -474,20 +479,6 @@ void ALobbyPlayerController::MoveRight(float Value)
 		{
 			myCharacter->MoveRight(Value);
 		}
-
-		/*if (((myCharacter == nullptr)) || (myCharacter->GetCurrentGesture() != EGestureType::VE_NONE)) return;
-
-		if (Value != 0.0f)
-		{
-			const FRotator Rotation = GetControlRotation();
-			const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-			// get right vector 
-			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-			// add movement in that direction
-			myCharacter->AddMovementInput(Direction, Value);
-		}*/
 	}
 
 }
@@ -530,17 +521,7 @@ void ALobbyPlayerController::MoveForward(float Value)
 
 }
 
-void ALobbyPlayerController::Inspect()
-{
-	if (myCharacter == nullptr) return;
-
-	if (!bIsInteractiveUIOpened)
-	{
-		myCharacter->HandleInspectInput();
-	}
-}
-
-void ALobbyPlayerController::Interact()
+void ALobbyPlayerController::FaceButtonBottom()
 {
 	if (myCharacter == nullptr) return;
 
@@ -551,17 +532,44 @@ void ALobbyPlayerController::Interact()
 
 	if (bIsInteractiveUIOpened)
 	{
-		InteractiveUI->Interact();
+		InteractiveUI->OnFaceButtonPress(EFaceButtonType::VE_BOTTOM);
 	}
 }
 
-void ALobbyPlayerController::ExitInteractiveUI()
+
+
+void ALobbyPlayerController::FaceButtonRight()
+{
+	if (myCharacter == nullptr) return;
+
+	if (!bIsInteractiveUIOpened)
+	{
+		myCharacter->HandleInspectInput();
+	}
+	if (bIsInteractiveUIOpened)
+	{
+		InteractiveUI->OnFaceButtonPress(EFaceButtonType::VE_RIGHT);
+	}
+}
+
+void ALobbyPlayerController::FaceButtonTop()
 {
 	if (bIsInteractiveUIOpened)
 	{
-		InteractiveUI->OnExitPressed();
+		InteractiveUI->OnFaceButtonPress(EFaceButtonType::VE_TOP);
 	}
 }
+
+
+void ALobbyPlayerController::FaceButtonLeft()
+{
+	if (bIsInteractiveUIOpened)
+	{
+		InteractiveUI->OnFaceButtonPress(EFaceButtonType::VE_LEFT);
+	}
+}
+
+
 
 ///////////// CHARACTER INPUT ////////////////
 

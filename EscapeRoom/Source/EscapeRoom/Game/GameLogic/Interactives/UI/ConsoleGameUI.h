@@ -30,9 +30,7 @@ private:
 		{0, 2, 0, 4, 1} ,   /*  initializers for row indexed by 2 */
 		{1, 1, 1, 2, 1}	    /*  initializers for row indexed by 3 */
 
-	};
-
-	
+	};	
 
 protected:
 
@@ -57,7 +55,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
 	FLinearColor UnHighlightColor;
 
-
 	UPROPERTY(EditDefaultsOnly, Category = "Maze Settings")
 	TArray<FLinearColor> SlotColors;
 
@@ -75,7 +72,7 @@ public:
 
 	virtual void Navigate(EDirectionType Direction) override;
 
-	virtual void Interact() override;
+	virtual void OnFaceButtonPress(EFaceButtonType Button) override;
 
 
 private:

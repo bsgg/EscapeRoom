@@ -49,7 +49,7 @@ void UUIBasicInteractive::Navigate(EDirectionType Direction)
 	//UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Navigate]"));
 }
 
-void UUIBasicInteractive::Interact()
+void UUIBasicInteractive::OnFaceButtonPress(EFaceButtonType Button)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Interact]"));
 }

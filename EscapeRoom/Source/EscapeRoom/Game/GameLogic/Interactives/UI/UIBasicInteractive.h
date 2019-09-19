@@ -29,11 +29,8 @@ public:
 
 	virtual void Navigate(EDirectionType Direction);
 
-	virtual void Interact();
-
-
-	UFUNCTION()
-	virtual void OnExitPressed();
+	// Input interactions
+	virtual void OnFaceButtonPress(EFaceButtonType Button);
 
 
 protected:
@@ -71,6 +68,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UCombinationUI* Combination_3;
 
+	UFUNCTION()
+		void OnExitPressed();
 
 	UFUNCTION()
 	void OnEnterCombinationPressed();

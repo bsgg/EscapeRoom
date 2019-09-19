@@ -44,17 +44,11 @@ void UConsoleGameUI::InitializeWidget(const FName& Combination)
 		}
 
 	}
-
-	
 }
 
 void UConsoleGameUI::OnShowWidget()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] %d"), 5);
-
 	if ((!SlotMazeClass) || (!MazeGrid)) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnShowWidget] SlotMazeClass and Maze grid ok"));
 
 	int i = 0;
 	for (int x = 0; x < GridColumns; x++)
@@ -74,23 +68,22 @@ void UConsoleGameUI::OnShowWidget()
 
 			NewSlot->SetSlotHighlightColor(UnHighlightColor);
 
-			if (IsPlayable) // if it's playable, shows only default color
+			NewSlot->SetSlotColor(DefaultColor);
+
+			NewSlot->SetIndex(-1);
+
+			if (!IsPlayable) // if it's playable, shows only default color
 			{				
-				NewSlot->SetSlotColor(DefaultColor);
-			}
-			else
-			{
+				
 				if (value < SlotColors.Num())
 				{
-					
+
 					NewSlot->SetSlotColor(SlotColors[value]);
-				}
-				else
-				{
-					NewSlot->SetSlotColor(DefaultColor);
-				}
+
+					NewSlot->SetIndex(value);
+				}				
 			}
-				
+			
 			SlotContainer->AddChild(NewSlot);
 
 			SlotMazeList.Add(NewSlot);
@@ -138,7 +131,9 @@ void UConsoleGameUI::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 
 void UConsoleGameUI::Navigate(EDirectionType Direction)
 {
-	Super::Interact();
+	if (!IsPlayable) return;
+
+	Super::Navigate(Direction);
 
 	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Navigate] %d"), Direction);
 
@@ -184,14 +179,12 @@ void UConsoleGameUI::Navigate(EDirectionType Direction)
 	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Navigate] selectedIndex: %d -  currentIndex %d/ %d"), selectedIndex,  currentIndex , SlotMazeList.Num());
 	if (currentIndex < SlotMazeList.Num())
 	{
-		// TODO:: HIGHLIGHT
+		// Highlight
 		SlotMazeList[currentIndex]->SetSlotHighlightColor(HighlightColor);
-		//SlotMazeList[currentIndex]->SetSlotColor(SlotColors[2]);
 
 		if (selectedIndex > -1)
 		{
-			// TODO:: UNHIGHLIGHT
-			//SlotMazeList[selectedIndex]->SetSlotColor(DefaultColor);		
+			// UnHighlight
 			SlotMazeList[selectedIndex]->SetSlotHighlightColor(UnHighlightColor);
 		}
 	
@@ -199,19 +192,49 @@ void UConsoleGameUI::Navigate(EDirectionType Direction)
 	}
 }
 
-void UConsoleGameUI::Interact()
+void UConsoleGameUI::OnFaceButtonPress(EFaceButtonType Button)
 {
-	Super::Interact();
+	Super::OnFaceButtonPress(Button);
 
-	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::Interact] Exit"));
+	UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnFaceButtonPress] Button: %d "), Button);
 
-	if (selectedIndex > -1)
+	if (Button == EFaceButtonType::VE_BOTTOM) // Change color
+	{		
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnFaceButtonPress] Change color in slot")); 
+
+		if (selectedIndex > -1)
+		{
+
+			int32 currentIndexColor = SlotMazeList[selectedIndex]->GetIndex();
+
+			currentIndexColor++;
+
+			if (currentIndexColor >= SlotColors.Num())
+			{
+				currentIndexColor = 0;
+			}
+
+			// Set new color
+			SlotMazeList[selectedIndex]->SetIndex(currentIndexColor);
+
+			SlotMazeList[selectedIndex]->SetSlotColor(SlotColors[currentIndexColor]);
+
+		}
+	}
+
+	if (Button == EFaceButtonType::VE_RIGHT) // Check combination
 	{
-		// TODO:: PRESS BUTTON
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnFaceButtonPress] Check solution"));
+	}
 
-		// GET CURRENT VALUE IN SLOT AND ADD 1
+	if (Button == EFaceButtonType::VE_TOP) // Exit
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnFaceButtonPress] Exit UI"));
 
-		
+		if (UIInterface != nullptr)
+		{
+			UIInterface->ExitUI();
+		}
 	}
 }
 
