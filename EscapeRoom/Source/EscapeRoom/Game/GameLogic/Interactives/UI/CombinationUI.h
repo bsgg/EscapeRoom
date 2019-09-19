@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h"
 #include "CombinationUI.generated.h"
 
 /**
@@ -16,14 +17,23 @@ class ESCAPEROOM_API UCombinationUI : public UUserWidget
 
 protected:
 	
-	UPROPERTY(meta = (BindWidget))
-	class UButton* UpButton;
+	//UPROPERTY(meta = (BindWidget))
+	//class UButton* UpButton;
 
-	UPROPERTY(meta = (BindWidget))
-	class UButton* DownButton;
+	//UPROPERTY(meta = (BindWidget))
+	//class UButton* DownButton;
+
+	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
+	UImage* Background;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CharacterText;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combination UI Settings")
+	FLinearColor SelectedColor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combination UI Settings")
+	FLinearColor UnSelectedColor;
 
 	TArray<FString> ABCArray;
 
@@ -32,11 +42,11 @@ protected:
 protected:
 	virtual bool Initialize() override;
 
-	UFUNCTION()
-	void OnUpButtonPressed();
+	//UFUNCTION()
+	//void OnUpButtonPressed();
 
-	UFUNCTION()
-	void OnDownButtonPressed();
+	//UFUNCTION()
+	//void OnDownButtonPressed();
 
 public:
 
@@ -49,6 +59,12 @@ public:
 	void Locked();
 
 	void Unlocked();
+
+	void OnChangeCharacterPress();
+
+	void OnSelect();
+
+	void OnDeselect();
 
 	
 };

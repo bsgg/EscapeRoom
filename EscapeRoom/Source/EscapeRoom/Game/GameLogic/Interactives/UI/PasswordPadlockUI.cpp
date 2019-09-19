@@ -16,6 +16,40 @@ void UPasswordPadlockUI::InitializeWidget(const FName& InCombination)
 	bIsLocked = false;
 }
 
+void UPasswordPadlockUI::Navigate(EDirectionType Direction)
+{
+	Super::Navigate(Direction);
+
+	switch (Direction)
+	{
+	case EDirectionType::VE_DOWN:
+		
+	break;
+	case EDirectionType::VE_UP:
+		
+		break;
+	case EDirectionType::VE_LEFT:
+		
+	break;
+	case EDirectionType::VE_RIGHT:
+		
+	break;
+	}
+
+}
+
+void UPasswordPadlockUI::OnFaceButtonPress(EFaceButtonType Button)
+{
+	// Test current password
+	if (Button == EFaceButtonType::VE_BOTTOM) 
+	{
+		CheckCombination();
+	}
+
+
+	Super::OnFaceButtonPress(Button);
+}
+
 
 void UPasswordPadlockUI::CheckCombination()
 {

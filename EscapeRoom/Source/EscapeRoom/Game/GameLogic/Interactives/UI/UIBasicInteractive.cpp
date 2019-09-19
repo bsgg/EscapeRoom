@@ -70,31 +70,3 @@ void UUIBasicInteractive::ExitWidget()
 		UIInterface->ExitUI();
 	}
 }
-
-//void UUIBasicInteractive::CompleteWidget()
-//{
-	//UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::CompleteWidget]"));
-
-	//bIsLocked = false;
-
-	//GetWorld()->GetTimerManager().ClearTimer(CompleteWidgetTimerHandler);
-
-	//if (UIInterface != nullptr)
-	//{
-		//UIInterface->OnComplete();
-	//}
-//}
-
-
-/*void UUIBasicInteractive::OnExitPressed()
-{
-	if (bIsLocked) return;
-
-	bIsLocked = false;
-
-	if (UIInterface != nullptr)
-	{
-		UIInterface->ExitUI();
-	}
-}*/
-

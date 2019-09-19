@@ -48,7 +48,8 @@ public:
 
 	virtual void InitializeWidget(const FName& InCombination) override;
 
+	virtual void Navigate(EDirectionType Direction) override;
 
-	
+	virtual void OnFaceButtonPress(EFaceButtonType Button) override;
 	
 };
