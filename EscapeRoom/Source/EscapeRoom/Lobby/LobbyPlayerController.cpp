@@ -345,6 +345,8 @@ void ALobbyPlayerController::RemoveInteractiveUI_Implementation()
 	{
 		InteractiveUI->RemoveFromViewport();
 
+		bIsInteractiveUIOpened = false;
+
 		/*FInputModeGameOnly InputModeData;
 		SetInputMode(InputModeData);
 

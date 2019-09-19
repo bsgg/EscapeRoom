@@ -69,7 +69,7 @@ protected:
 	class UCombinationUI* Combination_3;
 
 	UFUNCTION()
-		void OnExitPressed();
+	void OnExitPressed();
 
 	UFUNCTION()
 	void OnEnterCombinationPressed();
