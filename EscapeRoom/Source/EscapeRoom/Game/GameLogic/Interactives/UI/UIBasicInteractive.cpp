@@ -18,23 +18,15 @@ bool UUIBasicInteractive::Initialize()
 
 	if (!Success) return false;
 
-	if (EnterCombinationButton == nullptr) return false;
-	EnterCombinationButton->OnClicked.AddDynamic(this, &UUIBasicInteractive::OnEnterCombinationPressed);
-
-	if (ExitButton == nullptr) return false;
-	ExitButton->OnClicked.AddDynamic(this, &UUIBasicInteractive::OnExitPressed);
-
 	if (MessageText == nullptr) return false;
-	MessageText->SetText(InitialMessages);
-
-	bIsLocked = false;
+	MessageText->SetText(InitialMessages);	
 
 	return true;
 }
 
 void UUIBasicInteractive::InitializeWidget(const FName& InCombination)
 {
-	Combination = InCombination.ToString();
+	
 }
 
 void UUIBasicInteractive::OnShowWidget()
@@ -44,69 +36,22 @@ void UUIBasicInteractive::OnShowWidget()
 
 void UUIBasicInteractive::Navigate(EDirectionType Direction)
 {
-
-
 	//UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Navigate]"));
 }
 
 void UUIBasicInteractive::OnFaceButtonPress(EFaceButtonType Button)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::Interact]"));
-}
-
-
-
-void UUIBasicInteractive::OnEnterCombinationPressed()
-{	
-	if (bIsLocked) return;
-
-	if (Combination.Len() >= 4)
+	if (Button == EFaceButtonType::VE_TOP) // Exit
 	{
-		int CorrectChars = 0;
-
-		if (Combination[0] == Combination_0->GetCharacter()[0])
-		{
-			CorrectChars += 1;
-		}
-
-		if (Combination[1] == Combination_1->GetCharacter()[0])
-		{
-			CorrectChars += 1;
-		}
-
-		if (Combination[2] == Combination_2->GetCharacter()[0])
-		{
-			CorrectChars += 1;
-		}
-
-		if (Combination[3] == Combination_3->GetCharacter()[0])
-		{
-			CorrectChars += 1;
-		}
-
-		if (CorrectChars >= 4)
-		{	
-			bIsLocked = true;
-
-			int index = FMath::RandRange(0, CorrectAnswerMessages.Num() - 1);
-			MessageText->SetText(CorrectAnswerMessages[index]);
-
-			GetWorld()->GetTimerManager().SetTimer(CompleteWidgetTimerHandler, this, &UUIBasicInteractive::CompleteWidget, 3.0f, false, 3.0f);
-		}
-		else
-		{
-			int index = FMath::RandRange(0, IncorrectAnswerMessages.Num() - 1);
-			MessageText->SetText(IncorrectAnswerMessages[index]);
-		}
+		UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::OnFaceButtonPress] EFaceButtonType::VE_TOP"));
+		ExitWidget();
 	}
 }
+
+
 void UUIBasicInteractive::CompleteWidget()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::CompleteWidget]"));
-
-	bIsLocked = false;
-
-	GetWorld()->GetTimerManager().ClearTimer(CompleteWidgetTimerHandler);
+	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::CompleteWidget]"));
 
 	if (UIInterface != nullptr)
 	{
@@ -114,8 +59,34 @@ void UUIBasicInteractive::CompleteWidget()
 	}
 }
 
+void UUIBasicInteractive::ExitWidget()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::ExitWidget]"));
 
-void UUIBasicInteractive::OnExitPressed()
+	if (UIInterface != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UUIBasicInteractive::ExitWidget] UIInterface not null"));
+
+		UIInterface->ExitUI();
+	}
+}
+
+//void UUIBasicInteractive::CompleteWidget()
+//{
+	//UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::CompleteWidget]"));
+
+	//bIsLocked = false;
+
+	//GetWorld()->GetTimerManager().ClearTimer(CompleteWidgetTimerHandler);
+
+	//if (UIInterface != nullptr)
+	//{
+		//UIInterface->OnComplete();
+	//}
+//}
+
+
+/*void UUIBasicInteractive::OnExitPressed()
 {
 	if (bIsLocked) return;
 
@@ -125,5 +96,5 @@ void UUIBasicInteractive::OnExitPressed()
 	{
 		UIInterface->ExitUI();
 	}
-}
+}*/
 

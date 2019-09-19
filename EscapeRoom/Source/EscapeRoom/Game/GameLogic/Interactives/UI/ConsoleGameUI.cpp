@@ -230,7 +230,7 @@ void UConsoleGameUI::OnFaceButtonPress(EFaceButtonType Button)
 	if (Button == EFaceButtonType::VE_TOP) // Exit
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[UConsoleGameUI::OnFaceButtonPress] Exit UI"));
-		OnExitPressed();
+		ExitWidget();
 	}
 }
 

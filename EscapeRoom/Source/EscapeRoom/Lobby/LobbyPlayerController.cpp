@@ -107,16 +107,10 @@ void ALobbyPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 
-	// Bind inventory
-	InputComponent->BindAction("NavigateInventoryLeft", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryLeft);
-	InputComponent->BindAction("NavigateInventoryRight", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryRight);
-	InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
-
 	InputComponent->BindAction("Pause", IE_Pressed, this, &ALobbyPlayerController::TogglePauseMenu);
 
 	InputComponent->BindAxis("MoveForward", this, &ALobbyPlayerController::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ALobbyPlayerController::MoveRight);
-
 
 	// Face buutton	
 	InputComponent->BindAction("FaceButtonBottom", IE_Pressed, this, &ALobbyPlayerController::FaceButtonBottom);
@@ -125,9 +119,10 @@ void ALobbyPlayerController::SetupInputComponent()
 	InputComponent->BindAction("FaceButtonTop", IE_Pressed, this, &ALobbyPlayerController::FaceButtonTop);
 	InputComponent->BindAction("FaceButtonLeft", IE_Pressed, this, &ALobbyPlayerController::FaceButtonLeft);
 
-
-	//InputComponent->BindAction("ExitInteractiveUI", IE_Pressed, this, &ALobbyPlayerController::ExitInteractiveUI);
-	
+	// Bind inventory
+	//InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
+	InputComponent->BindAction("LeftShoulderButton", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryLeft);
+	InputComponent->BindAction("RightShoulderButton", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryRight);	
 }
 
 

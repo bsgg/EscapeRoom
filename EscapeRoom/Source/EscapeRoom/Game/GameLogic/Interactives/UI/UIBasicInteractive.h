@@ -28,7 +28,6 @@ public:
 public:
 
 	virtual void Navigate(EDirectionType Direction);
-
 	// Input interactions
 	virtual void OnFaceButtonPress(EFaceButtonType Button);
 
@@ -47,41 +46,13 @@ protected:
 
 	IUIBasicInteractiveInterface* UIInterface;
 
-	UPROPERTY(meta = (BindWidget))
-	class UButton* EnterCombinationButton;
-
-	UPROPERTY(meta = (BindWidget))
-	class UButton* ExitButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* MessageText;
 
-	UPROPERTY(meta = (BindWidget))
-	class UCombinationUI* Combination_0;
+protected:  
 
-	UPROPERTY(meta = (BindWidget))
-	class UCombinationUI* Combination_1;
+	virtual void ExitWidget();
 
-	UPROPERTY(meta = (BindWidget))
-	class UCombinationUI* Combination_2;
-
-	UPROPERTY(meta = (BindWidget))
-	class UCombinationUI* Combination_3;
-
-	UFUNCTION()
-	void OnExitPressed();
-
-	UFUNCTION()
-	void OnEnterCombinationPressed();
-
-private:
-
-	FString Combination;
-
-	bool bIsLocked = false;
-
-	FTimerHandle CompleteWidgetTimerHandler;
-
-	void CompleteWidget();
-	
+	virtual void CompleteWidget();
 };
