@@ -22,6 +22,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
 	TArray<FLinearColor> ButtonColors;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	TArray<class USoundBase*> Sounds;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	FLinearColor HighlightColor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
+	FLinearColor UnHighlightColor;
+
+
 	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
 	bool bRandomSequence = false;
 
@@ -35,44 +46,34 @@ protected:
 	float WaitButtonNextColor = 1.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
-	float WaitSwitchTurn = 0.3f;
+	float WaitSwitchTurn = 0.5f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Simon Logic Settings")
-	float WaitGameCompleted = 2.0f;
+	float WaitGameCompleted = 3.0f;
 
-	
+	// Slots
+	UPROPERTY(meta = (BindWidget))
+	class USlotMaze* Slot_0;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ColorButton_1;
+	class USlotMaze* Slot_1;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ColorButton_2;
+	class USlotMaze* Slot_2;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ColorButton_3;
+	class USlotMaze* Slot_3;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ColorButton_4;
+	class USlotMaze* Slot_4;
+
+	TArray<class USlotMaze*> Slots;
+
 
 protected:
 	virtual bool Initialize() override;	
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
-
-	UFUNCTION()
-	void OnColorButton_1Pressed();
-
-	UFUNCTION()
-	void OnColorButton_2Pressed();
-
-	UFUNCTION()
-	void OnColorButton_3Pressed();
-
-	UFUNCTION()
-	void OnColorButton_4Pressed();
-
-	
-	TArray<class UButton*> ColorButtons;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Interactive Widget Settings")
 	TArray<int> ColorSequence;
@@ -88,7 +89,6 @@ protected:
 
 	int ButtonPressedIndex = -1;
 
-
 	int NextGamePhase;
 
 	bool bWait;
@@ -97,17 +97,21 @@ protected:
 
 	float WaitTime;
 
-private:
-	void SetButtonToColor(int indexButton, FLinearColor Color);
+public:
 
-	void OnButtonPressed(int indexButton);
+	virtual void OnShowWidget() override;
+
+	virtual void Navigate(EDirectionType Direction) override;
+
+	virtual void OnFaceButtonPress(EFaceButtonType Button) override;
+
+
+private:
 
 	void HandleNextPhase();
 
-public:
+	void SetSlotToColor(int indexButton, FLinearColor Color);	
 
-	virtual void InitializeWidget(const FName& Combination) override;
-
-	virtual void OnShowWidget() override;
+	void ResetSlots();
 	
 };

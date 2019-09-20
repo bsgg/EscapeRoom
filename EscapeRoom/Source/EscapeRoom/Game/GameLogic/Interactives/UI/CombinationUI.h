@@ -16,12 +16,7 @@ class ESCAPEROOM_API UCombinationUI : public UUserWidget
 	GENERATED_BODY()
 
 protected:
-	
-	//UPROPERTY(meta = (BindWidget))
-	//class UButton* UpButton;
 
-	//UPROPERTY(meta = (BindWidget))
-	//class UButton* DownButton;
 
 	UPROPERTY(BlueprintReadonly, VisibleAnywhere, meta = (BindWidget))
 	UImage* Background;
@@ -41,12 +36,6 @@ protected:
 
 protected:
 	virtual bool Initialize() override;
-
-	//UFUNCTION()
-	//void OnUpButtonPressed();
-
-	//UFUNCTION()
-	//void OnDownButtonPressed();
 
 public:
 

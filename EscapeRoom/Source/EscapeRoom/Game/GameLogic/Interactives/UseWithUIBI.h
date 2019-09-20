@@ -64,5 +64,7 @@ protected:
 	void ServerDoAction();
 
 	void DoAction();
+
+
 	
 };

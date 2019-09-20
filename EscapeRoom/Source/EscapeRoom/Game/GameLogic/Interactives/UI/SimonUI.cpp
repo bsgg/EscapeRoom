@@ -3,39 +3,44 @@
 #include "SimonUI.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Game/GameLogic/Interactives/UI/SlotMaze.h"
+#include "Kismet/GameplayStatics.h"
 
 bool USimonUI::Initialize()
 {
 	bool Success = Super::Initialize();	
 
-	if (ColorButton_1 == nullptr) return false;
-	ColorButton_1->OnClicked.AddDynamic(this, &USimonUI::OnColorButton_1Pressed);
-
-	if (ColorButton_2 == nullptr) return false;
-	ColorButton_2->OnClicked.AddDynamic(this, &USimonUI::OnColorButton_2Pressed);
-
-	if (ColorButton_3 == nullptr) return false;
-	ColorButton_3->OnClicked.AddDynamic(this, &USimonUI::OnColorButton_3Pressed);
-
-	if (ColorButton_4 == nullptr) return false;
-	ColorButton_4->OnClicked.AddDynamic(this, &USimonUI::OnColorButton_4Pressed);
-
-	ColorButtons.Add(ColorButton_1);
-	ColorButtons.Add(ColorButton_2);
-	ColorButtons.Add(ColorButton_3);
-	ColorButtons.Add(ColorButton_4);
+	Slots.Add(Slot_0);
+	Slots.Add(Slot_1);
+	Slots.Add(Slot_2);
+	Slots.Add(Slot_3);
+	Slots.Add(Slot_4);
 
 	return true;
 }
 
-void USimonUI::InitializeWidget(const FName& Combination)
+void USimonUI::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
-	Super::InitializeWidget(Combination);
+	Super::NativeTick(MyGeometry, DeltaTime);
 
-	// Set buttons to default color
-	for (int i = 0; i < ColorButtons.Num(); i++)
+	if (bWait)
 	{
-		ColorButtons[i]->SetBackgroundColor(DefaultButtonColor);
+		ElpasedWait += DeltaTime;
+		if (ElpasedWait >= WaitTime)
+		{
+			bWait = false;
+			HandleNextPhase();
+		}
+	}
+}
+
+
+void USimonUI::ResetSlots()
+{
+	for (int i = 0; i < Slots.Num(); i++)
+	{
+		Slots[i]->SetSlotColor(DefaultButtonColor);
+		Slots[i]->SetSlotHighlightColor(UnHighlightColor);
 	}
 }
 	
@@ -48,17 +53,23 @@ void USimonUI::OnShowWidget()
 
 	if (bRandomSequence)
 	{
+		ColorSequence.Empty();
+
 		// Set a random sequence of colors
 		for (int i = 0; i < 8; i++)
 		{
-			int randomC = FMath::RandRange(0, 3);
+			int randomC = FMath::RandRange(0, 4);
 			ColorSequence.Add(randomC);
 
 			UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnShowWidget] randomC: %d"), randomC);
 		}
 	}
 
+	ResetSlots();
+
 	bWait = true;
+
+	ButtonPressedIndex = 0;
 
 	ElpasedWait = 0.0f;
 	WaitTime = WaitStartSimon;
@@ -70,8 +81,7 @@ void USimonUI::OnShowWidget()
 	IndexEndSequence = 0;
 
 	bPlayerTurn = false;
-	bLockInput = true;
-	   	 
+	bLockInput = true;	   	 
 }
 
 void USimonUI::HandleNextPhase()
@@ -82,7 +92,12 @@ void USimonUI::HandleNextPhase()
 	{
 		int indexColor = ColorSequence[IndexSequence];
 
-		SetButtonToColor(indexColor, ButtonColors[indexColor]);
+		SetSlotToColor(indexColor, ButtonColors[indexColor]);
+
+		if (indexColor < Sounds.Num())
+		{
+			UGameplayStatics::PlaySound2D(this, Sounds[indexColor]);
+		}
 
 		// Set Next Phase to 1 (Set same button to default color) 
 		NextGamePhase = 1;
@@ -98,7 +113,7 @@ void USimonUI::HandleNextPhase()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] AI Phase Change Current Button to default"));
 
-		SetButtonToColor(ColorSequence[IndexSequence], DefaultButtonColor);
+		SetSlotToColor(ColorSequence[IndexSequence], DefaultButtonColor);
 
 		// Add  1 to sequence, and unlock players turn
 
@@ -118,6 +133,12 @@ void USimonUI::HandleNextPhase()
 			bPlayerTurn = true;
 
 			bLockInput = false;
+
+			ButtonPressedIndex = 0;
+
+			Slots[ButtonPressedIndex]->SetSlotHighlightColor(HighlightColor);
+
+
 		}
 		else // Not End Sequence
 		{
@@ -139,11 +160,11 @@ void USimonUI::HandleNextPhase()
 		
 	}
 
-	else if (NextGamePhase == 2) // Player Turn change button color to default and check current answer
+	else if (NextGamePhase == 2) // PLAYER TURN: Change slot color to default and check current answer
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::HandleNextPhase] Player change button pressed to default %i - %i "), ButtonPressedIndex, ColorSequence[IndexSequence]);
 
-		SetButtonToColor(ButtonPressedIndex, DefaultButtonColor);
+		SetSlotToColor(ButtonPressedIndex, DefaultButtonColor);
 
 		NextGamePhase = -1;
 
@@ -181,11 +202,16 @@ void USimonUI::HandleNextPhase()
 
 					NextGamePhase = 0; // Set turn to AI
 
+					ButtonPressedIndex = 0;
+					ResetSlots();
+
 					bWait = true;
 
 					ElpasedWait = 0.0f;
 
 					WaitTime = WaitSwitchTurn;
+
+					
 
 				}
 			}
@@ -203,7 +229,16 @@ void USimonUI::HandleNextPhase()
 		{
 			MessageText->SetText(FText::FromString("INCORRECT, TRY AGAIN"));
 
-			// TODO: RESET SEQUENCE AND START OVER
+			for (int i = 0; i < Slots.Num(); i++)
+			{
+				Slots[i]->SetSlotColor(DefaultButtonColor);
+				Slots[i]->SetSlotHighlightColor(UnHighlightColor);
+			}
+
+			ButtonPressedIndex = 0;
+
+			ResetSlots();
+
 			IndexSequence = 0;
 			IndexEndSequence = 0;
 
@@ -230,84 +265,80 @@ void USimonUI::HandleNextPhase()
 	}
 }
 
-void USimonUI::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
-{
-	Super::NativeTick(MyGeometry, DeltaTime);
 
-	if (bWait)
+
+void USimonUI::SetSlotToColor(int indexButton, FLinearColor Color)
+{
+	if ((indexButton >= 0) && (indexButton < Slots.Num()))
 	{
-		ElpasedWait += DeltaTime;
-		if (ElpasedWait >= WaitTime)
+		Slots[indexButton]->SetSlotColor(Color);
+	}
+}
+
+void USimonUI::Navigate(EDirectionType Direction)
+{
+	if (bLockInput) return;
+
+	Super::Navigate(Direction);
+
+	if ((Direction == EDirectionType::VE_DOWN) || (Direction == EDirectionType::VE_UP)) return;
+
+	Slots[ButtonPressedIndex]->SetSlotHighlightColor(UnHighlightColor);
+
+	switch (Direction)
+	{
+		break;
+	case EDirectionType::VE_LEFT:
+		ButtonPressedIndex--;
+		if (ButtonPressedIndex < 0)
 		{
-			bWait = false;
-			HandleNextPhase();
+			ButtonPressedIndex = Slots.Num()-1;
 		}
+		break;
+	case EDirectionType::VE_RIGHT:
+		ButtonPressedIndex++;
+
+		if (ButtonPressedIndex >= Slots.Num())
+		{
+			ButtonPressedIndex = 0;
+		}
+		break;
 	}
+
+	Slots[ButtonPressedIndex]->SetSlotHighlightColor(HighlightColor);
+
 }
 
-void USimonUI::SetButtonToColor(int indexButton, FLinearColor Color)
+void USimonUI::OnFaceButtonPress(EFaceButtonType Button)
 {
-	if ((indexButton >= 0) && (indexButton < ButtonColors.Num()))
+	// Test current password
+	if (Button == EFaceButtonType::VE_BOTTOM)
 	{
-		ColorButtons[indexButton]->SetBackgroundColor(Color);
+		if (bLockInput) return;
+
+		UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnFaceButtonPress]"));
+
+		SetSlotToColor(ButtonPressedIndex, ButtonColors[ButtonPressedIndex]);
+
+		if (ButtonPressedIndex < Sounds.Num())
+		{
+			UGameplayStatics::PlaySound2D(this, Sounds[ButtonPressedIndex]);
+		}
+
+		bLockInput = true;
+
+		// Set wait
+		bWait = true;
+
+		ElpasedWait = 0.0f;
+
+		WaitTime = WaitButtonToDefaultColor; // Set button to default
+
+		// Phase Change color to default
+		NextGamePhase = 2;
 	}
+
+	Super::OnFaceButtonPress(Button);
+
 }
 
-
-void USimonUI::OnButtonPressed(int indexButton)
-{
-	SetButtonToColor(indexButton, ButtonColors[indexButton]);
-
-	ButtonPressedIndex = indexButton;
-
-	bLockInput = true;
-
-	// Set wait
-	bWait = true;
-
-	ElpasedWait = 0.0f;
-
-	WaitTime = WaitButtonToDefaultColor; // Set button to default
-
-	// Phase Change color to default
-	NextGamePhase = 2;
-}
-
-
-
-void USimonUI::OnColorButton_1Pressed()
-{
-	if (bLockInput) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnColorButton_1Pressed]"));
-
-	OnButtonPressed(0);	
-}
-
-
-void USimonUI::OnColorButton_2Pressed()
-{
-	if (bLockInput) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnColorButton_2Pressed]"));
-
-	OnButtonPressed(1);
-}
-
-void USimonUI::OnColorButton_3Pressed()
-{
-	if (bLockInput) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnColorButton_3Pressed]"));
-
-	OnButtonPressed(2);
-}
-
-void USimonUI::OnColorButton_4Pressed()
-{
-	if (bLockInput) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[USimonUI::OnColorButton_4Pressed]"));
-
-	OnButtonPressed(3);
-}
