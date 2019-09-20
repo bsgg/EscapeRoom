@@ -197,6 +197,64 @@ void AUseBI::OnRep_UseActionChanged()
 
 }
 
+void AUseBI::ExitUI()
+{
+	if (CurrentController == nullptr) return;
+
+	// TODO: RETRIEVE OBJECT
+	if (UseAction.HasObject())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[AUseBI::ExitUI] RETRIEVE OBJECT %s"), *UseAction.ObjectID.ToString());
+		
+		CurrentController->AddItemToInventory(UseAction.ObjectID);
+
+		PlayInteractSound();
+
+		if (Role < ROLE_Authority)
+		{
+			ServerDoResetAction();
+		}
+		else
+		{
+			DoResetAction();
+		}
+	}
+
+	Super::ExitUI();
+}
+
+void AUseBI::ServerDoResetAction_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::ServerDoResetAction]"));
+
+	DoResetAction();
+}
+
+bool AUseBI::ServerDoResetAction_Validate()
+{
+	return true;
+}
+
+void AUseBI::DoResetAction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::DoResetAction]"));
+
+	UseAction.IsActive = true;
+}
+
+
+
+
+
+void AUseBI::OnComplete()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AUseBI::OnComplete!!]"));
+
+	Super::OnComplete();
+}
+
+
+
 
 void AUseBI::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

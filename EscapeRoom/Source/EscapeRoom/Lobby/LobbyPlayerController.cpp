@@ -120,7 +120,7 @@ void ALobbyPlayerController::SetupInputComponent()
 	InputComponent->BindAction("FaceButtonLeft", IE_Pressed, this, &ALobbyPlayerController::FaceButtonLeft);
 
 	// Bind inventory
-	//InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
+	InputComponent->BindAction("InputToggleInventory", IE_Pressed, this, &ALobbyPlayerController::ToggleInventory);
 	InputComponent->BindAction("LeftShoulderButton", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryLeft);
 	InputComponent->BindAction("RightShoulderButton", IE_Pressed, this, &ALobbyPlayerController::NavigateInventoryRight);	
 }
@@ -373,7 +373,10 @@ void ALobbyPlayerController::ToggleInventory()
 {
 	if (InGameUI == nullptr) return;
 
-	InGameUI->ToggleInventory();
+	if (!bIsInteractiveUIOpened)
+	{
+		InGameUI->ToggleInventory();
+	}
 }
 
 FName ALobbyPlayerController::GetSelectedItem()

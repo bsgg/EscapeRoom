@@ -52,11 +52,24 @@ protected:
 
 	void DoPickupAction();
 
+
+
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerDoResetAction();
+
+	void DoResetAction();
+
+
 public:
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////
 
 	virtual void StartInteract(APawn* PawnInstigator) override;
+
+	virtual void ExitUI() override;
+
+	virtual void OnComplete() override;
 
 	/////// IInteractiveInterface IMPLEMENTATION /////////	
 	

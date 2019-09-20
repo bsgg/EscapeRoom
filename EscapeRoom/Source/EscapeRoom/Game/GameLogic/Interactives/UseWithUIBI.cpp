@@ -60,7 +60,32 @@ void AUseWithUIBI::OnComplete()
 	// Check if it has pickup
 	if (PickupAction.IsActive && PickupAction.HasObject())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Has Pikcup"));
+		UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] PICKUP "));
+
+		if (CurrentController == nullptr) return;
+
+		if ((PickupAction.HasObject()) && (PickupAction.IsActive))
+		{
+			CurrentController->ShowMessage(PickupAction.DetailDefaultAction.ToString(), 2.0f);
+
+			CurrentController->AddItemToInventory(PickupAction.ObjectID);
+
+			if (CharacterOverlapping != nullptr)
+			{
+				CharacterOverlapping->StartGesture(EGestureType::VE_INTERACT, 2.0f);
+			}
+		}
+		else
+		{
+			CurrentController->ShowMessage(PickupAction.DetailWrongAction.ToString(), 2.0f);
+
+			if (CharacterOverlapping != nullptr)
+			{
+				CharacterOverlapping->StartGesture(EGestureType::VE_DISMISS, 2.0f);
+			}
+		}
+
+
 
 		if (Role < ROLE_Authority)
 		{
@@ -76,12 +101,12 @@ void AUseWithUIBI::OnComplete()
 	{
 		if (Role < ROLE_Authority)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] ServerDoAction"));
+			UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete]  NO PICKUP. ServerDoAction"));
 			ServerDoAction();
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] Do Action"));
+			UE_LOG(LogTemp, Warning, TEXT("[AUseWithUIBI::OnComplete] NO PICKUP. Do Action"));
 			DoAction();
 		}
 	}
